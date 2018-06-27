@@ -1,0 +1,1120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2018-06-27 Wed 03:17 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="viewport" content="width=device-width, initial-scale=1" />
+<title>Things I Like about Go Language</title>
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Eissa Nematollahi" />
+<style type="text/css">
+<!--/*--><![CDATA[/*><!--*/
+html {
+    font-family: sans-serif;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%
+}
+body {
+    margin: 0;
+}
+#table-of-contents {
+    z-index: 1;
+}
+/* TOC inspired by http://jashkenas.github.com/coffee-script */
+
+#table-of-contents {
+    font-size: 10pt;
+    position: fixed;
+    right: 0em;
+    top: 0em;
+    background: white;
+    -webkit-box-shadow: 0 0 1em #777777;
+    -moz-box-shadow: 0 0 1em #777777;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    text-align: right;
+    /* ensure doesn't flow off the screen when expanded */
+
+    max-height: 80%;
+    overflow: auto;
+}
+#table-of-contents h2 {
+    font-size: 10pt;
+    max-width: 8em;
+    font-weight: normal;
+    padding-left: 0.5em;
+    padding-left: 0.5em;
+    padding-top: 0.05em;
+    padding-bottom: 0.05em;
+}
+#table-of-contents #text-table-of-contents {
+    display: none;
+    text-align: left;
+}
+#table-of-contents:hover #text-table-of-contents {
+    display: block;
+    padding: 0.5em;
+    margin-top: -1.5em;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+    display: block
+}
+audio,
+canvas,
+progress,
+video {
+    display: inline-block;
+    vertical-align: baseline
+}
+audio:not([controls]) {
+    display: none;
+    height: 0
+}
+[hidden],
+template {
+    display: none
+}
+a {
+    background-color: transparent
+}
+a:active,
+a:hover {
+    outline: 0
+}
+abbr[title] {
+    border-bottom: 1px dotted
+}
+b,
+strong {
+    font-weight: 700
+}
+dfn {
+    font-style: italic
+}
+h1 {
+    font-size: 2em;
+    margin: .67em 0
+}
+mark {
+    background: #ff0;
+    color: #000
+}
+small {
+    font-size: 80%
+}
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline
+}
+sup {
+    top: -.5em
+}
+sub {
+    bottom: -.25em
+}
+img {
+    border: 0
+}
+svg:not(:root) {
+    overflow: hidden
+}
+figure {
+    margin: 1em 40px
+}
+hr {
+    box-sizing: content-box;
+    height: 0
+}
+pre {
+    overflow: auto
+}
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace;
+    font-size: 1em
+}
+button,
+input,
+optgroup,
+select,
+textarea {
+    color: inherit;
+    font: inherit;
+    margin: 0
+}
+button {
+    overflow: visible
+}
+button,
+select {
+    text-transform: none
+}
+button,
+html input[type=button],
+input[type=reset],
+input[type=submit] {
+    -webkit-appearance: button;
+    cursor: pointer
+}
+button[disabled],
+html input[disabled] {
+    cursor: default
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0
+}
+input {
+    line-height: normal
+}
+input[type=checkbox],
+input[type=radio] {
+    box-sizing: border-box;
+    padding: 0
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    height: auto
+}
+input[type=search] {
+    -webkit-appearance: textfield;
+    box-sizing: content-box
+}
+input[type=search]::-webkit-search-cancel-button,
+input[type=search]::-webkit-search-decoration {
+    -webkit-appearance: none
+}
+fieldset {
+    border: 1px solid silver;
+    margin: 0 2px;
+    padding: .35em .625em .75em
+}
+legend {
+    border: 0;
+    padding: 0
+}
+textarea {
+    overflow: auto
+}
+optgroup {
+    font-weight: 700
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+td,
+th {
+    padding: 0
+}
+body {
+    width: 95%;
+    margin: 2%;
+    font: normal normal normal 16px/1.6em Open Sans, sans;
+    color: #333
+}
+@media (min-width: 1025px) {
+    body {
+        width: 900px;
+        margin-left: 160px;
+        font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 15px;
+    }
+}
+.title {
+    padding: .5em 0;
+    color: #000
+}
+.subtitle,
+.title {
+    text-align: center
+}
+.subtitle {
+    font-size: medium;
+    font-weight: 700
+}
+.abstract {
+    margin: auto;
+    width: 80%;
+    font-style: italic
+}
+.abstract p:last-of-type:before {
+    content: "    ";
+    white-space: pre
+}
+.status {
+    font-size: 90%;
+    margin: 2em auto
+}
+[class^=section-number-] {
+    margin-right: .5em
+}
+#footnotes {
+    font-size: 90%
+}
+.footpara {
+    display: inline;
+    margin: .2em auto
+}
+.footdef {
+    margin-bottom: 1em
+}
+.footdef sup {
+    padding-right: .5em
+}
+a {
+    color: #527d9a;
+    text-decoration: none
+}
+a:hover {
+    color: #035;
+    border-bottom: 1px dotted
+}
+img {
+    max-width: 100%;
+    vertical-align: middle
+}
+.MathJax_Display {
+    margin: 0!important;
+    width: 90%!important
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #a5573e;
+    line-height: 1.6em;
+    font-family: Droid Serif, serif
+}
+h4,
+h5,
+h6 {
+    font-size: 1em
+}
+dt {
+    font-weight: 700
+}
+table {
+    margin: auto;
+    border-top: 2px solid;
+    border-collapse: collapse
+}
+table,
+thead {
+    border-bottom: 2px solid
+}
+table td+td,
+table th+th {
+    border-left: 1px solid gray
+}
+table tr {
+    border-top: 1px solid #d3d3d3
+}
+td,
+th {
+    padding: 5px 10px;
+    vertical-align: middle
+}
+caption.t-above {
+    caption-side: top
+}
+caption.t-bottom {
+    caption-side: bottom
+}
+th.org-center,
+th.org-left,
+th.org-right {
+    text-align: center
+}
+td.org-right {
+    text-align: right
+}
+td.org-left {
+    text-align: left
+}
+td.org-center {
+    text-align: center
+}
+code {
+    padding: 2px 5px;
+    margin: auto 1px;
+    /* border: 1px solid #ddd; */
+    border-radius: 3px;
+    background-clip: padding-box;
+    color: #333;
+    font-size: 90%
+}
+blockquote {
+    margin: 1em 2em;
+    padding-left: 1em;
+    border-left: 3px solid #ccc
+}
+kbd {
+    background-color: #f7f7f7;
+    font-size: 90%;
+    margin: 0 .1em;
+    padding: .1em .6em
+}
+.figure {
+    padding: 1em
+}
+.figure p {
+    text-align: center
+}
+.todo {
+    color: red
+}
+.done,
+.todo {
+    font-family: monospace
+}
+.done {
+    color: green
+}
+.priority {
+    color: orange
+}
+.priority,
+.tag {
+    font-family: monospace
+}
+.tag {
+    background-color: #eee;
+    font-size: 80%;
+    font-weight: 400;
+    padding: 2px
+}
+.timestamp {
+    color: #bebebe
+}
+.timestamp-kwd {
+    color: #5f9ea0
+}
+.org-right {
+    margin-left: auto;
+    margin-right: 0;
+    text-align: right
+}
+.org-left {
+    margin-left: 0;
+    margin-right: auto;
+    text-align: left
+}
+.org-center {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center
+}
+.underline {
+    text-decoration: underline
+}
+#postamble p,
+#preamble p {
+    font-size: 90%;
+    margin: .2em
+}
+p.verse {
+    margin-left: 3%
+}
+pre {
+    background-color: #2b3e50;
+    color: #eee;
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    font-family: Menlo, Pragmata, 'DejaVu LGC Sans Mono', 'DejaVu Sans Mono', Consolas, 'Everson Mono', 'Lucida Console', 'Andale Mono', 'Nimbus Mono L', 'Liberation Mono', FreeMono, 'Osaka Monospaced', Courier, 'New Courier', monospace;
+    margin: 1.2em;
+    padding: 8pt
+}
+pre.src {
+    overflow: auto;
+    padding-top: 1.2em;
+    position: relative;
+    font-size: 90%
+}
+pre.src:before {
+    background-color: #fff;
+    border: 1px solid #000;
+    display: none;
+    padding: 3px;
+    position: absolute;
+    right: 10px;
+    top: .6em
+}
+pre.src:hover:before {
+    display: inline
+}
+pre.src-sh:before {
+    content: 'sh'
+}
+pre.src-bash:before {
+    content: 'bash'
+}
+pre.src-emacs-lisp:before {
+    content: 'Emacs Lisp'
+}
+pre.src-R:before {
+    content: 'R'
+}
+pre.src-org:before {
+    content: 'Org'
+}
+pre.src-c+:before {
+    content: 'C++'
+}
+pre.src-c:before {
+    content: 'C'
+}
+pre.src-html:before {
+    content: 'HTML'
+}
+.inlinetask {
+    background: #ffc;
+    border: 2px solid gray;
+    margin: 10px;
+    padding: 10px
+}
+#org-div-home-and-up {
+    font-size: 70%;
+    text-align: right;
+    white-space: nowrap
+}
+.linenr {
+    font-size: smaller
+}
+.code-highlighted {
+    background-color: #ff0
+}
+#bibliography {
+    font-size: 90%
+}
+#bibliography table {
+    width: 100%
+}
+.creator {
+    display: block
+}
+@media (min-width: 1025px) {
+    .creator {
+        display: inline;
+        float: right
+    }
+}/*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Things I Like about Go Language
+<br>
+<span class="subtitle">A brief comparison of Go features with those of C++ and Java</span>
+</h1>
+<p>
+I recently had a chance to design and develop a library in Go language, also known as Golang, which has been used by some Kubernetes-based services in Huawei&rsquo;s cloud platform. Having developed several C++ and Java libraries in the past, I have come to admire the simplistic design of Go.
+</p>
+
+<p>
+In this blog post, I would like to share my thoughts on some features of Go that I found particularly more interesting than those in C++ and Java. For example, Go deliberately forbids inheritance and only allows composition, while Java allows single inheritance and C++ permits multiple. Note that best practices advise using composition over inheritance. It is debatable whether forbidding inheritance is a good thing or not, but composition definitely yields a simpler, highly decoupled, and easily maintainable code than does inheritance.
+</p>
+
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">History of Go</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+Go is a modern programming language created at google by Robert Griesemer, Rob Pike, and Ken Thompson and announced in November 2009. Primary motivation of the authors behind the design of Go was to avoid many design flaws and complexities in C++ while keeping advantages of C and adding advanced features, like garbage collection and channels. As Rob Pike once said: &ldquo;Complexity is multiplicative.&rdquo; Thus, the authors deliberately omitted some features common in similar languages and conservatively included their positive characteristics. The result is a simple yet powerful compiled language (like C/C++) with high-level features like array slicing, package management, garbage collection, and exceptional concurrency support.
+</p>
+
+<p>
+Go is influenced by several languages. Its expression syntax and use of pointers and references remind us of C language. However, thanks to its garbage collector, one needs not worry about manual memory managements and nasty memory leaks. Variable declarations and function definitions resembles those of Pascal language. The concepts of package management and imports are also from languages Modula-2, Oberon, Oberon-2, and Object Oberon, which are developed from Pascal. These languages are well known for their high compilation speed, mostly due to their unique way of dependency management. Powerful concurrency support of Go is built upon the concept of <i>communicating sequential processes</i> (CSP), introduced by Tony Hoare in 1978. The concept of CSP was previously implemented in languages like Squeak, Newsqueak and Alef.
+</p>
+
+<p>
+In the sequel, we will discuss more details about some features of Go and compare them with those of C++ and Java.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2">Inheritance vs. Composition</h2>
+<div class="outline-text-2" id="text-orgheadline2">
+<p>
+It&rsquo;s widely accepted that composition should be preferred over inheritance. Rule 34 from <a href="http://www.gotw.ca/publications/c++cs.htm"><i>C++ Coding Standards</i></a> by Herb Sutter and Andrei Alexandrescu recommends to:
+</p>
+<blockquote>
+<p>
+Avoid inheritance taxes: Inheritance is the second-tightest coupling relationship in C++, second only to friendship. Tight coupling is undesirable and should be avoided where possible.
+</p>
+</blockquote>
+<p>
+C++ allows multiple inheritance, which is advised to be used judiciously, since it may yield ambiguities and complexities like the <i>diamond problem</i>; see Item 40 of <a href="http://www.aristeia.com/books.html">Effective C++</a> by Scott Meyers.
+</p>
+
+<p>
+To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing on minor benefits of the multiple inheritance. Such a limitation is a good feature as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definition; consult Item 16 of <a href="https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/">Effective Java™</a> by Joshua Bloch.
+</p>
+
+<p>
+Considering all such issues with inheritance, Go delibrately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the empty interface in Go.
+</p>
+
+<p>
+Using composition is C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the <i>struct embedding</i> mechanism, described in Section 6.3 of <a href="https://dl.acm.org/citation.cfm?id=2851099">The Go Programming Language</a>, by Alan A.A. Donovan        and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">type</span> <span style="color: #ffff00; font-size: 105%;">Point</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> {
+    X, Y float64
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">type</span> <span style="color: #ffff00; font-size: 105%;">Circle</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> {
+    Point  <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">embedded</span>
+    Radius float64
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">var</span> c Circle
+c.X = 1 <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">implicit access: X is forwarded from Point to Circle</span>
+c.Point.Y = 2 <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">explicit access</span>
+</pre>
+</div>
+<p>
+Fields of the embedded struct Point can be both explicitly and implicitly accessed by the Circle instances. In explicit access, the type name (Point) is used as an instance name.
+</p>
+
+<p>
+Note that composition can be done without embedding. In this case, the fields of the composed struct are not promoted to the including struct. In the following example, Point is composed in Circle without embedding:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">type</span> <span style="color: #ffff00; font-size: 105%;">Circle</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> {
+    Center Point
+    Radius float64
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">var</span> c Circle
+c.Center.X = 1
+c.Center.Y = 2
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3">Fast Compilation</h2>
+<div class="outline-text-2" id="text-orgheadline3">
+<p>
+Go is a compiled language, and its compilation is notably faster than most other compiled languages, like C and C++. Fast compilation was one of the main considerations in the design of GO. The main reason for its compilation speed may be because of its unique way of managing dependencies. As previously mentioned, Go has borrowed design ideas for its package management from Pascal and its successors, which are well known for their lightening fast compilers. Beside better dependency management, the following features, or lack of features, also contribute to its fast compilation:
+</p>
+<ol class="org-ol">
+<li>Imports must be included explicitly at the top of each source file.</li>
+<li>Unused imports, like unused variables, cause compilation errors. This seemingly annoying feature contributes to the fast compilation of source codes.</li>
+<li>Dependencies constitute a directed acyclic graph (DAG). Thus, packages can be compiled separately and perhaps in parallel.</li>
+<li>A compiled Go package stores not only its exported symbols and information, but also those of its dependent packages.</li>
+<li>Go&rsquo;s simplicity and lack of some features, like inheritance and function overloads, also contribute to its high compilation speed.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4">Command-line Utilities</h2>
+<div class="outline-text-2" id="text-orgheadline4">
+<p>
+Go comes with great command line tools that make it easy to perform operations, such as building the source code, much easier than those in C++ and Java. For example, Go standardizes source code formatting through <code>go fmt</code> command, which is important in collaboration projects. Below is a list of commonly used commands; for the complete list of commands and their options, consult <a href="https://golang.org/cmd/go/">Command Go</a>.
+</p>
+<ul class="org-ul">
+<li><code>go help</code> provides help regarding Go commands.</li>
+<li><code>go fmt</code> formats package sources. Most well-known editors and IDEs, including Vim, Emacs, Eclipse, Sublime, and Intellij, have plugins to format source codes as you develop.</li>
+<li><code>go get</code> downloads and installs packages and dependencies.</li>
+<li><code>go build</code> compiles packages and dependencies into binary files and places them in the current folder.</li>
+<li><code>go install</code> compiles package and dependencies into binary file and places them in the directory specified by GOPATH environment variable. Executables are placed in the <code>bin/</code> folder while compiled package objects are put in the <code>pkg/</code> folder.</li>
+<li><code>go run</code> compiles a source code into a temporary executable and runs it.</li>
+<li><p>
+<code>go test</code> runs test codes using Go&rsquo;s built-in testing framework. Test functions start with <code>Test</code> as follows:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">TestMyFunc</span>(t *<span style="color: #ffff00; font-size: 105%;">testing.T</span>) {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">implement test logic for MyFunc()</span>
+}
+</pre>
+</div></li>
+<li><code>go env</code> prints Go&rsquo;s environments variables, including GOPATH and GOROOT.</li>
+<li><code>go version</code> prints Go version.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-2">
+<h2 id="orgheadline5">Access Level</h2>
+<div class="outline-text-2" id="text-orgheadline5">
+<p>
+In C++, access levels of fields and methods of a class can be public, private, or protected. Java adds one more access level beside them: package private. In Go, there are only private and public access levels.
+</p>
+
+<p>
+C++ originally had private and public access levels. Mark Linton, the main architect of the InterViews library, campaigned for the addition of the protected access level. Few years later, he banned using it in the library as it was one of the main sources of many bugs; see <a href="http://www.stroustrup.com/dne.html">The Design and Evolution of C++</a>, by Bjarne Stroustrup.
+</p>
+
+<p>
+Go&rsquo;s simplistic design restricts access levels to private and public with a simple rule: fields and methods starting with capital letters are public; otherwise private.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-2">
+<h2 id="orgheadline6">Data Types</h2>
+<div class="outline-text-2" id="text-orgheadline6">
+<p>
+Beside having basic types, booleans, numbers, and strings, Go has composite data types array, slices, structs, and maps. Functions are also first-class data types in Go.
+</p>
+</div>
+
+<div id="outline-container-orgheadline7" class="outline-3">
+<h3 id="orgheadline7">Array and Slices</h3>
+<div class="outline-text-3" id="text-orgheadline7">
+<p>
+Arrays and slices are sequences of homogeneous basic types. An Array has fixed size and its size is known at compile time. However, a slice is dynamically sized and its size can change at runtime. Using slices in Go is as easy as using lists in Python, which differentiates it from similar compiled languages like C++ and Java. In particular, for a given slice or even an array <code>s</code>, we can construct the following slices:
+</p>
+<ul class="org-ul">
+<li><code>s[i:j]</code>, representing a slice with elements <code>s[i],..., s[j-1]</code></li>
+<li><code>s[:j]</code> is equivalent to <code>s[0:j]</code></li>
+<li><code>s[i:]</code> is equivalent to <code>s[i:len(s)]</code></li>
+<li><code>s[:]</code> is equivalent to <code>s[0:len(s)]</code></li>
+</ul>
+<p>
+The latter is particularly useful in converting an array to a slice. Built-in function <code>append</code> is used to append one or more element as well as another slice, as depicted in the following code snippet:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go">a := []<span style="color: #ffff00; font-size: 105%;">int</span>{2,4}
+b := <span style="color: #87cefa; text-decoration: underline;">make</span>([]<span style="color: #ffff00; font-size: 105%;">int</span>, 3)
+<span style="color: #ffb6c1; font-size: 105%;">var</span> s []<span style="color: #ffff00; font-size: 105%;">int</span>
+s = <span style="color: #87cefa; text-decoration: underline;">append</span>(s, 3)
+s = <span style="color: #87cefa; text-decoration: underline;">append</span>(s, 2, 6, 7)
+s = <span style="color: #87cefa; text-decoration: underline;">append</span>(s, a...)
+s = <span style="color: #87cefa; text-decoration: underline;">append</span>(s, b...)
+<span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">s is [3,2,6,7,2,4]</span>
+</pre>
+</div>
+<p>
+Note three different ways of declaring slices: <code>a</code> is declared and initialized using slice literals; <code>b</code> is declared as a slice with length 3 using built-in <code>make</code> function; <code>s</code> is just declared without initialization. Function <code>make</code> accepts an optional thrid arguments as the capacity of the slice.
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline8" class="outline-3">
+<h3 id="orgheadline8">Maps</h3>
+<div class="outline-text-3" id="text-orgheadline8">
+<p>
+Maps are references to hash tables, which are one of the most important data structures. Unlike slices, maps have to be initialized first, before they are used. As shown in the following code snippet, the first two methods work, while the last one results in panic.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go">height := <span style="color: #87cefa; text-decoration: underline;">make</span>(<span style="color: #ffb6c1; font-size: 105%;">map</span>[<span style="color: #ffff00; font-size: 105%;">string</span>]<span style="color: #ffff00; font-size: 105%;">float32</span>)
+height[<span style="color: #ffa07a;">"Mike"</span>] = 180.35 <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">cm</span>
+height[<span style="color: #ffa07a;">"Sarah"</span>] = 167.42
+
+height := <span style="color: #ffb6c1; font-size: 105%;">map</span>[<span style="color: #ffff00; font-size: 105%;">string</span>]<span style="color: #ffff00; font-size: 105%;">int</span> {
+    <span style="color: #ffa07a;">"Mike"</span>: 180.35,
+    <span style="color: #ffa07a;">"Sarah"</span>: 167.42, <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">comma is required</span>
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">var</span> height <span style="color: #ffb6c1; font-size: 105%;">map</span>[<span style="color: #ffff00; font-size: 105%;">string</span>]<span style="color: #ffff00; font-size: 105%;">int</span>
+height[<span style="color: #ffa07a;">"Mike"</span>] = 180.35 <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">oops! panic: height not initialized!</span>
+</pre>
+</div>
+<p>
+The idiomatic approach to check if a key exists in a map is as follows:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">if</span> h, ok := height[<span style="color: #ffa07a;">"Mike"</span>]; !ok {
+   <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">height of Mike not available</span>
+} <span style="color: #ffb6c1; font-size: 105%;">else</span> {
+   <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">use h as height og Mike</span>
+}
+</pre>
+</div>
+<p>
+To iterate over all the key-values of a map, we can use built-in <code>range</code> function as follows:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">for</span> key, value := <span style="color: #ffb6c1; font-size: 105%;">range</span> height {
+   <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">use key and value</span>
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline9" class="outline-2">
+<h2 id="orgheadline9">Pointers and references</h2>
+<div class="outline-text-2" id="text-orgheadline9">
+<p>
+Analogous to C and C++, Go has pointers and references too. Using pointers and references in C can be pretty daunting for many developers. However, due largely to the garbage collector, the use of pointers and references in Go is straightforward, since one does not need to worry about manual memory management and memory leaks. In C++, smart pointers are designed to facilitate memory management.
+</p>
+
+<p>
+Similar to C/C++, objects in Go may be passed by value or by reference as function parameters. There is no definite rule on when to pass objects by value or by reference, however, the following guideline may help in making such a decision:
+</p>
+<ul class="org-ul">
+<li>Objects tended to be modified by the function must be passed by reference.</li>
+<li>Objects tended not to be modified must be passed by value.</li>
+<li><p>
+Large objects are often passed by reference for efficiency, while small objects are passed by value. There is one subtlty here. A strcut holding a pointer to a large data structure is still a small object. Consider the following example:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">type</span> <span style="color: #ffff00; font-size: 105%;">largeData</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">lots of fields</span>
+}
+<span style="color: #ffb6c1; font-size: 105%;">type</span> <span style="color: #ffff00; font-size: 105%;">smallObject</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> {
+    ld *largeData
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">processData</span>(ld *<span style="color: #ffff00; font-size: 105%;">largeData</span>, so <span style="color: #ffff00; font-size: 105%;">smallObject</span>) {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">use ld and so objects</span>
+}
+</pre>
+</div>
+<p>
+To avoid costly copy of large data, we pass <code>ld</code> by reference, while it is perfectly fine to pass <code>so</code> by value.
+</p>
+
+<p>
+Note that maps and slices in Go are data types holding pointers to actual data structures &#x2013; similar to <code>smallObject</code>. Thus, it is efficient to pass them by value, regardless of how much data they hold.
+</p></li>
+</ul>
+
+<p>
+Unlike C/C++, the address of a local variable can be returned by a function prolonging the lifetime of the variable beyond its inital scope. The following approach is quite common in Go:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">type</span> <span style="color: #ffff00; font-size: 105%;">Person</span> <span style="color: #ffb6c1; font-size: 105%;">struct</span> {
+    name string
+    height float32
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">CreatePerson</span>(name <span style="color: #ffff00; font-size: 105%;">string</span>, height <span style="color: #ffff00; font-size: 105%;">float32</span>) *<span style="color: #ffff00; font-size: 105%;">Perosn</span> {
+    <span style="color: #ffb6c1; font-size: 105%;">return</span> &amp;Person {
+               <span style="color: #7fffd4;">name</span>: name,
+               <span style="color: #7fffd4;">height</span>: height,
+            }
+}
+</pre>
+</div>
+<p>
+There is yet another way to declare a pointer type using <code>new</code> function, as shown below:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">CreatePerson</span>(name <span style="color: #ffff00; font-size: 105%;">string</span>, height <span style="color: #ffff00; font-size: 105%;">float32</span>) *<span style="color: #ffff00; font-size: 105%;">Perosn</span> {
+    person := <span style="color: #87cefa; text-decoration: underline;">new</span>(<span style="color: #ffff00; font-size: 105%;">Person</span>)
+    person.name = name
+    person.height = height
+    <span style="color: #ffb6c1; font-size: 105%;">return</span> person
+}
+</pre>
+</div>
+<p>
+Note that <code>new</code> function return the address to an instance of <code>Person</code> which is of type pointer. In C/C++ address of a value &#x2013; not variable &#x2013; does not have any meaning. Go, however, creates a variable, initializes it, prolongs its lifetime, and return the address of the variable.
+</p>
+
+<p>
+One subtle difference of the references in C/C++ and Go is that there is no reference <i>type</i> in Go. Reference types in C/C++ can be used to define an alias for a variable. The following code illustrates this point:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-cpp"><span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">a</span> = 1;
+<span style="color: #ffff00; font-size: 105%;">int</span> &amp;<span style="color: #ffd700;">b</span> = a; <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">b is alias to a</span>
+<span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">value of both a and b is 1</span>
+a = 2;
+<span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">value of both a and b is 2</span>
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline10" class="outline-2">
+<h2 id="orgheadline10">Type Inference</h2>
+<div class="outline-text-2" id="text-orgheadline10">
+<p>
+In dynamically-typed languages, like Python, a variable can be initialized without specifying its type: <code>a = 10</code>. In statically-typed languages, like Java and C++, however, the type of a variable must be specified when declared: <code>int a = 10</code>.
+</p>
+
+<p>
+Variable declaration is simplified in later versions of C++, thus one can write <code>auto a = 10</code> and the type of <code>a</code> (<code>int</code>) is inferred from the right-hand-side value. This is particularly useful when you have template (generic) types or defining lambda functions. For example, compare the following two equivalent lambda function declarations:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-cpp"><span style="color: #ffff00; font-size: 105%;">function</span>&lt;<span style="color: #ffff00; font-size: 105%;">int</span>(<span style="color: #ffff00; font-size: 105%;">int</span>, <span style="color: #ffff00; font-size: 105%;">int</span>)&gt; <span style="color: #ffd700;">sum</span> = [](<span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">a</span>, <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">b</span>) { <span style="color: #ffb6c1; font-size: 105%;">return</span> a + b; };
+<span style="color: #ffb6c1; font-size: 105%;">auto</span> <span style="color: #ffff00; font-size: 105%;">sum</span> = [](<span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">a</span>, <span style="color: #ffff00; font-size: 105%;">int</span> <span style="color: #ffd700;">b</span>) { <span style="color: #ffb6c1; font-size: 105%;">return</span> a + b; }; <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">more concise</span>
+</pre>
+</div>
+<p>
+The second declaration is concise and more readable, while the first one has to specify unnecessary and redundant details of the function input and output types.
+</p>
+
+<p>
+In Java, types must be declared in full. This can be annoying particularly in <code>for</code> loops:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #ffb6c1; font-size: 105%;">for</span>(<span style="color: #7fffd4;">Map</span>.<span style="color: #ffff00; font-size: 105%;">Entry</span>&lt;<span style="color: #ffff00; font-size: 105%;">String</span>, <span style="color: #ffff00; font-size: 105%;">String</span>&gt; item : items.entrySet()) {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">do something on item</span>
+}
+</pre>
+</div>
+<p>
+Java 10 introduces <code>var</code> keyword for type inference, similar to <code>auto</code> in C++. Thus, in Java 10, the latter code snippet can be simplified to:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="color: #ffb6c1; font-size: 105%;">for</span>(<span style="color: #ffff00; font-size: 105%;">var</span> <span style="color: #ffd700;">item</span> : items.entrySet()) {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">do something on item</span>
+}
+</pre>
+</div>
+
+<p>
+In Go, a variable can be declared and initialized in a concise form as <code>a := 10</code>, referred to as the <i>short variable declaration</i>. Short variable declarations are particularly useful in <code>for</code> loops or even <code>if</code> statements, a distinguishing feature of Go which will be discussed later. A typical Go code may include the following statements:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">for</span> i, item := <span style="color: #ffb6c1; font-size: 105%;">range</span> items {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">do something on index i and value item</span>
+}
+<span style="color: #ffb6c1; font-size: 105%;">if</span> val, err := <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">getValue</span>(); err != <span style="color: #7fffd4;">nil</span> {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">report error; disregard val</span>
+} <span style="color: #ffb6c1; font-size: 105%;">else</span> {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">do something with val</span>
+}
+</pre>
+</div>
+<p>
+Note that the types are inferred and not specified explicitly, resulting in clean and readable code.
+</p>
+
+<p>
+A few more notes are in order. The parentheses around the <code>if</code> and <code>for</code> statements <i>can</i> be omitted. A local variable, such as <code>val</code> and <code>err</code>, can be declared in the <code>if</code> statement before checking the condition; this will be discussed in more details later. The key word <code>range</code> is used in the <code>for</code> loop to ease iterating over the items of a list. This is similar to <code>enumerate</code> in Python. Other typical ways for iterating over lists include
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">for</span> i := <span style="color: #ffb6c1; font-size: 105%;">range</span> items {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">do something on index i</span>
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">items[i] can still be used to access items</span>
+}
+<span style="color: #ffb6c1; font-size: 105%;">for</span> _, item := <span style="color: #ffb6c1; font-size: 105%;">range</span> items {
+    <span style="color: #90ee90; font-style: italic;">// </span><span style="color: #90ee90; font-style: italic;">ignore index i and use item</span>
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline11" class="outline-2">
+<h2 id="orgheadline11">Multiple Return Values and Blank Identifiers</h2>
+<div class="outline-text-2" id="text-orgheadline11">
+<p>
+One of the features of Go that makes it as easier to use as high-level languages, like Python, is the feature of returning multiple values. The following function illustrates returning both minimum and maximum of a slice:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">MinMax</span>(arr []<span style="color: #ffff00; font-size: 105%;">int</span>) (<span style="color: #ffff00; font-size: 105%;">int</span>, <span style="color: #ffff00; font-size: 105%;">int</span>, <span style="color: #ffff00; font-size: 105%;">error</span>) {
+    <span style="color: #ffb6c1; font-size: 105%;">if</span> <span style="color: #87cefa; text-decoration: underline;">len</span>(arr) == 0 {
+       <span style="color: #ffb6c1; font-size: 105%;">return</span> 0, 0, fmt.<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">Errorf</span>(<span style="color: #ffa07a;">"Input slice is empty"</span>)
+    }
+    min, max := arr[0], arr[0]
+    <span style="color: #ffb6c1; font-size: 105%;">for</span> _, a := <span style="color: #ffb6c1; font-size: 105%;">range</span> arr {
+        <span style="color: #ffb6c1; font-size: 105%;">if</span> a &lt; min {
+            min = a
+        } <span style="color: #ffb6c1; font-size: 105%;">else</span> <span style="color: #ffb6c1; font-size: 105%;">if</span> a &gt; max {
+            max = a
+        }
+    }
+    <span style="color: #ffb6c1; font-size: 105%;">return</span> min, max, <span style="color: #7fffd4;">nil</span>
+}
+</pre>
+</div>
+<p>
+It&rsquo;s idiomatic in Go to return error as the last return value. The <i>blank identifier</i>, denoted by underscroe, can be used to ignore an unwanted return value. For example, to ignore the maximum value, we can write:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go">min, _, err := <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">MinMax</span>(arr)
+</pre>
+</div>
+<p>
+In Go, return values can be named. Named return variables are initialized to their default values, thus, there is no need to specify defaults values, 0 for <code>int</code> type and <code>nil</code> for <code>error</code> type. This is illustrated in the following code snippet:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">MinMax</span>(arr []<span style="color: #ffff00; font-size: 105%;">int</span>) (min, max <span style="color: #ffff00; font-size: 105%;">int</span>, err <span style="color: #ffff00; font-size: 105%;">error</span>) {
+    <span style="color: #ffb6c1; font-size: 105%;">if</span> <span style="color: #87cefa; text-decoration: underline;">len</span>(arr) == 0 {
+       err = fmt.<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">Errorf</span>(<span style="color: #ffa07a;">"Input slice is empty"</span>)
+       <span style="color: #ffb6c1; font-size: 105%;">return</span>
+    }
+    min, max = arr[0], arr[0]
+    <span style="color: #ffb6c1; font-size: 105%;">for</span> _, a := <span style="color: #ffb6c1; font-size: 105%;">range</span> arr {
+        <span style="color: #ffb6c1; font-size: 105%;">if</span> a &lt; min {
+            min = a
+        } <span style="color: #ffb6c1; font-size: 105%;">else</span> <span style="color: #ffb6c1; font-size: 105%;">if</span> a &gt; max {
+            max = a
+        }
+    }
+    <span style="color: #ffb6c1; font-size: 105%;">return</span>
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline20" class="outline-2">
+<h2 id="orgheadline20">Main topics</h2>
+<div class="outline-text-2" id="text-orgheadline20">
+</div><div id="outline-container-orgheadline12" class="outline-3">
+<h3 id="orgheadline12">Concurrency</h3>
+</div>
+<div id="outline-container-orgheadline13" class="outline-3">
+<h3 id="orgheadline13">Interface system</h3>
+</div>
+<div id="outline-container-orgheadline14" class="outline-3">
+<h3 id="orgheadline14">Variadic</h3>
+</div>
+<div id="outline-container-orgheadline15" class="outline-3">
+<h3 id="orgheadline15">Error handling</h3>
+<div class="outline-text-3" id="text-orgheadline15">
+<p>
+Passing error vs exception handling (this is like goto)
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline16" class="outline-3">
+<h3 id="orgheadline16">Any comparison between async callbacks and sync goroutines/channels?</h3>
+<div class="outline-text-3" id="text-orgheadline16">
+<p>
+Check if Go is used for async programming. If so, compare it with Javascript or Vertx framework in Java.
+</p>
+</div>
+</div>
+<div id="outline-container-orgheadline17" class="outline-3">
+<h3 id="orgheadline17">defer statement</h3>
+</div>
+<div id="outline-container-orgheadline18" class="outline-3">
+<h3 id="orgheadline18">enumerations vs constants with iota</h3>
+</div>
+<div id="outline-container-orgheadline19" class="outline-3">
+<h3 id="orgheadline19">Criticisms</h3>
+</div>
+</div>
+
+<div id="outline-container-orgheadline21" class="outline-2">
+<h2 id="orgheadline21">Summary and Conclusion</h2>
+<div class="outline-text-2" id="text-orgheadline21">
+<p>
+As a summary, Go is a modern language that delibrately omits some well-known features in similar languages to achieve high performance&#x2026; It&rsquo;s widely used in many productions, including Kubernetes, Docker, Dropbox, Heroku, Hyperledger Fabric, CoreOS, InfluxDB, etc.
+</p>
+</div>
+
+<div id="outline-container-orgheadline22" class="outline-3">
+<h3 id="orgheadline22">Features from dynamic languages:</h3>
+<div class="outline-text-3" id="text-orgheadline22">
+<ol class="org-ol">
+<li>Short variable declaration and initialization through type inference</li>
+<li>Multiple return values and blanck identifiers</li>
+<li>An interface system in place of virtual inheritance, and type embedding instead of non-virtual inheritance.</li>
+<li>Maps and slices as well as first class functions</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline23" class="outline-2">
+<h2 id="orgheadline23">Links:</h2>
+<div class="outline-text-2" id="text-orgheadline23">
+<ul class="org-ul">
+<li><a href="https://medium.com/exploring-code/why-should-you-learn-go-f607681fad65">https://medium.com/exploring-code/why-should-you-learn-go-f607681fad65</a></li>
+<li><a href="https://www.quora.com/What-reasons-are-there-to-not-use-Go-programming-language">https://www.quora.com/What-reasons-are-there-to-not-use-Go-programming-language</a></li>
+<li><a href="https://github.com/golang/go/issues/22013">proposal: Go 2: remove embedded struct #22013</a></li>
+<li><a href="https://bluxte.net/musings/2018/04/10/go-good-bad-ugly/#a-few-days-later-3-on-hacker-news">Go: the Good, the Bad and the Ugly</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: 2018-06-17</p>
+<p class="author">Author: Eissa Nematollahi</p>
+<p class="date">Created: 2018-06-27 Wed 03:17</p>
+<p class="validation"></p>
+</div>
+</body>
+</html>

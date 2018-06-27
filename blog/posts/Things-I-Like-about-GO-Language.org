@@ -1,0 +1,321 @@
+#+BLOG: eissanematollahi
+#+POSTID: 108
+#+ORG2BLOG:
+#+DATE: [2018-06-17 Sun 03:45]
+#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil ':t
+#+CATEGORY: Software
+#+TAGS: C++, Composition, Go, Inheritance, Interface, Java, Object-oriented design
+#+DESCRIPTION:
+#+TITLE: Things I Like about Go Language
+#+SUBTITLE: A brief comparison of Go features with those of C++ and Java
+
+I recently had a chance to design and develop a library in Go language, also known as Golang, which has been used by some Kubernetes-based services in Huawei's cloud platform. Having developed several C++ and Java libraries in the past, I have come to admire the simplistic design of Go.
+
+In this blog post, I would like to share my thoughts on some features of Go that I found particularly more interesting than those in C++ and Java. For example, Go deliberately forbids inheritance and only allows composition, while Java allows single inheritance and C++ permits multiple. Note that best practices advise using composition over inheritance. It is debatable whether forbidding inheritance is a good thing or not, but composition definitely yields a simpler, highly decoupled, and easily maintainable code than does inheritance.
+
+# I will begin with a brief history of the Go and how it has evolved. Then, I will compare features of Go, C++, and Java to support some programming concepts. The reader is expected to be familiar with basics of object-oriented design -- such as inheritance and encapsulation -- and at least a programming language that supports it. It would also be helpful if the reader has a basic understanding of concurrency.
+
+* History of Go
+Go is a modern programming language created at google by Robert Griesemer, Rob Pike, and Ken Thompson and announced in November 2009. Primary motivation of the authors behind the design of Go was to avoid many design flaws and complexities in C++ while keeping advantages of C and adding advanced features, like garbage collection and channels. As Rob Pike once said: "Complexity is multiplicative." Thus, the authors deliberately omitted some features common in similar languages and conservatively included their positive characteristics. The result is a simple yet powerful compiled language (like C/C++) with high-level features like array slicing, package management, garbage collection, and exceptional concurrency support.
+
+Go is influenced by several languages. Its expression syntax and use of pointers and references remind us of C language. However, thanks to its garbage collector, one needs not worry about manual memory managements and nasty memory leaks. Variable declarations and function definitions resembles those of Pascal language. The concepts of package management and imports are also from languages Modula-2, Oberon, Oberon-2, and Object Oberon, which are developed from Pascal. These languages are well known for their high compilation speed, mostly due to their unique way of dependency management. Powerful concurrency support of Go is built upon the concept of /communicating sequential processes/ (CSP), introduced by Tony Hoare in 1978. The concept of CSP was previously implemented in languages like Squeak, Newsqueak and Alef.
+
+In the sequel, we will discuss more details about some features of Go and compare them with those of C++ and Java.
+
+* Inheritance vs. Composition
+It's widely accepted that composition should be preferred over inheritance. Rule 34 from [[http://www.gotw.ca/publications/c++cs.htm][/C++ Coding Standards/]] by Herb Sutter and Andrei Alexandrescu recommends to:
+#+begin_quote
+Avoid inheritance taxes: Inheritance is the second-tightest coupling relationship in C++, second only to friendship. Tight coupling is undesirable and should be avoided where possible.
+#+end_quote
+C++ allows multiple inheritance, which is advised to be used judiciously, since it may yield ambiguities and complexities like the /diamond problem/; see Item 40 of [[http://www.aristeia.com/books.html][Effective C++]] by Scott Meyers.
+
+To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing on minor benefits of the multiple inheritance. Such a limitation is a good feature as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definition; consult Item 16 of [[https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/][Effective Java™]] by Joshua Bloch.
+
+Considering all such issues with inheritance, Go delibrately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the empty interface in Go.
+
+Using composition is C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the /struct embedding/ mechanism, described in Section 6.3 of [[https://dl.acm.org/citation.cfm?id=2851099][The Go Programming Language]], by Alan A.A. Donovan	and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
+#+begin_src go
+type Point struct {
+    X, Y float64
+}
+
+type Circle struct {
+    Point  // embedded
+    Radius float64
+}
+
+var c Circle
+c.X = 1 // implicit access: X is forwarded from Point to Circle
+c.Point.Y = 2 // explicit access
+#+end_src
+Fields of the embedded struct Point can be both explicitly and implicitly accessed by the Circle instances. In explicit access, the type name (Point) is used as an instance name.
+
+Note that composition can be done without embedding. In this case, the fields of the composed struct are not promoted to the including struct. In the following example, Point is composed in Circle without embedding:
+#+begin_src go
+type Circle struct {
+    Center Point
+    Radius float64
+}
+
+var c Circle
+c.Center.X = 1
+c.Center.Y = 2
+#+end_src
+
+* Fast Compilation
+Go is a compiled language, and its compilation is notably faster than most other compiled languages, like C and C++. Fast compilation was one of the main considerations in the design of GO. The main reason for its compilation speed may be because of its unique way of managing dependencies. As previously mentioned, Go has borrowed design ideas for its package management from Pascal and its successors, which are well known for their lightening fast compilers. Beside better dependency management, the following features, or lack of features, also contribute to its fast compilation:
+1) Imports must be included explicitly at the top of each source file.
+2) Unused imports, like unused variables, cause compilation errors. This seemingly annoying feature contributes to the fast compilation of source codes.
+3) Dependencies constitute a directed acyclic graph (DAG). Thus, packages can be compiled separately and perhaps in parallel.
+4) A compiled Go package stores not only its exported symbols and information, but also those of its dependent packages.
+5) Go's simplicity and lack of some features, like inheritance and function overloads, also contribute to its high compilation speed.
+
+* Command-line Utilities
+Go comes with great command line tools that make it easy to perform operations, such as building the source code, much easier than those in C++ and Java. For example, Go standardizes source code formatting through ~go fmt~ command, which is important in collaboration projects. Below is a list of commonly used commands; for the complete list of commands and their options, consult [[https://golang.org/cmd/go/][Command Go]].
++ ~go help~ provides help regarding Go commands.
++ ~go fmt~ formats package sources. Most well-known editors and IDEs, including Vim, Emacs, Eclipse, Sublime, and Intellij, have plugins to format source codes as you develop.
++ ~go get~ downloads and installs packages and dependencies.
++ ~go build~ compiles packages and dependencies into binary files and places them in the current folder.
++ ~go install~ compiles package and dependencies into binary file and places them in the directory specified by GOPATH environment variable. Executables are placed in the ~bin/~ folder while compiled package objects are put in the ~pkg/~ folder.
++ ~go run~ compiles a source code into a temporary executable and runs it.
++ ~go test~ runs test codes using Go's built-in testing framework. Test functions start with ~Test~ as follows:
+            #+begin_src go
+            func TestMyFunc(t *testing.T) {
+                // implement test logic for MyFunc()
+            }
+            #+end_src
++ ~go env~ prints Go's environments variables, including GOPATH and GOROOT.
++ ~go version~ prints Go version.
+
+* Access Level
+In C++, access levels of fields and methods of a class can be public, private, or protected. Java adds one more access level beside them: package private. In Go, there are only private and public access levels.
+
+C++ originally had private and public access levels. Mark Linton, the main architect of the InterViews library, campaigned for the addition of the protected access level. Few years later, he banned using it in the library as it was one of the main sources of many bugs; see [[http://www.stroustrup.com/dne.html][The Design and Evolution of C++]], by Bjarne Stroustrup.
+
+Go's simplistic design restricts access levels to private and public with a simple rule: fields and methods starting with capital letters are public; otherwise private.
+
+* Data Types
+Beside having basic types, booleans, numbers, and strings, Go has composite data types array, slices, structs, and maps. Functions are also first-class data types in Go.
+
+** Array and Slices
+Arrays and slices are sequences of homogeneous basic types. An Array has fixed size and its size is known at compile time. However, a slice is dynamically sized and its size can change at runtime. Using slices in Go is as easy as using lists in Python, which differentiates it from similar compiled languages like C++ and Java. In particular, for a given slice or even an array ~s~, we can construct the following slices:
++ ~s[i:j]~, representing a slice with elements ~s[i],..., s[j-1]~
++ ~s[:j]~ is equivalent to ~s[0:j]~
++ ~s[i:]~ is equivalent to ~s[i:len(s)]~
++ ~s[:]~ is equivalent to ~s[0:len(s)]~
+The latter is particularly useful in converting an array to a slice. Built-in function ~append~ is used to append one or more element as well as another slice, as depicted in the following code snippet:
+#+begin_src go
+a := []int{2,4}
+b := make([]int, 3)
+var s []int
+s = append(s, 3)
+s = append(s, 2, 6, 7)
+s = append(s, a...)
+s = append(s, b...)
+// s is [3,2,6,7,2,4]
+#+end_src
+Note three different ways of declaring slices: ~a~ is declared and initialized using slice literals; ~b~ is declared as a slice with length 3 using built-in ~make~ function; ~s~ is just declared without initialization. Function ~make~ accepts an optional thrid arguments as the capacity of the slice.
+** Maps
+Maps are references to hash tables, which are one of the most important data structures. Unlike slices, maps have to be initialized first, before they are used. As shown in the following code snippet, the first two methods work, while the last one results in panic.
+#+begin_src go
+height := make(map[string]float32)
+height["Mike"] = 180.35 // cm
+height["Sarah"] = 167.42
+
+height := map[string]int {
+    "Mike": 180.35,
+    "Sarah": 167.42, // comma is required
+}
+
+var height map[string]int
+height["Mike"] = 180.35 // oops! panic: height not initialized!
+#+end_src
+The idiomatic approach to check if a key exists in a map is as follows:
+#+begin_src go
+if h, ok := height["Mike"]; !ok {
+   // height of Mike not available
+} else {
+   // use h as height og Mike
+}
+#+end_src
+To iterate over all the key-values of a map, we can use built-in ~range~ function as follows:
+#+begin_src go
+for key, value := range height {
+   // use key and value
+}
+#+end_src
+
+* Pointers and references
+Analogous to C and C++, Go has pointers and references too. Using pointers and references in C can be pretty daunting for many developers. However, due largely to the garbage collector, the use of pointers and references in Go is straightforward, since one does not need to worry about manual memory management and memory leaks. In C++, smart pointers are designed to facilitate memory management.
+
+Similar to C/C++, objects in Go may be passed by value or by reference as function parameters. There is no definite rule on when to pass objects by value or by reference, however, the following guideline may help in making such a decision:
++ Objects tended to be modified by the function must be passed by reference.
++ Objects tended not to be modified must be passed by value.
++ Large objects are often passed by reference for efficiency, while small objects are passed by value. There is one subtlty here. A strcut holding a pointer to a large data structure is still a small object. Consider the following example:
+  #+begin_src go
+  type largeData struct {
+      // lots of fields
+  }
+  type smallObject struct {
+      ld *largeData
+  }
+
+  func processData(ld *largeData, so smallObject) {
+      // use ld and so objects
+  }
+  #+end_src
+  To avoid costly copy of large data, we pass ~ld~ by reference, while it is perfectly fine to pass ~so~ by value.
+
+  Note that maps and slices in Go are data types holding pointers to actual data structures -- similar to ~smallObject~. Thus, it is efficient to pass them by value, regardless of how much data they hold.
+
+Unlike C/C++, the address of a local variable can be returned by a function prolonging the lifetime of the variable beyond its inital scope. The following approach is quite common in Go:
+#+begin_src go
+type Person struct {
+    name string
+    height float32
+}
+
+func CreatePerson(name string, height float32) *Perosn {
+    return &Person {
+               name: name,
+               height: height,
+            }
+}
+#+end_src
+There is yet another way to declare a pointer type using ~new~ function, as shown below:
+#+begin_src go
+func CreatePerson(name string, height float32) *Perosn {
+    person := new(Person)
+    person.name = name
+    person.height = height
+    return person
+}
+#+end_src
+Note that ~new~ function return the address to an instance of ~Person~ which is of type pointer. In C/C++ address of a value -- not variable -- does not have any meaning. Go, however, creates a variable, initializes it, prolongs its lifetime, and return the address of the variable.
+
+One subtle difference of the references in C/C++ and Go is that there is no reference /type/ in Go. Reference types in C/C++ can be used to define an alias for a variable. The following code illustrates this point:
+#+begin_src cpp
+int a = 1;
+int &b = a; // b is alias to a
+// value of both a and b is 1
+a = 2;
+// value of both a and b is 2
+#+end_src
+
+# + When the receiver should be value type when pointer type?
+
+* Type Inference
+In dynamically-typed languages, like Python, a variable can be initialized without specifying its type: ~a = 10~. In statically-typed languages, like Java and C++, however, the type of a variable must be specified when declared: ~int a = 10~.
+
+Variable declaration is simplified in later versions of C++, thus one can write ~auto a = 10~ and the type of ~a~ (~int~) is inferred from the right-hand-side value. This is particularly useful when you have template (generic) types or defining lambda functions. For example, compare the following two equivalent lambda function declarations:
+#+begin_src cpp
+function<int(int, int)> sum = [](int a, int b) { return a + b; };
+auto sum = [](int a, int b) { return a + b; }; // more concise
+#+end_src
+The second declaration is concise and more readable, while the first one has to specify unnecessary and redundant details of the function input and output types.
+
+In Java, types must be declared in full. This can be annoying particularly in ~for~ loops:
+#+begin_src java
+for(Map.Entry<String, String> item : items.entrySet()) {
+    // do something on item
+}
+#+end_src
+Java 10 introduces ~var~ keyword for type inference, similar to ~auto~ in C++. Thus, in Java 10, the latter code snippet can be simplified to:
+#+begin_src java
+for(var item : items.entrySet()) {
+    // do something on item
+}
+#+end_src
+
+In Go, a variable can be declared and initialized in a concise form as ~a := 10~, referred to as the /short variable declaration/. Short variable declarations are particularly useful in ~for~ loops or even ~if~ statements, a distinguishing feature of Go which will be discussed later. A typical Go code may include the following statements:
+#+begin_src go
+for i, item := range items {
+    // do something on index i and value item
+}
+if val, err := getValue(); err != nil {
+    // report error; disregard val
+} else {
+    // do something with val
+}
+#+end_src
+Note that the types are inferred and not specified explicitly, resulting in clean and readable code.
+
+A few more notes are in order. The parentheses around the ~if~ and ~for~ statements /can/ be omitted. A local variable, such as ~val~ and ~err~, can be declared in the ~if~ statement before checking the condition; this will be discussed in more details later. The key word ~range~ is used in the ~for~ loop to ease iterating over the items of a list. This is similar to ~enumerate~ in Python. Other typical ways for iterating over lists include
+#+begin_src go
+for i := range items {
+    // do something on index i
+    // items[i] can still be used to access items
+}
+for _, item := range items {
+    // ignore index i and use item
+}
+#+end_src
+
+* Multiple Return Values and Blank Identifiers
+One of the features of Go that makes it as easier to use as high-level languages, like Python, is the feature of returning multiple values. The following function illustrates returning both minimum and maximum of a slice:
+#+begin_src go
+func MinMax(arr []int) (int, int, error) {
+    if len(arr) == 0 {
+       return 0, 0, fmt.Errorf("Input slice is empty")
+    }
+    min, max := arr[0], arr[0]
+    for _, a := range arr {
+        if a < min {
+            min = a
+        } else if a > max {
+            max = a
+        }
+    }
+    return min, max, nil
+}
+#+end_src
+It's idiomatic in Go to return error as the last return value. The /blank identifier/, denoted by underscroe, can be used to ignore an unwanted return value. For example, to ignore the maximum value, we can write:
+#+begin_src go
+min, _, err := MinMax(arr)
+#+end_src
+In Go, return values can be named. Named return variables are initialized to their default values, thus, there is no need to specify defaults values, 0 for ~int~ type and ~nil~ for ~error~ type. This is illustrated in the following code snippet:
+#+begin_src go
+func MinMax(arr []int) (min, max int, err error) {
+    if len(arr) == 0 {
+       err = fmt.Errorf("Input slice is empty")
+       return
+    }
+    min, max = arr[0], arr[0]
+    for _, a := range arr {
+        if a < min {
+            min = a
+        } else if a > max {
+            max = a
+        }
+    }
+    return
+}
+#+end_src
+
+* Main topics
+** Concurrency
+** Interface system
+** Variadic
+** Error handling
+Passing error vs exception handling (this is like goto)
+** Any comparison between async callbacks and sync goroutines/channels?
+Check if Go is used for async programming. If so, compare it with Javascript or Vertx framework in Java.
+** defer statement
+** enumerations vs constants with iota
+** Criticisms
+
+* Summary and Conclusion
+As a summary, Go is a modern language that delibrately omits some well-known features in similar languages to achieve high performance... It's widely used in many productions, including Kubernetes, Docker, Dropbox, Heroku, Hyperledger Fabric, CoreOS, InfluxDB, etc.
+
+** Features from dynamic languages:
+1. Short variable declaration and initialization through type inference
+2. Multiple return values and blanck identifiers
+3. An interface system in place of virtual inheritance, and type embedding instead of non-virtual inheritance.
+4. Maps and slices as well as first class functions
+
+* Links:
++ https://medium.com/exploring-code/why-should-you-learn-go-f607681fad65
++ https://www.quora.com/What-reasons-are-there-to-not-use-Go-programming-language
++ [[https://github.com/golang/go/issues/22013][proposal: Go 2: remove embedded struct #22013]]
++ [[https://bluxte.net/musings/2018/04/10/go-good-bad-ugly/#a-few-days-later-3-on-hacker-news][Go: the Good, the Bad and the Ugly]]
+
