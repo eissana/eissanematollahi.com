@@ -1,7 +1,7 @@
 #+BLOG: eissanematollahi
 #+POSTID: 108
 #+ORG2BLOG:
-#+DATE: [2018-06-17 Sun 03:45]
+#+DATE: [2018-06-29]
 #+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil ':t
 #+CATEGORY: Software
 #+TAGS: C++, Composition, Go, Inheritance, Interface, Java, Object-oriented design
@@ -11,16 +11,90 @@
 
 I recently had a chance to design and develop a library in Go language, also known as Golang, which has been used by some Kubernetes-based services in Huawei's cloud platform. Having developed several C++ and Java libraries in the past, I have come to admire the simplistic design of Go.
 
-In this blog post, I would like to share my thoughts on some features of Go that I found particularly more interesting than those in C++ and Java. For example, Go deliberately forbids inheritance and only allows composition, while Java allows single inheritance and C++ permits multiple. Note that best practices advise using composition over inheritance. It is debatable whether forbidding inheritance is a good thing or not, but composition definitely yields a simpler, highly decoupled, and easily maintainable code than does inheritance.
+In this blog post, I will share my personal thoughts on the pragmatic approach of Go that I found particularly interesting. For example, Go deliberately forbids inheritance and only allows composition, while Java allows single inheritance and C++ permits multiple. Note that best practices advise using composition over inheritance. It is debatable whether forbidding inheritance is a good thing or not, but composition definitely yields a simpler, highly decoupled, and easily maintainable code than does inheritance.
 
 # I will begin with a brief history of the Go and how it has evolved. Then, I will compare features of Go, C++, and Java to support some programming concepts. The reader is expected to be familiar with basics of object-oriented design -- such as inheritance and encapsulation -- and at least a programming language that supports it. It would also be helpful if the reader has a basic understanding of concurrency.
 
 * History of Go
-Go is a modern programming language created at google by Robert Griesemer, Rob Pike, and Ken Thompson and announced in November 2009. Primary motivation of the authors behind the design of Go was to avoid many design flaws and complexities in C++ while keeping advantages of C and adding advanced features, like garbage collection and channels. As Rob Pike once said: "Complexity is multiplicative." Thus, the authors deliberately omitted some features common in similar languages and conservatively included their positive characteristics. The result is a simple yet powerful compiled language (like C/C++) with high-level features like array slicing, package management, garbage collection, and exceptional concurrency support.
+Go is a modern programming language created at Google by Robert Griesemer, Rob Pike, and Ken Thompson and announced in November 2009. Primary motivation of the authors behind the design of Go was to avoid many design flaws and complexities in C++ while keeping advantages of C and adding advanced features, such as garbage collection, goroutines and channels, and support for object-oriented and functional programming. As Rob Pike once said: "Complexity is multiplicative." Thus, the authors deliberately omitted some features common in similar languages and conservatively included their positive characteristics. The result is a simple yet powerful compiled language (like C/C++) with modern features like package management, garbage collection, and exceptional concurrency support.
 
-Go is influenced by several languages. Its expression syntax and use of pointers and references remind us of C language. However, thanks to its garbage collector, one needs not worry about manual memory managements and nasty memory leaks. Variable declarations and function definitions resembles those of Pascal language. The concepts of package management and imports are also from languages Modula-2, Oberon, Oberon-2, and Object Oberon, which are developed from Pascal. These languages are well known for their high compilation speed, mostly due to their unique way of dependency management. Powerful concurrency support of Go is built upon the concept of /communicating sequential processes/ (CSP), introduced by Tony Hoare in 1978. The concept of CSP was previously implemented in languages like Squeak, Newsqueak and Alef.
+Go is influenced by several languages. Its expression syntax and use of pointers and references remind us of C language. However, thanks to its garbage collector, one needs not worry about manual memory managements and nasty memory leaks. Variable declarations and function definitions resemble those of the Pascal language. The concepts of package management and imports are also from languages Modula-2, Oberon, Oberon-2, and Object Oberon, which are developed from Pascal. These languages are well known for their high compilation speed, mostly due to their unique way of dependency management. Powerful concurrency support of Go is built upon the concept of /communicating sequential processes/ (CSP), introduced by Tony Hoare in 1978. The concept of CSP was previously implemented in languages like Squeak, Newsqueak and Alef.
 
-In the sequel, we will discuss more details about some features of Go and compare them with those of C++ and Java.
+* Concurrency vs. Parallelism
+Concurrency and parallelism are terminologies used in multi-threaded systems but refer to different mechanisms. All the following four cases are possible:
++ Neither concurrent nor parallel system
++ Concurrent but not parallel system
++ Parallel but not concurrent system
++ Both concurrent and parallel system
+To illustrate what concurrency and parallelism mean, let us consider an example of cars and roads. Imagine cars moving on a road with single lane. Any car can only move when the car in front of it moves forward; otherwise, it's blocked. This is an example of neither concurrent nor parallel system.
+
+Now, suppose that cars from different direction approach an intersection with a stop sign. Only one car at a time can go through the intersection. Thus, cars move concurrently one at a time. This is an example of concurrent but not parallel system.
+
+Next, imagine a highway with multiple lanes in which cars move in their own lane without interfering with those in the other lanes. This is an example of a parallel but not concurrent system.
+
+Finally, imagine the same highway in which cars are trying to merge the highway. The merging cars and those in the far right move concurrently, while those in other lanes move in parallel. This case is an example of both parallel and concurrent system.
+
+** Concurrency
+One might think that any code will run faster on machines with more cores. It is true, though, only if the code is designed with supporting concurrency in mind. A code with four concurrent threads will run faster when moved from a single core machine to a quad-core machine. Thus, it is important to design a code with concurrency in mind.
+
+Concurrent programming in Go is modeled as communicating sequential processes (CSP) by means of goroutines and channels. Goroutines are lightwight threads and channels are instruments to send and receive messages among goroutimes. Goroutines and channels are signature features of Go and contributed to its popularity due to their ease of use and efficient implementation.
+
+A goroutine is a function called with the keyword ~go~, which runs in a different thread from the main one. In the following code, ~counter~ runs in the main thread, while ~spinner~ runs in a separate thread.
+#+begin_src go
+func main() {
+	go spinner(100 * time.Millisecond)
+    counter(10, 500 * time.Millisecond)
+}
+
+func spinner(delay time.Duration) {
+	for {
+		for _, r := range `-\|/` {
+			fmt.Printf("\r%c", r)
+			time.Sleep(delay)
+		}
+	}
+}
+
+func counter(n int, delay time.Duration) {
+	for i := 1; i <= n; i++ {
+		fmt.Printf("\r\t%d", i)
+		time.Sleep(delay)
+	}
+}
+#+end_src
+Goroutines communicate through channels. Channels are first-class object types in Go. They can be declared, initialized, and passed to functions similar to any other variables. They may be bidirectional, both sender and receiver, or unidirectional, either sender or receiver. Let us illustrate using channels with an example.
+
+** Example
+Suppose that we want to compute \(\sum_{i=1}^nf(x_i)\), where computation of \(f(x_i)\) values are expensive, but can be done in parallel. We will see in a moment how easy it is to design a concurrent code for this problem.
+
+We design \(n\) goroutines each responsible for computing one function value and sending it to a channel. Then the main goroutine receives from the channel and adds them up to compute the total summation.
+
+#+begin_src go
+func SumSerial(x []int, f func(int) int) int {
+	sum := 0
+	for _, xi := range x {
+		sum += f(xi)
+	}
+	return sum
+}
+
+func SumParallel(x []int, f func(int) int) int {
+	entries := make(chan int)
+	for _, xi := range x {
+		go func(val int) {
+			entries <-f(val)
+		}(xi)
+	}
+	sum := 0
+	for range x {
+		sum += <-entries
+	}
+	return sum
+}
+#+end_src
+In function ~SumConcurrent~, we create \(n\) goroutines, each responsible for computing one function value and sending the result to ~entries~ channel. The main goroutine receives from the channel and add up the values.
+
+Note that ~xi~ is not used directly in the goroutines inside the loop. Instead, we pass it as an argument to the goroutines. The reason is that we do not want a variable to be shared among all goroutines.
 
 * Inheritance vs. Composition
 It's widely accepted that composition should be preferred over inheritance. Rule 34 from [[http://www.gotw.ca/publications/c++cs.htm][/C++ Coding Standards/]] by Herb Sutter and Andrei Alexandrescu recommends to:
@@ -29,9 +103,9 @@ Avoid inheritance taxes: Inheritance is the second-tightest coupling relationshi
 #+end_quote
 C++ allows multiple inheritance, which is advised to be used judiciously, since it may yield ambiguities and complexities like the /diamond problem/; see Item 40 of [[http://www.aristeia.com/books.html][Effective C++]] by Scott Meyers.
 
-To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing on minor benefits of the multiple inheritance. Such a limitation is a good feature as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definition; consult Item 16 of [[https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/][Effective Java™]] by Joshua Bloch.
+To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing minor benefits of the multiple inheritance. Such a limitation is a good feature as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definitions; consult Item 16 of [[https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/][Effective Java™]] by Joshua Bloch.
 
-Considering all such issues with inheritance, Go delibrately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the empty interface in Go.
+Considering all such issues with inheritance, Go delibrately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the the empty interface in Go.
 
 Using composition is C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the /struct embedding/ mechanism, described in Section 6.3 of [[https://dl.acm.org/citation.cfm?id=2851099][The Go Programming Language]], by Alan A.A. Donovan	and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
 #+begin_src go
@@ -252,7 +326,7 @@ for _, item := range items {
 #+end_src
 
 * Multiple Return Values and Blank Identifiers
-One of the features of Go that makes it as easier to use as high-level languages, like Python, is the feature of returning multiple values. The following function illustrates returning both minimum and maximum of a slice:
+Functions in Go can return multiple values, any of which may be ignored using the /blank identifier/, denoted by underscroe. Its syntax is similar to that of high-level languages, like Python. In Java or C++, a new object holding multiple fields should be defined to fulfill such a task. In recent versions of C++, a tuple (~std::tuple~) gluing multiple variables together can be a return type of a function. Some of the outputs may be ignored using ~std::ignore~. The usage in Go is, however, significanly more convenient. The following function illustrates returning both minimum and maximum of a slice:
 #+begin_src go
 func MinMax(arr []int) (int, int, error) {
     if len(arr) == 0 {
@@ -269,7 +343,7 @@ func MinMax(arr []int) (int, int, error) {
     return min, max, nil
 }
 #+end_src
-It's idiomatic in Go to return error as the last return value. The /blank identifier/, denoted by underscroe, can be used to ignore an unwanted return value. For example, to ignore the maximum value, we can write:
+It's idiomatic in Go to return error as the last return value. To ignore the maximum value, for example, we can write:
 #+begin_src go
 min, _, err := MinMax(arr)
 #+end_src
@@ -293,7 +367,6 @@ func MinMax(arr []int) (min, max int, err error) {
 #+end_src
 
 * Main topics
-** Concurrency
 ** Interface system
 ** Variadic
 ** Error handling
@@ -318,4 +391,6 @@ As a summary, Go is a modern language that delibrately omits some well-known fea
 + https://www.quora.com/What-reasons-are-there-to-not-use-Go-programming-language
 + [[https://github.com/golang/go/issues/22013][proposal: Go 2: remove embedded struct #22013]]
 + [[https://bluxte.net/musings/2018/04/10/go-good-bad-ugly/#a-few-days-later-3-on-hacker-news][Go: the Good, the Bad and the Ugly]]
++ [[https://notes.shichao.io/gopl/ch8/][Chapter 8. Goroutines and Channels]]
++ [[https://dominik.honnef.co/posts/2014/12/an_incomplete_list_of_go_tools/][An incomplete list of Go tools]]
 

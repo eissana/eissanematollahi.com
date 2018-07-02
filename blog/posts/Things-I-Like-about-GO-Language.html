@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-06-27 Wed 03:17 -->
+<!-- 2018-07-02 Mon 03:22 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Things I Like about Go Language</title>
@@ -568,6 +568,28 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -580,7 +602,7 @@ I recently had a chance to design and develop a library in Go language, also kno
 </p>
 
 <p>
-In this blog post, I would like to share my thoughts on some features of Go that I found particularly more interesting than those in C++ and Java. For example, Go deliberately forbids inheritance and only allows composition, while Java allows single inheritance and C++ permits multiple. Note that best practices advise using composition over inheritance. It is debatable whether forbidding inheritance is a good thing or not, but composition definitely yields a simpler, highly decoupled, and easily maintainable code than does inheritance.
+In this blog post, I will share my personal thoughts on the pragmatic approach of Go that I found particularly interesting. For example, Go deliberately forbids inheritance and only allows composition, while Java allows single inheritance and C++ permits multiple. Note that best practices advise using composition over inheritance. It is debatable whether forbidding inheritance is a good thing or not, but composition definitely yields a simpler, highly decoupled, and easily maintainable code than does inheritance.
 </p>
 
 
@@ -588,22 +610,138 @@ In this blog post, I would like to share my thoughts on some features of Go that
 <h2 id="orgheadline1">History of Go</h2>
 <div class="outline-text-2" id="text-orgheadline1">
 <p>
-Go is a modern programming language created at google by Robert Griesemer, Rob Pike, and Ken Thompson and announced in November 2009. Primary motivation of the authors behind the design of Go was to avoid many design flaws and complexities in C++ while keeping advantages of C and adding advanced features, like garbage collection and channels. As Rob Pike once said: &ldquo;Complexity is multiplicative.&rdquo; Thus, the authors deliberately omitted some features common in similar languages and conservatively included their positive characteristics. The result is a simple yet powerful compiled language (like C/C++) with high-level features like array slicing, package management, garbage collection, and exceptional concurrency support.
+Go is a modern programming language created at Google by Robert Griesemer, Rob Pike, and Ken Thompson and announced in November 2009. Primary motivation of the authors behind the design of Go was to avoid many design flaws and complexities in C++ while keeping advantages of C and adding advanced features, such as garbage collection, goroutines and channels, and support for object-oriented and functional programming. As Rob Pike once said: &ldquo;Complexity is multiplicative.&rdquo; Thus, the authors deliberately omitted some features common in similar languages and conservatively included their positive characteristics. The result is a simple yet powerful compiled language (like C/C++) with modern features like package management, garbage collection, and exceptional concurrency support.
 </p>
 
 <p>
-Go is influenced by several languages. Its expression syntax and use of pointers and references remind us of C language. However, thanks to its garbage collector, one needs not worry about manual memory managements and nasty memory leaks. Variable declarations and function definitions resembles those of Pascal language. The concepts of package management and imports are also from languages Modula-2, Oberon, Oberon-2, and Object Oberon, which are developed from Pascal. These languages are well known for their high compilation speed, mostly due to their unique way of dependency management. Powerful concurrency support of Go is built upon the concept of <i>communicating sequential processes</i> (CSP), introduced by Tony Hoare in 1978. The concept of CSP was previously implemented in languages like Squeak, Newsqueak and Alef.
-</p>
-
-<p>
-In the sequel, we will discuss more details about some features of Go and compare them with those of C++ and Java.
+Go is influenced by several languages. Its expression syntax and use of pointers and references remind us of C language. However, thanks to its garbage collector, one needs not worry about manual memory managements and nasty memory leaks. Variable declarations and function definitions resemble those of the Pascal language. The concepts of package management and imports are also from languages Modula-2, Oberon, Oberon-2, and Object Oberon, which are developed from Pascal. These languages are well known for their high compilation speed, mostly due to their unique way of dependency management. Powerful concurrency support of Go is built upon the concept of <i>communicating sequential processes</i> (CSP), introduced by Tony Hoare in 1978. The concept of CSP was previously implemented in languages like Squeak, Newsqueak and Alef.
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline2" class="outline-2">
-<h2 id="orgheadline2">Inheritance vs. Composition</h2>
+<h2 id="orgheadline2">Concurrency vs. Parallelism</h2>
 <div class="outline-text-2" id="text-orgheadline2">
+<p>
+Concurrency and parallelism are terminologies used in multi-threaded systems but refer to different mechanisms. All the following four cases are possible:
+</p>
+<ul class="org-ul">
+<li>Neither concurrent nor parallel system</li>
+<li>Concurrent but not parallel system</li>
+<li>Parallel but not concurrent system</li>
+<li>Both concurrent and parallel system</li>
+</ul>
+<p>
+To illustrate what concurrency and parallelism mean, let us consider an example of cars and roads. Imagine cars moving on a road with single lane. Any car must wait until the car in front of it moves forward; otherwise, it&rsquo;s blocked. This is an example of neither concurrent nor parallel system.
+</p>
+
+<p>
+Now, suppose that cars from different direction approach an intersection with a stop sign. Only one car at a time can go through the intersection. Thus, cars move concurrently one at a time. This is an example of concurrent but not parallel system.
+</p>
+
+<p>
+Next, imagine a highway with multiple lanes in which cars move in their own lane without interfering with those in the other lanes. This is an example of a parallel but not concurrent system.
+</p>
+
+<p>
+Finally, imagine the same highway in which cars are trying to merge the highway. The merging cars and those in the far right move concurrently, while those in other lanes move in parallel. This case is an example of both parallel and concurrent system.
+</p>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3">Concurrency</h3>
+<div class="outline-text-3" id="text-orgheadline3">
+<p>
+One might think that any code will run faster on machines with more cores. It is true, though, only if the code is designed with supporting concurrency in mind. A code with four concurrent threads will run faster when moved from a single core machine to a quad-core machine. Thus, it is important to design a code with concurrency in mind.
+</p>
+
+<p>
+Concurrent programming in Go is modeled as communicating sequential processes (CSP) by means of goroutines and channels. Goroutines are lightwight threads and channels are instruments to send and receive messages among goroutimes. Goroutines and channels are signature features of Go and contributed to its popularity due to their ease of use and efficient implementation.
+</p>
+
+<p>
+A goroutine is a function called with the keyword <code>go</code>, which runs in a different thread from the main one. In the following code, <code>counter</code> runs in the main thread, while <code>spinner</code> runs in a separate thread.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">main</span>() {
+    <span style="color: #ffb6c1; font-size: 105%;">go</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">spinner</span>(100 * time.Millisecond)
+    <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">counter</span>(10, 500 * time.Millisecond)
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">spinner</span>(delay <span style="color: #ffff00; font-size: 105%;">time.Duration</span>) {
+    <span style="color: #ffb6c1; font-size: 105%;">for</span> {
+        <span style="color: #ffb6c1; font-size: 105%;">for</span> _, r := <span style="color: #ffb6c1; font-size: 105%;">range</span> <span style="color: #ffa07a;">`-\|/`</span> {
+            fmt.<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">Printf</span>(<span style="color: #ffa07a;">"\r%c"</span>, r)
+            time.<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">Sleep</span>(delay)
+        }
+    }
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">counter</span>(n <span style="color: #ffff00; font-size: 105%;">int</span>, delay <span style="color: #ffff00; font-size: 105%;">time.Duration</span>) {
+    <span style="color: #ffb6c1; font-size: 105%;">for</span> i := 1; i &lt;= n; i++ {
+        fmt.<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">Printf</span>(<span style="color: #ffa07a;">"\r\t%d"</span>, i)
+        time.<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">Sleep</span>(delay)
+    }
+}
+</pre>
+</div>
+<p>
+Goroutines communicate through channels. Channels are first-class object types in Go. They can be declared, initialized, and passed to functions similar to any other variables. They may be bidirectional, both sender and receiver, or unidirectional, either sender or receiver. Let us illustrate using channels with an example.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4">Example</h3>
+<div class="outline-text-3" id="text-orgheadline4">
+<p>
+Suppose that we want to compute \[\sum_{i=1}^nf(x_i)!\], where computation of \(f(x_i)\) values are expensive, but can be done in parallel. We will see in a moment how easy it is to design a concurrent code for this problem.
+</p>
+
+<p>
+We design \(n\) goroutines each responsible for computing one function value and sending it to a channel. Then the main goroutine receives from the channel and adds them up to compute the total summation.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-go"><span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">SumSerial</span>(x []<span style="color: #ffff00; font-size: 105%;">int</span>, f <span style="color: #ffb6c1; font-size: 105%;">func</span>(<span style="color: #ffff00; font-size: 105%;">int</span>) <span style="color: #ffff00; font-size: 105%;">int</span>) <span style="color: #ffff00; font-size: 105%;">int</span> {
+    sum := 0
+    <span style="color: #ffb6c1; font-size: 105%;">for</span> _, xi := <span style="color: #ffb6c1; font-size: 105%;">range</span> x {
+        sum += <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">f</span>(xi)
+    }
+    <span style="color: #ffb6c1; font-size: 105%;">return</span> sum
+}
+
+<span style="color: #ffb6c1; font-size: 105%;">func</span> <span style="color: #1e90ff; font-size: 105%; font-weight: bold;">SumParallel</span>(x []<span style="color: #ffff00; font-size: 105%;">int</span>, f <span style="color: #ffb6c1; font-size: 105%;">func</span>(<span style="color: #ffff00; font-size: 105%;">int</span>) <span style="color: #ffff00; font-size: 105%;">int</span>) <span style="color: #ffff00; font-size: 105%;">int</span> {
+    entries := <span style="color: #87cefa; text-decoration: underline;">make</span>(<span style="color: #ffb6c1; font-size: 105%;">chan</span> <span style="color: #ffff00; font-size: 105%;">int</span>)
+    <span style="color: #ffb6c1; font-size: 105%;">for</span> _, xi := <span style="color: #ffb6c1; font-size: 105%;">range</span> x {
+        <span style="color: #ffb6c1; font-size: 105%;">go</span> <span style="color: #ffb6c1; font-size: 105%;">func</span>(val <span style="color: #ffff00; font-size: 105%;">int</span>) {
+            entries &lt;-<span style="color: #1e90ff; font-size: 105%; font-weight: bold;">f</span>(val)
+        }(xi)
+    }
+    sum := 0
+    <span style="color: #ffb6c1; font-size: 105%;">for</span> <span style="color: #ffb6c1; font-size: 105%;">range</span> x {
+        sum += &lt;-entries
+    }
+    <span style="color: #ffb6c1; font-size: 105%;">return</span> sum
+}
+</pre>
+</div>
+<p>
+In function <code>Sum</code>, we create \(n\) goroutines, each responsible for computing one function value and sending the result to <code>entries</code> channel. The main goroutines receives from the channel and sums them up.
+</p>
+
+<p>
+Note that <code>xi</code> is not used directly in the goroutines inside the loop. Instead, we pass it as argument to the goroutines. The reason is that we do not want all goroutines share variables.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-2">
+<h2 id="orgheadline5">Inheritance vs. Composition</h2>
+<div class="outline-text-2" id="text-orgheadline5">
 <p>
 It&rsquo;s widely accepted that composition should be preferred over inheritance. Rule 34 from <a href="http://www.gotw.ca/publications/c++cs.htm"><i>C++ Coding Standards</i></a> by Herb Sutter and Andrei Alexandrescu recommends to:
 </p>
@@ -617,15 +755,15 @@ C++ allows multiple inheritance, which is advised to be used judiciously, since 
 </p>
 
 <p>
-To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing on minor benefits of the multiple inheritance. Such a limitation is a good feature as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definition; consult Item 16 of <a href="https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/">Effective Java™</a> by Joshua Bloch.
+To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing minor benefits of the multiple inheritance. Such a limitation is a good feature as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definitions; consult Item 16 of <a href="https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/">Effective Java™</a> by Joshua Bloch.
 </p>
 
 <p>
-Considering all such issues with inheritance, Go delibrately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the empty interface in Go.
+Considering all such issues with inheritance, Go delibrately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the the empty interface in Go.
 </p>
 
 <p>
-Using composition is C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the <i>struct embedding</i> mechanism, described in Section 6.3 of <a href="https://dl.acm.org/citation.cfm?id=2851099">The Go Programming Language</a>, by Alan A.A. Donovan        and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
+Using composition is C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the <i>struct embedding</i> mechanism, described in Section 6.3 of <a href="https://dl.acm.org/citation.cfm?id=2851099">The Go Programming Language</a>, by Alan A.A. Donovan    and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
 </p>
 <div class="org-src-container">
 
@@ -665,9 +803,9 @@ c.Center.Y = 2
 </div>
 </div>
 
-<div id="outline-container-orgheadline3" class="outline-2">
-<h2 id="orgheadline3">Fast Compilation</h2>
-<div class="outline-text-2" id="text-orgheadline3">
+<div id="outline-container-orgheadline6" class="outline-2">
+<h2 id="orgheadline6">Fast Compilation</h2>
+<div class="outline-text-2" id="text-orgheadline6">
 <p>
 Go is a compiled language, and its compilation is notably faster than most other compiled languages, like C and C++. Fast compilation was one of the main considerations in the design of GO. The main reason for its compilation speed may be because of its unique way of managing dependencies. As previously mentioned, Go has borrowed design ideas for its package management from Pascal and its successors, which are well known for their lightening fast compilers. Beside better dependency management, the following features, or lack of features, also contribute to its fast compilation:
 </p>
@@ -681,9 +819,9 @@ Go is a compiled language, and its compilation is notably faster than most other
 </div>
 </div>
 
-<div id="outline-container-orgheadline4" class="outline-2">
-<h2 id="orgheadline4">Command-line Utilities</h2>
-<div class="outline-text-2" id="text-orgheadline4">
+<div id="outline-container-orgheadline7" class="outline-2">
+<h2 id="orgheadline7">Command-line Utilities</h2>
+<div class="outline-text-2" id="text-orgheadline7">
 <p>
 Go comes with great command line tools that make it easy to perform operations, such as building the source code, much easier than those in C++ and Java. For example, Go standardizes source code formatting through <code>go fmt</code> command, which is important in collaboration projects. Below is a list of commonly used commands; for the complete list of commands and their options, consult <a href="https://golang.org/cmd/go/">Command Go</a>.
 </p>
@@ -710,9 +848,9 @@ Go comes with great command line tools that make it easy to perform operations, 
 </div>
 </div>
 
-<div id="outline-container-orgheadline5" class="outline-2">
-<h2 id="orgheadline5">Access Level</h2>
-<div class="outline-text-2" id="text-orgheadline5">
+<div id="outline-container-orgheadline8" class="outline-2">
+<h2 id="orgheadline8">Access Level</h2>
+<div class="outline-text-2" id="text-orgheadline8">
 <p>
 In C++, access levels of fields and methods of a class can be public, private, or protected. Java adds one more access level beside them: package private. In Go, there are only private and public access levels.
 </p>
@@ -727,17 +865,17 @@ Go&rsquo;s simplistic design restricts access levels to private and public with 
 </div>
 </div>
 
-<div id="outline-container-orgheadline6" class="outline-2">
-<h2 id="orgheadline6">Data Types</h2>
-<div class="outline-text-2" id="text-orgheadline6">
+<div id="outline-container-orgheadline9" class="outline-2">
+<h2 id="orgheadline9">Data Types</h2>
+<div class="outline-text-2" id="text-orgheadline9">
 <p>
 Beside having basic types, booleans, numbers, and strings, Go has composite data types array, slices, structs, and maps. Functions are also first-class data types in Go.
 </p>
 </div>
 
-<div id="outline-container-orgheadline7" class="outline-3">
-<h3 id="orgheadline7">Array and Slices</h3>
-<div class="outline-text-3" id="text-orgheadline7">
+<div id="outline-container-orgheadline10" class="outline-3">
+<h3 id="orgheadline10">Array and Slices</h3>
+<div class="outline-text-3" id="text-orgheadline10">
 <p>
 Arrays and slices are sequences of homogeneous basic types. An Array has fixed size and its size is known at compile time. However, a slice is dynamically sized and its size can change at runtime. Using slices in Go is as easy as using lists in Python, which differentiates it from similar compiled languages like C++ and Java. In particular, for a given slice or even an array <code>s</code>, we can construct the following slices:
 </p>
@@ -767,9 +905,9 @@ Note three different ways of declaring slices: <code>a</code> is declared and in
 </p>
 </div>
 </div>
-<div id="outline-container-orgheadline8" class="outline-3">
-<h3 id="orgheadline8">Maps</h3>
-<div class="outline-text-3" id="text-orgheadline8">
+<div id="outline-container-orgheadline11" class="outline-3">
+<h3 id="orgheadline11">Maps</h3>
+<div class="outline-text-3" id="text-orgheadline11">
 <p>
 Maps are references to hash tables, which are one of the most important data structures. Unlike slices, maps have to be initialized first, before they are used. As shown in the following code snippet, the first two methods work, while the last one results in panic.
 </p>
@@ -814,9 +952,9 @@ To iterate over all the key-values of a map, we can use built-in <code>range</co
 </div>
 </div>
 
-<div id="outline-container-orgheadline9" class="outline-2">
-<h2 id="orgheadline9">Pointers and references</h2>
-<div class="outline-text-2" id="text-orgheadline9">
+<div id="outline-container-orgheadline12" class="outline-2">
+<h2 id="orgheadline12">Pointers and references</h2>
+<div class="outline-text-2" id="text-orgheadline12">
 <p>
 Analogous to C and C++, Go has pointers and references too. Using pointers and references in C can be pretty daunting for many developers. However, due largely to the garbage collector, the use of pointers and references in Go is straightforward, since one does not need to worry about manual memory management and memory leaks. In C++, smart pointers are designed to facilitate memory management.
 </p>
@@ -904,9 +1042,9 @@ a = 2;
 </div>
 
 
-<div id="outline-container-orgheadline10" class="outline-2">
-<h2 id="orgheadline10">Type Inference</h2>
-<div class="outline-text-2" id="text-orgheadline10">
+<div id="outline-container-orgheadline13" class="outline-2">
+<h2 id="orgheadline13">Type Inference</h2>
+<div class="outline-text-2" id="text-orgheadline13">
 <p>
 In dynamically-typed languages, like Python, a variable can be initialized without specifying its type: <code>a = 10</code>. In statically-typed languages, like Java and C++, however, the type of a variable must be specified when declared: <code>int a = 10</code>.
 </p>
@@ -981,11 +1119,11 @@ A few more notes are in order. The parentheses around the <code>if</code> and <c
 </div>
 </div>
 
-<div id="outline-container-orgheadline11" class="outline-2">
-<h2 id="orgheadline11">Multiple Return Values and Blank Identifiers</h2>
-<div class="outline-text-2" id="text-orgheadline11">
+<div id="outline-container-orgheadline14" class="outline-2">
+<h2 id="orgheadline14">Multiple Return Values and Blank Identifiers</h2>
+<div class="outline-text-2" id="text-orgheadline14">
 <p>
-One of the features of Go that makes it as easier to use as high-level languages, like Python, is the feature of returning multiple values. The following function illustrates returning both minimum and maximum of a slice:
+Functions in Go can return multiple values, any of which may be ignored using the <i>blank identifier</i>, denoted by underscroe. Its syntax is similar to that of high-level languages, like Python. In Java or C++, a new object holding multiple fields should be defined to fulfill such a task. In recent versions of C++, a tuple (<code>std::tuple</code>) gluing multiple variables together can be a return type of a function. Some of the outputs may be ignored using <code>std::ignore</code>. The usage in Go is, however, significanly more convenient. The following function illustrates returning both minimum and maximum of a slice:
 </p>
 <div class="org-src-container">
 
@@ -1006,7 +1144,7 @@ One of the features of Go that makes it as easier to use as high-level languages
 </pre>
 </div>
 <p>
-It&rsquo;s idiomatic in Go to return error as the last return value. The <i>blank identifier</i>, denoted by underscroe, can be used to ignore an unwanted return value. For example, to ignore the maximum value, we can write:
+It&rsquo;s idiomatic in Go to return error as the last return value. To ignore the maximum value, for example, we can write:
 </p>
 <div class="org-src-container">
 
@@ -1038,56 +1176,53 @@ In Go, return values can be named. Named return variables are initialized to the
 </div>
 </div>
 
-<div id="outline-container-orgheadline20" class="outline-2">
-<h2 id="orgheadline20">Main topics</h2>
-<div class="outline-text-2" id="text-orgheadline20">
-</div><div id="outline-container-orgheadline12" class="outline-3">
-<h3 id="orgheadline12">Concurrency</h3>
+<div id="outline-container-orgheadline22" class="outline-2">
+<h2 id="orgheadline22">Main topics</h2>
+<div class="outline-text-2" id="text-orgheadline22">
+</div><div id="outline-container-orgheadline15" class="outline-3">
+<h3 id="orgheadline15">Interface system</h3>
 </div>
-<div id="outline-container-orgheadline13" class="outline-3">
-<h3 id="orgheadline13">Interface system</h3>
+<div id="outline-container-orgheadline16" class="outline-3">
+<h3 id="orgheadline16">Variadic</h3>
 </div>
-<div id="outline-container-orgheadline14" class="outline-3">
-<h3 id="orgheadline14">Variadic</h3>
-</div>
-<div id="outline-container-orgheadline15" class="outline-3">
-<h3 id="orgheadline15">Error handling</h3>
-<div class="outline-text-3" id="text-orgheadline15">
+<div id="outline-container-orgheadline17" class="outline-3">
+<h3 id="orgheadline17">Error handling</h3>
+<div class="outline-text-3" id="text-orgheadline17">
 <p>
 Passing error vs exception handling (this is like goto)
 </p>
 </div>
 </div>
-<div id="outline-container-orgheadline16" class="outline-3">
-<h3 id="orgheadline16">Any comparison between async callbacks and sync goroutines/channels?</h3>
-<div class="outline-text-3" id="text-orgheadline16">
+<div id="outline-container-orgheadline18" class="outline-3">
+<h3 id="orgheadline18">Any comparison between async callbacks and sync goroutines/channels?</h3>
+<div class="outline-text-3" id="text-orgheadline18">
 <p>
 Check if Go is used for async programming. If so, compare it with Javascript or Vertx framework in Java.
 </p>
 </div>
 </div>
-<div id="outline-container-orgheadline17" class="outline-3">
-<h3 id="orgheadline17">defer statement</h3>
-</div>
-<div id="outline-container-orgheadline18" class="outline-3">
-<h3 id="orgheadline18">enumerations vs constants with iota</h3>
-</div>
 <div id="outline-container-orgheadline19" class="outline-3">
-<h3 id="orgheadline19">Criticisms</h3>
+<h3 id="orgheadline19">defer statement</h3>
+</div>
+<div id="outline-container-orgheadline20" class="outline-3">
+<h3 id="orgheadline20">enumerations vs constants with iota</h3>
+</div>
+<div id="outline-container-orgheadline21" class="outline-3">
+<h3 id="orgheadline21">Criticisms</h3>
 </div>
 </div>
 
-<div id="outline-container-orgheadline21" class="outline-2">
-<h2 id="orgheadline21">Summary and Conclusion</h2>
-<div class="outline-text-2" id="text-orgheadline21">
+<div id="outline-container-orgheadline23" class="outline-2">
+<h2 id="orgheadline23">Summary and Conclusion</h2>
+<div class="outline-text-2" id="text-orgheadline23">
 <p>
 As a summary, Go is a modern language that delibrately omits some well-known features in similar languages to achieve high performance&#x2026; It&rsquo;s widely used in many productions, including Kubernetes, Docker, Dropbox, Heroku, Hyperledger Fabric, CoreOS, InfluxDB, etc.
 </p>
 </div>
 
-<div id="outline-container-orgheadline22" class="outline-3">
-<h3 id="orgheadline22">Features from dynamic languages:</h3>
-<div class="outline-text-3" id="text-orgheadline22">
+<div id="outline-container-orgheadline24" class="outline-3">
+<h3 id="orgheadline24">Features from dynamic languages:</h3>
+<div class="outline-text-3" id="text-orgheadline24">
 <ol class="org-ol">
 <li>Short variable declaration and initialization through type inference</li>
 <li>Multiple return values and blanck identifiers</li>
@@ -1098,22 +1233,24 @@ As a summary, Go is a modern language that delibrately omits some well-known fea
 </div>
 </div>
 
-<div id="outline-container-orgheadline23" class="outline-2">
-<h2 id="orgheadline23">Links:</h2>
-<div class="outline-text-2" id="text-orgheadline23">
+<div id="outline-container-orgheadline25" class="outline-2">
+<h2 id="orgheadline25">Links:</h2>
+<div class="outline-text-2" id="text-orgheadline25">
 <ul class="org-ul">
 <li><a href="https://medium.com/exploring-code/why-should-you-learn-go-f607681fad65">https://medium.com/exploring-code/why-should-you-learn-go-f607681fad65</a></li>
 <li><a href="https://www.quora.com/What-reasons-are-there-to-not-use-Go-programming-language">https://www.quora.com/What-reasons-are-there-to-not-use-Go-programming-language</a></li>
 <li><a href="https://github.com/golang/go/issues/22013">proposal: Go 2: remove embedded struct #22013</a></li>
 <li><a href="https://bluxte.net/musings/2018/04/10/go-good-bad-ugly/#a-few-days-later-3-on-hacker-news">Go: the Good, the Bad and the Ugly</a></li>
+<li><a href="https://notes.shichao.io/gopl/ch8/">Chapter 8. Goroutines and Channels</a></li>
+<li><a href="https://dominik.honnef.co/posts/2014/12/an_incomplete_list_of_go_tools/">An incomplete list of Go tools</a></li>
 </ul>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2018-06-17</p>
+<p class="date">Date: 2018-06-29</p>
 <p class="author">Author: Eissa Nematollahi</p>
-<p class="date">Created: 2018-06-27 Wed 03:17</p>
+<p class="date">Created: 2018-07-02 Mon 03:22</p>
 <p class="validation"></p>
 </div>
 </body>
