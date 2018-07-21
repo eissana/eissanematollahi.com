@@ -1,26 +1,16 @@
 goos: darwin
 goarch: amd64
 pkg: sum
-BenchmarkSum10-8   	  500000	      3646 ns/op
-BenchmarkSum11-8   	  300000	      5796 ns/op
-BenchmarkSum12-8   	  200000	      9218 ns/op
-BenchmarkSum13-8   	  100000	     15279 ns/op
-BenchmarkSum14-8   	  100000	     24503 ns/op
-BenchmarkSum15-8   	   50000	     39192 ns/op
-BenchmarkSum16-8   	   20000	     64447 ns/op
-BenchmarkSum17-8   	   10000	    103100 ns/op
-BenchmarkSum18-8   	   10000	    165941 ns/op
-BenchmarkSum19-8   	    5000	    277733 ns/op
-BenchmarkSum20-8   	    3000	    445088 ns/op
-BenchmarkSum21-8   	    2000	    749520 ns/op
-BenchmarkSum22-8   	    1000	   1235509 ns/op
-BenchmarkSum23-8   	    1000	   1861195 ns/op
-BenchmarkSum24-8   	     500	   2985721 ns/op
-BenchmarkSum25-8   	     300	   4794586 ns/op
-BenchmarkSum26-8   	     200	   7871262 ns/op
-BenchmarkSum27-8   	     100	  12611978 ns/op
-BenchmarkSum28-8   	     100	  20679750 ns/op
-BenchmarkSum29-8   	      50	  32645712 ns/op
-BenchmarkSum30-8   	      30	  53346963 ns/op
+BenchmarkSum10-8   	  500000	      3602 ns/op
+BenchmarkSum11-8   	  300000	      5726 ns/op
+BenchmarkSum12-8   	  200000	      9442 ns/op
+BenchmarkSum13-8   	  100000	     14920 ns/op
+BenchmarkSum14-8   	  100000	     24445 ns/op
+BenchmarkSum15-8   	   50000	     39431 ns/op
+BenchmarkSum16-8   	   20000	     64182 ns/op
+BenchmarkSum17-8   	   10000	    105370 ns/op
+BenchmarkSum18-8   	   10000	    165543 ns/op
+BenchmarkSum19-8   	    5000	    271894 ns/op
+BenchmarkSum20-8   	    3000	    432539 ns/op
 PASS
-ok  	sum	37.559s
+ok  	sum	19.672s

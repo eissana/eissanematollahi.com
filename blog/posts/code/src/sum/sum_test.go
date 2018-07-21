@@ -8,7 +8,7 @@ func init() {
 	n := 10
     a = make(map[int][]int)
 
-	for i := 10; i <= 30; i++ {
+	for i := 10; i <= 20; i++ {
 		a[i] = make([]int, n)
 		for j := 0; j < n; j++ {
 			a[i] = append(a[i], i)
@@ -68,52 +68,52 @@ func BenchmarkSum20(b *testing.B) {
 	benchmarkSum(20, b)
 }
 
-func BenchmarkSum21(b *testing.B) {
-	benchmarkSum(21, b)
-}
+// func BenchmarkSum21(b *testing.B) {
+// 	benchmarkSum(21, b)
+// }
 
-func BenchmarkSum22(b *testing.B) {
-	benchmarkSum(22, b)
-}
+// func BenchmarkSum22(b *testing.B) {
+// 	benchmarkSum(22, b)
+// }
 
-func BenchmarkSum23(b *testing.B) {
-	benchmarkSum(23, b)
-}
+// func BenchmarkSum23(b *testing.B) {
+// 	benchmarkSum(23, b)
+// }
 
-func BenchmarkSum24(b *testing.B) {
-	benchmarkSum(24, b)
-}
+// func BenchmarkSum24(b *testing.B) {
+// 	benchmarkSum(24, b)
+// }
 
-func BenchmarkSum25(b *testing.B) {
-	benchmarkSum(25, b)
-}
+// func BenchmarkSum25(b *testing.B) {
+// 	benchmarkSum(25, b)
+// }
 
-func BenchmarkSum26(b *testing.B) {
-	benchmarkSum(26, b)
-}
+// func BenchmarkSum26(b *testing.B) {
+// 	benchmarkSum(26, b)
+// }
 
-func BenchmarkSum27(b *testing.B) {
-	benchmarkSum(27, b)
-}
+// func BenchmarkSum27(b *testing.B) {
+// 	benchmarkSum(27, b)
+// }
 
-func BenchmarkSum28(b *testing.B) {
-	benchmarkSum(28, b)
-}
+// func BenchmarkSum28(b *testing.B) {
+// 	benchmarkSum(28, b)
+// }
 
-func BenchmarkSum29(b *testing.B) {
-	benchmarkSum(29, b)
-}
+// func BenchmarkSum29(b *testing.B) {
+// 	benchmarkSum(29, b)
+// }
 
-func BenchmarkSum30(b *testing.B) {
-	benchmarkSum(30, b)
-}
+// func BenchmarkSum30(b *testing.B) {
+// 	benchmarkSum(30, b)
+// }
 
 
 func benchmarkSum(n int, b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		// uncomment this to produce serial execution benchmark
-		SumSerial(a[n], fib)
+		// SumSerial(a[n], fib)
 		// uncomment this to produce concurrent execution benchmark
-		// SumConcurrent(a[n], fib)
+		SumConcurrent(a[n], fib)
 	}
 }
