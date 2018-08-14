@@ -1,0 +1,16 @@
+goos: darwin
+goarch: amd64
+pkg: sum
+BenchmarkSum10-8   	  500000	      3602 ns/op
+BenchmarkSum11-8   	  300000	      5726 ns/op
+BenchmarkSum12-8   	  200000	      9442 ns/op
+BenchmarkSum13-8   	  100000	     14920 ns/op
+BenchmarkSum14-8   	  100000	     24445 ns/op
+BenchmarkSum15-8   	   50000	     39431 ns/op
+BenchmarkSum16-8   	   20000	     64182 ns/op
+BenchmarkSum17-8   	   10000	    105370 ns/op
+BenchmarkSum18-8   	   10000	    165543 ns/op
+BenchmarkSum19-8   	    5000	    271894 ns/op
+BenchmarkSum20-8   	    3000	    432539 ns/op
+PASS
+ok  	sum	19.672s
