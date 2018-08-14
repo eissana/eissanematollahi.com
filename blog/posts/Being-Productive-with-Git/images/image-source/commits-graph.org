@@ -1,0 +1,22 @@
+#+begin_src dot :file images/commits-graph.png :cmdline -Kdot -Tpng -Gsize=7\!
+digraph {
+        rankdir="LR";
+        node[width=0.15, shape=circle, style=filled, fillcolor=gray, fontname="helvetica bold"];
+        node[group=master];
+        1 -> 3 -> 8 -> 10;
+        node[group=dev];
+        1 -> 2 -> 4 -> 6 -> 9 -> 10 -> 11 -> 12;
+        node[group=topic];
+        4 -> 5 -> 7 -> 9;
+        node[group=topic];
+        11 -> 13;
+        master[group=master, shape=box, label=master, style=filled, fillcolor=red, fontcolor=white, fontname="helvetica bold"];
+        10 -> master[dir=back];
+        "origin/master"[group=master, shape=box, label="origin/master", style=filled, fillcolor=red, fontcolor=white, fontname="helvetica bold"];
+        9 -> "origin/master"[dir=back];
+        dev[group=dev, shape=box, label=dev, style=filled, fillcolor=red, fontcolor=white, fontname="helvetica bold"];
+        12 -> dev[dir=back];
+        topic[group=topic, shape=box, label=topic, style=filled, fillcolor=red, fontcolor=white, fontname="helvetica bold"];
+        13 -> topic[dir=back];
+}
+#+end_src

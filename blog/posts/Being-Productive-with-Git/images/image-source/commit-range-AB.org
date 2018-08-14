@@ -1,0 +1,14 @@
+#+begin_src dot :file images/commit-ranges-AB.png :cmdline -Kdot -Tpng -Gsize=5\!
+digraph {
+        rankdir="LR";
+        node[width=0.15, shape=circle, style=filled, fillcolor=lightblue, fontname="helvetica bold"];
+        node[group=master];
+        1 -> 2 -> 3 -> 5;
+        node[group=dev];
+        2 -> 4 -> 6 -> 7;
+        master[group=master, shape=box, label=master, style=filled, fillcolor=red, fontcolor=white, fontname="helvetica bold"];
+        5 -> master[dir=back];
+        dev[group=dev, shape=box, label=dev, style=filled, fillcolor=red, fontcolor=white, fontname="helvetica bold"];
+        7 -> dev[dir=back];
+}
+#+end_src

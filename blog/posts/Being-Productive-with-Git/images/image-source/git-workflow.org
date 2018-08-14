@@ -1,0 +1,37 @@
+#+begin_src ditaa :file images/git-workflow-1.png :cmdline --scale 1
+                    /---------------------\
+                    |cBLU                 |
+                    |                     |
+    /-----fetch-----+     Remote Repo     |
+    |               |                     |
+    |               |                     |
+    |               \---------+-----------/
+    |                         |
+    |                         |pull
+    |                         |
+    |        /----------------+-----------------\
+    |        |                                  |
+    v        V                                  v
+/----------------\                      /----------------\
+|cGRE            |                      | cPNK           |
+|                |                      |    Working     |
+|   Local Repo   |                      |    Directory   |
+|                |                      |    Clean       |
+|                |                      |                |
++--------+-------+                      +------+---------+
+        ^|                                     |^
+  commit||uncommit                       modify||unmodify
+recommit|v                                     v|
++-------+--------+                      +-------+--------+
+|cGRE            |<--------stage--------+ cPNK           |
+|     Index      |                      |                |
+|                +--------unstage------>|                |
++----------------+                      |                |
+                                        |     Working    |
+                                        |     Directory  |
++----------------+                      |     Modified   |
+|cGRE            |<--------stash--------+                |
+|     Stash      |                      |                |
+|                +--------unstash------>|                |
+\----------------/                      \----------------/
+#+end_src
