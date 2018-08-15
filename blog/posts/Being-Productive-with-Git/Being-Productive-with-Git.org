@@ -363,7 +363,7 @@ The main tool to check the differences between two commits is ~git diff~ command
 
 Space, double-dot, and triple-dot notations are introduced in Section [[Commit Ranges][Commit Ranges]]. As we noted there, it is a misconception to use commit ranges in ~git diff~ command, since double- and triple-dot notations in this context do not really mean a range of commits. We will see the reason shortly.
 
-1. ~git diff master dev~ command means get all the changes between ~master~ and ~dev~; see Figure [[diff-AB]]. It is commutative, i.e, ~git diff dev master~ generates exact the same output.
+1. ~git diff master dev~ command means get all the changes between ~master~ and ~dev~; see Figure [[diff-AB]]. It is not commutative, i.e, ~git diff dev master~ generates different output, which is the reverse of the output of ~git diff master dev~ command.
 2. ~git diff master..dev~ command is equivalent to ~git diff master dev~ and there is no range of commits involved; see Figure [[diff-AB]].
 3. ~git diff master...dev~ command means get the difference between commit ~C~ and ~dev~, where ~C~ is the common ancestor of ~master~ and ~dev~; see Figure [[diff-A...B]]. It is not commutative, this ~git diff dev..master~ generates different output.
 
