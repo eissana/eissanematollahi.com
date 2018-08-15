@@ -176,9 +176,9 @@ func (car Car) Drive() {
 In this design, the custom type ~Car~ and its method ~Drive~ are loosely coupled.
 
 ** Types and Interfaces
-Interfaces and types defining them are also loosely coupled. As we explained types are not bound to their methods; interestingly, neither are they to the interfaces they implement. A type does not need to be explicitly altered to implement an interface, as in Java ~class Car implements Driver~, for example; it merely need to implements all the methods specified by the interface.
+Interfaces and types defining them are also loosely coupled. As we explained types are not bound to their methods; interestingly, neither are they to the interfaces they implement. A type does not need to be explicitly altered to implement an interface, as in Java ~class Car implements Driver~, for example; it merely needs to implement all the methods specified by the interface.
 
-Such a loose decoupling in important for having a more maintainable and more manageable code. In addition, it is more flexible; one can always define interfaces for third party libraries without altering their codes. For example, suppose that the ~Car~ type with the ~Drive~ method is from a different library. Without modifying that library, we can define the following interface ~Driver~ and ~Car~ will immediately satisfy the interface.
+Such a loose decoupling is important for having a more maintainable and more manageable code. In addition, it is more flexible; one can always define interfaces for third party libraries without altering their codes. For example, suppose that the ~Car~ type with the ~Drive~ method is from a different library. Without modifying that library, we can define the following interface ~Driver~ and ~Car~ will immediately satisfy the interface.
 #+begin_src go
 type Driver interface {
     Drive()
@@ -192,11 +192,11 @@ Avoid inheritance taxes: Inheritance is the second-tightest coupling relationshi
 #+end_quote
 C++ allows multiple inheritance, which is advised to be used judiciously, since it may yield ambiguities and complexities like the /diamond problem/; see Item 40 of [[http://www.aristeia.com/books.html][Effective C++]] by Scott Meyers.
 
-To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing minor benefits of the multiple inheritance. Such a limitation is a good feature as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definitions; consult Item 16 of [[https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/][Effective Java™]] by Joshua Bloch.
+To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing minor benefits of the multiple inheritance. Such a limitation is good as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definitions; consult Item 16 of [[https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/][Effective Java™]] by Joshua Bloch.
 
 Considering all such issues with inheritance, Go deliberately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the empty interface in Go.
 
-Using composition is C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the /struct embedding/ mechanism, described in Section 6.3 of [[https://dl.acm.org/citation.cfm?id=2851099][The Go Programming Language]], by Alan A.A. Donovan and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
+Using composition in C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the /struct embedding/ mechanism, described in Section 6.3 of [[https://dl.acm.org/citation.cfm?id=2851099][The Go Programming Language]], by Alan A.A. Donovan and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
 #+begin_src go
 type Point struct {
     X, Y float64
@@ -211,7 +211,7 @@ var c Circle
 c.X = 1 // implicit access: X is forwarded from Point to Circle
 c.Point.Y = 2 // explicit access
 #+end_src
-Fields of the embedded struct Point can be both explicitly and implicitly accessed by the Circle instances. In the case of an explicit access, the type name (Point) is used as an instance name.
+Fields of the embedded struct Point can be both explicitly and implicitly accessed by Circle instances. In the case of an explicit access, the type name (Point) is used as an instance name.
 
 Note that the composition can be done without embedding. In this case, the fields of the composed struct are not promoted to the including struct. In the following example, Point is composed in Circle without embedding:
 #+begin_src go
@@ -281,7 +281,7 @@ func MinMax(arr []int) (min, max int, err error) {
 #+end_src
 
 * Defer Statement
-Some resources, like files and database connections, need to be explicitly closed. In case of an error, they might be left open, which may cause further issues. Go resolves such an issue with the ~defer~ statement, which is a means to delay execution of a function to immediately before it leaves the scope. It is guaranteed to be executed at any circumstances. The behavior of the ~defer~ statement is similar to that of destructors in C++. The closet behavior in Java is achieved using finalizers, but there is no guarantee that they will be executed. The following code is a simple example to illustrate how to use :
+Some resources, like files and database connections, need to be explicitly closed. In case of an error, they might be left open, which may cause further issues. Go resolves such an issue with the ~defer~ statement, which is a means to delay execution of a function to immediately before it leaves the scope. It is guaranteed to be executed at any circumstances. The behavior of the ~defer~ statement is similar to that of destructors in C++. The closet behavior in Java is achieved using finalizers, but there is no guarantee that they will be executed. The following code is a simple example to illustrate how to use <code>defer</code> statement:
 #+begin_src go
 if file, err := os.Open(filename); err != nil {
    // report error
@@ -289,7 +289,7 @@ if file, err := os.Open(filename); err != nil {
 defer file.Close()
 // Use file here. No matter what, file will be closed after returning
 #+end_src
-Another typical use-case of ~defer~ statement is to defer unlocking a mutex, as illustrated in the following example.
+Another typical use-case of ~defer~ statement is to defer unlocking a mutex, as illustrated in the following example:
 #+begin_src go
 type App struct {
     version int
@@ -328,7 +328,7 @@ case int:
 }
 #+end_src
 
-It is possible to do meta-programming using empty interfaces and reflection in Go. However, this approach must be avoided. The reason is that the compiler is unable to understand what type is passed to functions accepting empty interfaces. Thus, the code becomes less stable and prone to panic. Moreover, excessive use of reflection and empty interfaces results in less readable code.
+It is possible to do meta-programming using empty interfaces and reflection in Go. However, this approach must be avoided. The reason is that the compiler is unable to understand what type is passed to functions accepting empty interfaces. Thus, the code becomes less stable and prone to panic. Moreover, excessive use of reflection and empty interfaces result in less readable code.
 
 Generics in Java and templates in C++ are means of meta-programming to automatically generate code. This reduces the amount of boilerplate source code, with the cost of increasing compile time. Also, meta-program debugging is typically more difficult.
 
