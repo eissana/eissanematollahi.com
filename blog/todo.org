@@ -1,0 +1,15 @@
+#+title: TODO List
+
+* Being Productive with Git
++ How to get prior commits in git blame? Check out [[https://stackoverflow.com/questions/5098256/git-blame-prior-commits][this]]. ~git blame HEAD^5 -- filename~ gets the list of changes prior to HEAD^4.
+
+* Things I Like about GO Language
+
+* Future Works
+** Machine Learning Basics
++ statistics vs machine learning vs datamining vs AI
++ bias vs variance and their tradeoffs
++ K-fold cross-validation and how to choose K?
++ training, validation, test sets and their differences
++ Ensembles in machine learning. Maybe explain a decision stump first and build ensembles on top of it.
++ measuring models: ROC, etc.
