@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-08-22 Wed 08:39 -->
-<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta  name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 2018-08-22 Wed 20:25 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Machine Learning Basics</title>
-<meta  name="generator" content="Org-mode" />
-<meta  name="author" content="Eissa Nematollahi" />
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Ubuntu" />
 <style type="text/css">
 <!--/*--><![CDATA[/*><!--*/
 html {
@@ -527,7 +527,7 @@ pre.src-html:before {
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2013 Free Software Foundation, Inc.
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -589,30 +589,30 @@ for the JavaScript code in this tag.
 });
 </script>
 <script type="text/javascript"
-        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
 <h1 class="title">Machine Learning Basics
-<br>
+<br />
 <span class="subtitle">Better understanding of the most common questions machine learning</span>
 </h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline1">Introduction</a></li>
-<li><a href="#orgheadline2">Machine Learning Models</a></li>
-<li><a href="#orgheadline3">Best Prediction Model</a></li>
-<li><a href="#orgheadline4">Bias-Variance Tradeoff</a></li>
-<li><a href="#orgheadline5">Cross-Validation</a></li>
+<li><a href="#org67ac68a">Introduction</a></li>
+<li><a href="#org8ef91ca">Machine Learning Models</a></li>
+<li><a href="#org3d7cecc">Best Prediction Model</a></li>
+<li><a href="#orgf2ad9c1">Bias-Variance Tradeoff</a></li>
+<li><a href="#org0f45ca9">Cross-Validation</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline1" class="outline-2">
-<h2 id="orgheadline1">Introduction</h2>
-<div class="outline-text-2" id="text-orgheadline1">
+<div id="outline-container-org67ac68a" class="outline-2">
+<h2 id="org67ac68a">Introduction</h2>
+<div class="outline-text-2" id="text-org67ac68a">
 <p>
 Machine learning is a statistical approach for making data-driven decisions through building models that are capable of capturing some patterns in data. Using historical data, models are <i>trained</i> to <i>learn</i> some patterns expected to exist in unseen data as well. Such machine learning models can answer questions of the following types:
 </p>
@@ -646,9 +646,9 @@ In summary, training data is used to train and build a model. Validation data is
 </div>
 </div>
 
-<div id="outline-container-orgheadline2" class="outline-2">
-<h2 id="orgheadline2">Machine Learning Models</h2>
-<div class="outline-text-2" id="text-orgheadline2">
+<div id="outline-container-org8ef91ca" class="outline-2">
+<h2 id="org8ef91ca">Machine Learning Models</h2>
+<div class="outline-text-2" id="text-org8ef91ca">
 <p>
 Machine learning algorithms look for hidden patterns in historical data with the <i>hope</i> that the patterns will exist in future unseen data. Machine learning models, or <i>learners</i>, are then built to capture the patterns and enable us to answer questions of interest by applying the models to unseen data. Machine learning algorithms include two major categories: <b>supervised</b> and <b>unsupervised</b>.
 </p>
@@ -681,18 +681,18 @@ In the next section, we will see how to formulate the supervised learning proble
 </div>
 </div>
 
-<div id="outline-container-orgheadline3" class="outline-2">
-<h2 id="orgheadline3">Best Prediction Model</h2>
-<div class="outline-text-2" id="text-orgheadline3">
+<div id="outline-container-org3d7cecc" class="outline-2">
+<h2 id="org3d7cecc">Best Prediction Model</h2>
+<div class="outline-text-2" id="text-org3d7cecc">
 <p>
 A supervised machine learning problem (whether classification or regression) is to find a parametric function, a.k.a <i>model</i>, that reliably predicts target values of unseen data. To define the <i>best</i> model, we need a measure to compare different models. A loss functions is often used to measure the prediction error of a model. Therefore, a machine learning problem can be cast as an optimization problem to find model parameters that minimize the loss function. Note that we build a model using training data, thus called training a model, but compare models using test data to see how they can generalize to unseen data. Model accuracy and generalizability are both important and will be discussed in more details in the next section.
 </p>
 
 <p>
-To formulate the optimization problem, let us introduce some notation first. Let \(X=[x_{ij}]\) be a \(m\times n\) matrix. Each row of \(X\) denotes an instance and each column of \(X\) denotes a feature. Let \(y=[y_1,\ldots,y_m]\) denote the target vector. We denote record \(i\) of \(X\) by \(x_{i:}=(x_{i1},\ldots,x_{in})\) and its corresponding target value as \(y_i\). Similarly, column \(j\) of \(X\) is denoted by \(x_{:j}=(x_{1j},\ldots,x_{mj})\). A generic record of \(X\) is denoted by \(x\).
+To formulate the optimization problem, let us focus on the regression problem first and introduce some notation. Let \(X\) be a set of \(m\) records. Record \(i\) of \(X\) is composed of \(n\) features as \(x_{i:}=(x_{i1},\ldots,x_{in})\). Moreover, let \(y=(y_1,\ldots,y_m)\) denote the target vector. The set of records along with its associated target vector can be depicted in a tabular form as in Table <a href="#orgbb8081a">1</a>. A generic record of \(X\) is denoted by \(x\).
 </p>
 
-<table id="orgtable1" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<table id="orgbb8081a" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> Data table</caption>
 
 <colgroup>
@@ -725,14 +725,14 @@ To formulate the optimization problem, let us introduce some notation first. Let
 </table>
 
 <p>
-A prediction model for the pair of input data \((X, y)\) is a parametric function \(\phi_w(x)\) which maps an instance \(x\) from the features space to a value \(y\) in the target space. For example, \(\phi_w(x)=w^Tx+w_0\) is a linear model, where \(w\) and \(w_0\) are unknowns parameters. To find unknown parameters, we fit the model to a given set of training data such that a proper loss function is minimized. An example of such a function is the Mean Squared Error (MSE) for a linear regression problem, defined as follows:
-\[
-  \text{MSE}=\frac{1}{n}\sum_{i=1}^n \left(y_i - \phi_w(x_{i:})\right)^2.
+A prediction model for the pair of input data \((X, y)\) is a parametric function \(\phi_w(x)\) which maps a record \(x\) from the features space to a value \(y\) in the target space. For example, \(\phi_w(x)=w^Tx+w_0\) is a linear model, where \(w\) and \(w_0\) are unknowns parameters. To find unknown parameters, we fit the model to a given set of training data with the objective of minimizing a proper loss function. For example, we can find unknown parameters by minimizing <i>sum of squared errors (SSE)</i> defined as:
+\[ 
+   \sum_{i=1}^n \left(y_i-\phi_w(x_{i:})\right)^2.
 \]
 </p>
 
 <p>
-In classification, we not only care about predicting class labels for unseen data, but also want to know how confident we are in predicting such. Therefore, we aim at predicting class probabilities or scores, from which class labels can be derived. For this, we may optimize the <b>maximum likelihood estimation (MLE)</b> or the <b>maximum a posteriori (MAP)</b> function, rather than optimizing loss functions directly. <b>Expectation maximization(EM)</b> algorithm is often employed to solve MLE and MAP problems iteratively. 
+In classification, we not only care about predicting class labels for unseen data, but also want to know how confident we are in predicting such. Therefore, we aim at predicting class probabilities or scores, from which class labels can be derived. For this, we may optimize the <b>maximum likelihood estimation (MLE)</b> or the <b>maximum a posteriori (MAP)</b> function, rather than optimizing loss functions directly. The <b>Expectation maximization(EM)</b> algorithm is often employed to solve MLE and MAP problems iteratively. 
 </p>
 
 <p>
@@ -756,15 +756,11 @@ Machine learning models typically have a complexity parameter. As model complexi
 </div>
 </div>
 
-<div id="outline-container-orgheadline4" class="outline-2">
-<h2 id="orgheadline4">Bias-Variance Tradeoff</h2>
-<div class="outline-text-2" id="text-orgheadline4">
+<div id="outline-container-orgf2ad9c1" class="outline-2">
+<h2 id="orgf2ad9c1">Bias-Variance Tradeoff</h2>
+<div class="outline-text-2" id="text-orgf2ad9c1">
 <p>
-As we discussed in the previous section, the prediction error on training data is not enough to assess the goodness of a model. A good model needs to be generalizable to unseen data as well. For better illustration, let us consider the linear regression problem as the prediction model and the mean squared error as the prediction error. We can show that the prediction error can be decomposed into three terms as follows:
-\[
-  \text{MSE}=\left(\text{Bias}\left(\phi_w\right)\right)^2 + \text{Var}\left(\phi_w\right) + \text{Var}(y),
-\]
-where the last term is irreducible, however, the bias and variance terms can be minimized.
+As we discussed in the previous section, the prediction error on training data is not enough to assess the goodness of a model. A good model needs to be generalizable to unseen data as well. In can be shown that the expected error of a model is composed of three terms: <i>bias</i>, <i>variance</i>, and an irreducible error term; consult with <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">The Elements of Statistical Learning</a> for the proof and detailed discussion.
 </p>
 
 <p>
@@ -772,22 +768,22 @@ Bias is an error term that measures the <b>accuracy</b> of a model. High bias me
 </p>
 
 <p>
-Over-fitted models usually have high variance. The variance is an error term that measures the <b>consistency</b> of a model. A high variance indicates that the model is not generalizable to unseen data.
+The variance is an error term that measures the <b>consistency</b> of a model. Over-fitted models usually have high variance. A high variance indicates that the model is not generalizable to unseen data.
 </p>
 
 <p>
-Ideally, we want a model that captures hidden patterns in the training data (low bias) and generalizes well to unseen data (low variance). Thus, we need to minimize both bias and variance, simultaneously. As shown in Figure <a href="#orgparagraph1">2</a>, a simple model usually has a high bias; such a model is under-fitted, regardless of having low or high variance. Assuming that we have enough training data, increasing model complexity will cause the bias and variance to decrease until a point where the variance will begin to grow. That point defines a model with optimal complexity that minimizes both bias and variance, simultaneously.
+Ideally, we want a model that captures hidden patterns in the training data (low bias) and generalizes well to unseen data (low variance). Thus, we need to minimize both bias and variance, simultaneously. As shown in Figure <a href="#orgd981fce">2</a>, a simple model usually has a high bias; such a model is under-fitted, regardless of having low or high variance. Assuming that we have enough training data, increasing model complexity will cause the bias and variance to decrease until a point where the variance will begin to grow. That point defines a model with optimal complexity that minimizes both bias and variance, simultaneously.
 </p>
 
 
-<div id="orgparagraph1" class="figure">
+<div id="orgd981fce" class="figure">
 <p><img src="./images/bias-variance-tradeoff.png" alt="bias-variance-tradeoff.png" />
 </p>
-<p><span class="figure-number">Figure 2:</span> Bias-variance tradeoff in machine learning. A simple model yields high bias (low accuracy) on both training and test data. A complex model, on the other hand, yields high variance (low consistency) as it captures noise in the training data, too.</p>
+<p><span class="figure-number">Figure 2: </span>Bias-variance tradeoff in machine learning. A simple model yields high bias (low accuracy) on both training and test data. A complex model, on the other hand, yields high variance (low consistency) as it captures noise in the training data, too.</p>
 </div>
 
 <p>
-In summary, we have the following four cases, as depicted in Figure <a href="#orgparagraph2">3</a>:
+In summary, we have the following four cases, as depicted in Figure <a href="#orgd31ac5b">3</a>:
 </p>
 <ul class="org-ul">
 <li>High bias, high variance: The model is both inaccurate and inconsistent: under-fitted model. Typically, this occurs when there is no enough training data. To avoid this case, we simply collect more data.</li>
@@ -797,29 +793,29 @@ In summary, we have the following four cases, as depicted in Figure <a href="#or
 </ul>
 
 
-<div id="orgparagraph2" class="figure">
+<div id="orgd31ac5b" class="figure">
 <p><img src="./images/bias-variance-dart.jpg" alt="bias-variance-dart.jpg" />
 </p>
-<p><span class="figure-number">Figure 3:</span> Bias-variance variation. A good model has both low bias and low variance. High bias indicates that the model in under-fitted, and high variance signals that the model is over-fitted.</p>
+<p><span class="figure-number">Figure 3: </span>Bias-variance variation. A good model has both low bias and low variance. High bias indicates that the model in under-fitted, and high variance signals that the model is over-fitted.</p>
 </div>
 
 <p>
-So far we learned that the prediction error 
+So far we learned that a good model, trained on the training data, has a low prediction error on the test data. However, we cannot rely on one set of training and test data, as we may get lucky to obtain low prediction error on one test data. In other words, one set of data is not representative of the whole space of possible unseen data. 
 </p>
-
-
-
-
 
 <p>
-So far we learned that the best model has both low bias and low variance. These error terms are measured using prediction errors on training and test data sets as the model complexity increases. Now, the question is how to compute the prediction error. In the next section, we will see how to use the cross-validation technique to compute the prediction error. The cross-validation technique is widely used in practice and yields a reasonably accurate measure of the true prediction error.
+One solution is to collect many sample data and repeat the process to compute prediction errors and combine them to obtain a good estimate of the true prediction error of the model. One way to combine the prediction errors is to take the average of them.
+</p>
+
+<p>
+The problem with the latter solution is that we may not be able to collect many sets of data. Cross-validation technique, discussed in the next section, is a well-known approach to generate multiple sets of training and validation data from a single data set.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline5" class="outline-2">
-<h2 id="orgheadline5">Cross-Validation</h2>
-<div class="outline-text-2" id="text-orgheadline5">
+<div id="outline-container-org0f45ca9" class="outline-2">
+<h2 id="org0f45ca9">Cross-Validation</h2>
+<div class="outline-text-2" id="text-org0f45ca9">
 <p>
 One of the most widely-used methods to estimate the prediction error is the <i>\(K\)-fold cross-validation</i>. This method divides data into \(K\) parts and generates \(K\) pairs of training-validation data as follows. For each \(k\in\{1,2,\ldots,K\}\), the \(k\)-th part in Set \(k\) is the validation data, while the rest is the training data. A 4-fold cross-validation data partitioning is depicted in the following diagram.
 </p>
@@ -837,9 +833,9 @@ To compute the prediction error of a machine learning algorithm, we build models
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2018-08-17</p>
-<p class="author">Author: Eissa Nematollahi</p>
-<p class="date">Created: 2018-08-22 Wed 08:39</p>
+<p class="date">Date: 2018-08-17 Fri 00:00</p>
+<p class="author">Author: Ubuntu</p>
+<p class="date">Created: 2018-08-22 Wed 20:25</p>
 <p class="validation"></p>
 </div>
 </body>

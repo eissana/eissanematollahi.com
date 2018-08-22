@@ -38,15 +38,17 @@ A common approach to build a machine learning model is depicted in the following
 In summary, training data is used to train and build a model. Validation data is used to fine-tune the model. Finally, test data is used to compute the selected model's performance.
 
 * Machine Learning Models
-Machine learning algorithms look for hidden patterns in historical data with the /hope/ that the patterns will exist in future unseen data. Machine learning models, or /learners/, are then built to capture the patterns and enable us to answer questions of interest by applying the models to unseen data. Machine learning algorithms include two major categories: *supervised* and *unsupervised*.
+Machine learning algorithms look for hidden patterns in historical data with the /hope/ that the patterns will appear in future unseen data. Machine learning models, or /learners/, are then built to capture the patterns and enable us to answer questions of interest by applying the models to unseen data. 
 
-In machine learning, data is typically a set of *records*, each containing a set of *features*. For example, in a clinical study, a record may represent information of a patient, while a feature may represent blood pressure of the patient. [include a table of real clinical data] 
+In machine learning, data is typically a set of *records*, each containing a set of *features*. For example, in a clinical study, a record may represent information of a patient, while a feature may represent blood pressure of the patient. Some sample data can be downloaded from [[https://archive.ics.uci.edu/ml/index.php][UCI Machine Learning Repository]]. Popular machine learning libraries, such as scikit-learn in Python, provide APIs for loading popular data sets.
 
 Value of the features can be *scalar*, *categorical*, *ordinal*, or *text*. 
 + Scalar features typically contain measurement values, such as price, age, height, blood pressure, etc.
 + Categorical features hold categories of a small set. For example, spam filtering data may have a /Spam/ feature with values {YES, NO} to indicate whether or not an email (a record of spam data) is spam.
 + Ordinal features are the same as categorical features in which categories are ordered. For example, T-shirt sizes may consist of the values {SMALL, MEDIUM, LARGE} which define an order.
 + Text features can hold any data in the text format, such as name, home address, date, etc.
+
+Machine learning algorithms include two major categories: *supervised* and *unsupervised*.
 
 In supervised learning, there is an outcome feature, beside other features, which is typically categorical or scalar. The goal is to predict the value of the outcome feature given the values of other features. The values of the outcome feature are given for historical data to /supervise/ training prediction models or learners. For example, given a set of emails, we can manually categorize them as spam or not-spam. Then, we build a model using some features of the emails along with their outcome values (spam/not-spam). The model can finally be used to categorize a new email as spam or not-spam. This problem is a typical example of the /binary classification/ problem. other types include the /regression problem/ and the /multi-class classification problem/.
 
@@ -57,7 +59,7 @@ In the next section, we will see how to formulate the supervised learning proble
 * Best Prediction Model
 A supervised machine learning problem (whether classification or regression) is to find a parametric function, a.k.a /model/, that reliably predicts target values of unseen data. To define the /best/ model, we need a measure to compare different models. A loss functions is often used to measure the prediction error of a model. Therefore, a machine learning problem can be cast as an optimization problem to find model parameters that minimize the loss function. Note that we build a model using training data, thus called training a model, but compare models using test data to see how they can generalize to unseen data. Model accuracy and generalizability are both important and will be discussed in more details in the next section.
 
-To formulate the optimization problem, let us introduce some notation first. Let \(X=[x_{ij}]\) be a \(m\times n\) matrix. Each row of \(X\) denotes an instance and each column of \(X\) denotes a feature. Let \(y=(y_1,\ldots,y_m)\) denote the target vector. We denote record \(i\) of \(X\) by \(x_{i:}=(x_{i1},\ldots,x_{in})\) and its corresponding target value as \(y_i\). Similarly, column \(j\) of \(X\) is denoted by \(x_{:j}=(x_{1j},\ldots,x_{mj})\). A generic record of \(X\) is denoted by \(x\).
+To formulate the optimization problem, let us focus on the regression problem first and introduce some notation. Let \(X\) be a set of \(m\) records. Record \(i\) of \(X\) is composed of \(n\) features as \(x_{i:}=(x_{i1},\ldots,x_{in})\). Moreover, let \(y=(y_1,\ldots,y_m)\) denote the target vector. The set of records along with its associated target vector can be depicted in a tabular form as in Table [[data-table]]. A generic record of \(X\) is denoted by \(x\).
 
 #+caption: Data table
 #+name: data-table
@@ -67,12 +69,12 @@ To formulate the optimization problem, let us introduce some notation first. Let
 | \(\vdots\quad\quad \vdots\qquad\qquad \vdots\) | \(\vdots\) |
 | \(x_{m1}\quad x_{m2}\quad \dots \quad x_{mn}\) | \(y_m\)    |
 
-A prediction model for the pair of input data \((X, y)\) is a parametric function \(\phi_w(x)\) which maps an instance \(x\) from the features space to a value \(y\) in the target space. For example, \(\phi_w(x)=w^Tx+w_0\) is a linear model, where \(w\) and \(w_0\) are unknowns parameters. To find unknown parameters, we fit the model to a given set of training data such that a proper loss function is minimized. An example of such a function is the Mean Squared Error (MSE) for a linear regression problem, defined as follows:
-\[
-  \text{MSE}=\frac{1}{n}\sum_{i=1}^n \left(y_i - \phi_w(x_{i:})\right)^2.
+A prediction model for the pair of input data \((X, y)\) is a parametric function \(\phi_w(x)\) which maps a record \(x\) from the features space to a value \(y\) in the target space. For example, \(\phi_w(x)=w^Tx+w_0\) is a linear model, where \(w\) and \(w_0\) are unknowns parameters. To find unknown parameters, we fit the model to a given set of training data with the objective of minimizing a proper loss function. For example, we can find unknown parameters by minimizing /sum of squared errors (SSE)/ defined as:
+\[ 
+   \sum_{i=1}^n \left(y_i-\phi_w(x_{i:})\right)^2.
 \]
 
-In classification, we not only care about predicting class labels for unseen data, but also want to know how confident we are in predicting such. Therefore, we aim at predicting class probabilities or scores, from which class labels can be derived. For this, we may optimize the *maximum likelihood estimation (MLE)* or the *maximum a posteriori (MAP)* function, rather than optimizing loss functions directly. *Expectation maximization(EM)* algorithm is often employed to solve MLE and MAP problems iteratively. 
+In classification, we not only care about predicting class labels for unseen data, but also want to know how confident we are in predicting such. Therefore, we aim at predicting class probabilities or scores, from which class labels can be derived. For this, we may optimize the *maximum likelihood estimation (MLE)* or the *maximum a posteriori (MAP)* function, rather than optimizing loss functions directly. The *Expectation maximization(EM)* algorithm is often employed to solve MLE and MAP problems iteratively. 
 
 A classification model may map \(x\) values to scores or probabilities from which class labels can be easily derived. Scores are real values in \((-\infty, +\infty)\), but probabilities are real values in \([0,1]\). We will denote score of \(x\) by \(\phi_w(x)\), probability of \(x\) by \(\psi_w(x)\), and predicted label of \(x\) by \(b_w(x)\). Assuming without loss of generality, that the class labels are \(\{-1,1\}\), the following approach is often used to compute predicted labels from scores or probabilities:
 \[
@@ -90,15 +92,11 @@ A classification model may map \(x\) values to scores or probabilities from whic
 Machine learning models typically have a complexity parameter. As model complexity increases, the prediction error on training data is expected to decrease. Although very accurate on training data, highly complex models are not generalizable to unseen data. Thus, there is a tradeoff between accuracy and generalizability of a model. In the next section, we will learn more about this tradeoff and characteristics of a good model.
 
 * Bias-Variance Tradeoff
-As we discussed in the previous section, the prediction error on training data is not enough to assess the goodness of a model. A good model needs to be generalizable to unseen data as well. For better illustration, let us consider the linear regression problem as the prediction model and the mean squared error as the prediction error. We can show that the prediction error can be decomposed into three terms as follows:
-\[
-  \text{MSE}=\left(\text{Bias}\left(\phi_w\right)\right)^2 + \text{Var}\left(\phi_w\right) + \text{Var}(y),
-\]
-where the last term is irreducible, however, the bias and variance terms can be minimized.
+As we discussed in the previous section, the prediction error on training data is not enough to assess the goodness of a model. A good model needs to be generalizable to unseen data as well. In can be shown that the expected error of a model is composed of three terms: /bias/, /variance/, and an irreducible error term; consult with [[https://web.stanford.edu/~hastie/ElemStatLearn/][The Elements of Statistical Learning]] for the proof and detailed discussion.
 
 Bias is an error term that measures the *accuracy* of a model. High bias means that the model does not really capture the hidden pattern in the data. This is referred to as *under-fitting*. We ideally want a low bias model; but how low the bias should be? Models with a very low bias tend to capture the noise in the training data, resulting in an *over-fitted* model. Therefore, the bias itself as a measure is not enough for building a good model; we need another measure.
 
-Over-fitted models usually have high variance. The variance is an error term that measures the *consistency* of a model. A high variance indicates that the model is not generalizable to unseen data.
+The variance is an error term that measures the *consistency* of a model. Over-fitted models usually have high variance. A high variance indicates that the model is not generalizable to unseen data.
 
 Ideally, we want a model that captures hidden patterns in the training data (low bias) and generalizes well to unseen data (low variance). Thus, we need to minimize both bias and variance, simultaneously. As shown in Figure [[fig:bias-variance-tradeoff]], a simple model usually has a high bias; such a model is under-fitted, regardless of having low or high variance. Assuming that we have enough training data, increasing model complexity will cause the bias and variance to decrease until a point where the variance will begin to grow. That point defines a model with optimal complexity that minimizes both bias and variance, simultaneously.
 
@@ -116,40 +114,40 @@ In summary, we have the following four cases, as depicted in Figure [[fig:bias-v
 #+name: fig:bias-varaince-dart
 [[./images/bias-variance-dart.jpg]]
 
-So far we learned that the prediction error 
+So far we learned that a good model, trained on the training data, has a low prediction error on the test data. However, we cannot rely on one set of training and test data, as we may get lucky to obtain low prediction error on one test data. In other words, one set of data is not representative of the whole space of possible unseen data. 
 
+One solution is to collect many sample data and repeat the process to compute prediction errors and combine them to obtain a good estimate of the true prediction error of the model. One way to combine the prediction errors is to take the average of them.
 
-
-
-
-So far we learned that the best model has both low bias and low variance. These error terms are measured using prediction errors on training and test data sets as the model complexity increases. Now, the question is how to compute the prediction error. In the next section, we will see how to use the cross-validation technique to compute the prediction error. The cross-validation technique is widely used in practice and yields a reasonably accurate measure of the true prediction error.
+The problem with the latter solution is that we may not be able to collect many sets of data. Cross-validation technique, discussed in the next section, is a well-known approach to generate multiple sets of training and test data from a single data set.
 
 * Cross-Validation
-One of the most widely-used methods to estimate the prediction error is the /\(K\)-fold cross-validation/. This method divides data into \(K\) parts and generates \(K\) pairs of training-validation data as follows. For each \(k\in\{1,2,\ldots,K\}\), the \(k\)-th part in Set \(k\) is the validation data, while the rest is the training data. A 4-fold cross-validation data partitioning is depicted in the following diagram.
+One of the most widely-used methods to estimate the prediction error of a machine learning model is the /\(K\)-fold cross-validation/. This method partitions data into \(K\) parts and generates \(K\) pairs of training-test data as follows: for each \(k\in\{1,2,\ldots,K\}\), the \(k\)-th part in Set \(k\) is the test data, while the rest is the training data. A 4-fold cross-validation data partitioning is depicted in the following diagram.
 
 #+caption: \(K\)-fold cross-validation
 #+BEGIN_SRC ditaa :file images/cross-validation.png :cmdline -r
    Set 1         Set 2         Set 3         Set 4
 +----------+  +----------+  +----------+  +----------+
 |cPNK      |  |cBLU      |  |cBLU      |  |cBLU      |
-|Validation|  | Training |  | Training |  | Training |
+|Test      |  | Training |  | Training |  | Training |
 |          |  |          |  |          |  |          |
 +----------+  +----------+  +----------+  +----------+
 |cBLU      |  |cPNK      |  |cBLU      |  |cBLU      |
-| Training |  |Validation|  | Training |  | Training |
+| Training |  |Test      |  | Training |  | Training |
 |          |  |          |  |          |  |          |
 +----------+  +----------+  +----------+  +----------+
 |cBLU      |  |cBLU      |  |cPNK      |  |cBLU      |
-| Training |  | Training |  |Validation|  | Training |
+| Training |  | Training |  |Test      |  | Training |
 |          |  |          |  |          |  |          |
 +----------+  +----------+  +----------+  +----------+
 |cBLU      |  |cBLU      |  |cBLU      |  |cPNK      |
-| Training |  | Training |  | Training |  |Validation|
+| Training |  | Training |  | Training |  |Test      |
 |          |  |          |  |          |  |          |
 +----------+  +----------+  +----------+  +----------+  
 #+END_SRC
 
-To compute the prediction error of a machine learning algorithm, we build models on the training data sets and compute 
+After generating \(K\) sets of data, we build models on the training data sets and compute the prediction errors on the test data sets. The prediction error of a machine learning algorithm is then computed by combining all the computed prediction errors. For example, we can compute the average of the computed errors as the ultimate prediction error.
+
+*Note:* Stratified sampling may be employed in partitioning of the \(K\)-fold cross-validation technique for proportional distribution of the records into \(K\) parts. 
 
 * To-do List :noexport:
 + Machine learning vs statistics vs AI vs data mining
