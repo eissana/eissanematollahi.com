@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2018-08-22 Wed 20:25 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 2018-08-25 Sat 19:32 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Machine Learning Basics</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="Ubuntu" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Eissa Nematollahi" />
 <style type="text/css">
 <!--/*--><![CDATA[/*><!--*/
 html {
@@ -527,7 +527,7 @@ pre.src-html:before {
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2018 Free Software Foundation, Inc.
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -589,38 +589,43 @@ for the JavaScript code in this tag.
 });
 </script>
 <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
 <h1 class="title">Machine Learning Basics
-<br />
-<span class="subtitle">Better understanding of the most common questions machine learning</span>
+<br>
+<span class="subtitle">Better understanding of the most common concepts in machine learning</span>
 </h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org67ac68a">Introduction</a></li>
-<li><a href="#org8ef91ca">Machine Learning Models</a></li>
-<li><a href="#org3d7cecc">Best Prediction Model</a></li>
-<li><a href="#orgf2ad9c1">Bias-Variance Tradeoff</a></li>
-<li><a href="#org0f45ca9">Cross-Validation</a></li>
+<li><a href="#orgheadline1">Introduction</a></li>
+<li><a href="#orgheadline2">Machine Learning Models</a></li>
+<li><a href="#orgheadline3">Best Prediction Model</a>
+<ul>
+<li><a href="#orgheadline4">Regression</a></li>
+<li><a href="#orgheadline5">Classification</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline6">Bias-Variance Tradeoff</a></li>
+<li><a href="#orgheadline7">Cross-Validation</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org67ac68a" class="outline-2">
-<h2 id="org67ac68a">Introduction</h2>
-<div class="outline-text-2" id="text-org67ac68a">
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">Introduction</h2>
+<div class="outline-text-2" id="text-orgheadline1">
 <p>
 Machine learning is a statistical approach for making data-driven decisions through building models that are capable of capturing some patterns in data. Using historical data, models are <i>trained</i> to <i>learn</i> some patterns expected to exist in unseen data as well. Such machine learning models can answer questions of the following types:
 </p>
 <ul class="org-ul">
 <li>Is a transaction fraudulent? (classification)</li>
 <li>Is an email spam? (classification)</li>
-<li>What is the likelihood of a patient having cancer? (classification)</li>
-<li>How much will the price of a stock be tomorrow? (regression)</li>
+<li>Does a patient have cancer? What is the confidence level of our decision? (classification)</li>
+<li>How much demand for a product is expected in a particular day? (regression)</li>
 <li>Does a group of news belong to the same category? (clustering)</li>
 <li>Are beer and diaper bought together frequently? (association rules)</li>
 </ul>
@@ -636,63 +641,75 @@ A common approach to build a machine learning model is depicted in the following
 </div>
 
 <dl class="org-dl">
-<dt>Representation</dt><dd>In this step, we collect data and choose a class of algorithms suitable for our particular problem. This class of algorithms can be a collection of k-nearest neighbors classifiers with different k parameter. We aim to choose the best from the set of models.</dd>
-<dt>Evaluation</dt><dd>The collected data is partitioned into the <i>training</i>, <i>validation</i>, and <i>test</i> data. We train models on the training data and evaluate them on the validation data. The model with the best performance on the validation data is (temporarily) selected.</dd>
-<dt>Optimization</dt><dd>We tune parameters of the model and repeat the evaluation step until we get satisfactory performance on the validation data. The performance of the final model is computed using the test data.</dd>
+<dt>Represent</dt><dd>In this step, we collect data and choose a class of algorithms suitable for our particular problem. This class of algorithms can be a collection of \(k\)-nearest neighbors classifiers with different \(k\) parameter. We aim to choose the best from the set of models.</dd>
+<dt>Evaluate</dt><dd>The collected data is partitioned into the <i>training</i>, <i>validation</i>, and <i>test</i> data. We train models on the training data and evaluate them on the validation data. The model with the best performance on the validation data is (temporarily) selected.</dd>
+<dt>Optimize</dt><dd>We tune parameters of the model and repeat the evaluation step until we get satisfactory performance on the validation data. The performance of the final model is computed using the test data.</dd>
 </dl>
 <p>
-In summary, training data is used to train and build a model. Validation data is used to fine-tune the model. Finally, test data is used to compute the selected model&rsquo;s performance.
+In summary, training data is used to train and build a model. Validation data is used to fine-tune the model. Finally, test data is used to compute the performance or the prediction power of the selected model.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org8ef91ca" class="outline-2">
-<h2 id="org8ef91ca">Machine Learning Models</h2>
-<div class="outline-text-2" id="text-org8ef91ca">
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2">Machine Learning Models</h2>
+<div class="outline-text-2" id="text-orgheadline2">
 <p>
-Machine learning algorithms look for hidden patterns in historical data with the <i>hope</i> that the patterns will exist in future unseen data. Machine learning models, or <i>learners</i>, are then built to capture the patterns and enable us to answer questions of interest by applying the models to unseen data. Machine learning algorithms include two major categories: <b>supervised</b> and <b>unsupervised</b>.
+Machine learning algorithms look for hidden patterns in historical data with the <i>hope</i> that the patterns will appear in future unseen data. Machine learning models, or <i>learners</i>, are then built to capture the patterns and enable us to answer questions of interest by applying the models to unseen data. 
 </p>
 
 <p>
-In machine learning, data is typically a set of <b>records</b>, each containing a set of <b>features</b>. For example, in a clinical study, a record may represent information of a patient, while a feature may represent blood pressure of the patient. [include a table of real clinical data] 
+In machine learning, data is typically a set of <b>records</b>, each containing a set of <b>features</b>. For example, in a clinical study, a record may represent information of a patient, while a feature may represent blood pressure of the patient. Some sample data can be downloaded from <a href="https://archive.ics.uci.edu/ml/index.php">UCI Machine Learning Repository</a>. Popular machine learning libraries, such as scikit-learn in Python, provide APIs for loading popular data sets.
 </p>
 
 <p>
-Value of the features can be <b>scalar</b>, <b>categorical</b>, <b>ordinal</b>, or <b>text</b>. 
+Feature values can be <b>scalar</b>, <b>categorical</b>, <b>ordinal</b>, or <b>text</b>. 
 </p>
 <ul class="org-ul">
-<li>Scalar features typically contain measurement values, such as price, age, height, blood pressure, etc.</li>
-<li>Categorical features hold categories of a small set. For example, spam filtering data may have a <i>Spam</i> feature with values {YES, NO} to indicate whether or not an email (a record of spam data) is spam.</li>
-<li>Ordinal features are the same as categorical features in which categories are ordered. For example, T-shirt sizes may consist of the values {SMALL, MEDIUM, LARGE} which define an order.</li>
-<li>Text features can hold any data in the text format, such as name, home address, date, etc.</li>
+<li>Scalar Features typically contain measurement values, such as price, age, height, blood pressure, etc.</li>
+<li>Categorical Features hold categories of a small set. For example, spam filtering data may have a <i>Spam</i> feature with values {YES, NO} to indicate whether or not an email (a record of spam data) is spam.</li>
+<li>Ordinal Features are the same as categorical features in which categories are ordered. For example, T-shirt sizes may consist of the values {SMALL, MEDIUM, LARGE} which define an order.</li>
+<li>Text Features may hold any data in the text format, such as name, home address, date, etc.</li>
 </ul>
 
 <p>
-In supervised learning, there is an outcome feature, beside other features, which is typically categorical or scalar. The goal is to predict the value of the outcome feature given the values of other features. The values of the outcome feature are given for historical data to <i>supervise</i> training prediction models or learners. For example, given a set of emails, we can manually categorize them as spam or not-spam. Then, we build a model using some features of the emails along with their outcome values (spam/not-spam). The model can finally be used to categorize a new email as spam or not-spam. This problem is a typical example of the <i>binary classification</i> problem. other types include the <i>regression problem</i> and the <i>multi-class classification problem</i>.
+Machine learning algorithms include two major categories: supervised and unsupervised.
 </p>
 
 <p>
-In an unsupervised learning, there is no outcome feature, and the objective is find hidden relations among records. For example, given a set of news, we may want to know how to organize them into a few clusters. This is referred to as the <i>clustering problem</i>. As another example, suppose we are given a set of transactions in a store, and would like to discover subsets of items that are bought together. This problem is referred to as the <i>market basket analysis</i> or <i>association rules</i>.
+In <b>supervised</b> learning, there is an outcome feature, beside other features, which is typically categorical or scalar. The goal is to predict the value of the outcome feature given the values of other features. The values of the outcome feature are given for historical data to <i>supervise</i> training prediction models or learners. For example, given a set of emails, we can manually categorize them as spam or not-spam. Then, we build a model using some features of the emails along with their outcome values (spam/not-spam). The model can finally be used to categorize a new email as spam or not-spam. This problem is a typical example of the <i>binary classification</i> problem. Other types include the <i>regression problem</i> and the <i>multi-class classification problem</i>.
 </p>
 
 <p>
-In the next section, we will see how to formulate the supervised learning problem as an optimization model. 
+In <b>unsupervised</b> learning, there is no outcome feature, and the objective is find hidden relations among records. For example, given a set of news, we may want to know how to organize them into a few clusters. This is referred to as the <i>clustering problem</i>. As another example, suppose we are given a set of transactions in a store, and would like to discover subsets of items that are bought together. This problem is referred to as the <i>market basket analysis</i> or <i>association rules</i>.
+</p>
+
+<p>
+In the next section, we will see how to formulate the supervised learning problem as an optimization model. You may skip the theory and mathematics and jump to Section <a href="#orgtarget1">Bias-Variance Tradeoff</a>.
 </p>
 </div>
 </div>
-
-<div id="outline-container-org3d7cecc" class="outline-2">
-<h2 id="org3d7cecc">Best Prediction Model</h2>
-<div class="outline-text-2" id="text-org3d7cecc">
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3">Best Prediction Model</h2>
+<div class="outline-text-2" id="text-orgheadline3">
 <p>
-A supervised machine learning problem (whether classification or regression) is to find a parametric function, a.k.a <i>model</i>, that reliably predicts target values of unseen data. To define the <i>best</i> model, we need a measure to compare different models. A loss functions is often used to measure the prediction error of a model. Therefore, a machine learning problem can be cast as an optimization problem to find model parameters that minimize the loss function. Note that we build a model using training data, thus called training a model, but compare models using test data to see how they can generalize to unseen data. Model accuracy and generalizability are both important and will be discussed in more details in the next section.
+<b>Note:</b> This section discusses how to formulate a supervised learning problem as an optimization model. Readers who would like to understand the concept without getting deeper in the theory and mathematics may skip this section.
 </p>
 
 <p>
-To formulate the optimization problem, let us focus on the regression problem first and introduce some notation. Let \(X\) be a set of \(m\) records. Record \(i\) of \(X\) is composed of \(n\) features as \(x_{i:}=(x_{i1},\ldots,x_{in})\). Moreover, let \(y=(y_1,\ldots,y_m)\) denote the target vector. The set of records along with its associated target vector can be depicted in a tabular form as in Table <a href="#orgbb8081a">1</a>. A generic record of \(X\) is denoted by \(x\).
+A supervised machine learning problem (whether classification or regression) is to find the best parametric function, a.k.a <i>model</i>, that reliably predicts target values of unseen data. To define the <i>best</i> model, we need a measure to compare different models. A loss functions is often used to measure the prediction error of a model. Therefore, a machine learning problem can be cast as an optimization problem to find model parameters that minimize total risk, defined based on the loss function. Note that we build a model using training data, thus called training a model, but compare models using test data to see how they can generalize to unseen data. Model accuracy and generalizability are both important and will be discussed in more details in the next section.
 </p>
 
-<table id="orgbb8081a" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<p>
+To formulate the optimization problem, we need a set of records, a parametric function to approximate the true predictor, and a loss function to measure the prediction error, described mathematically as follows:
+</p>
+<dl class="org-dl">
+<dt>Data</dt><dd>A set of records \(\{(\boldsymbol{x}_i, y_i): i=1,2,\ldots,m\}\), in which \(\boldsymbol{x}_i=(x_{i1},\ldots,x_{in})\) is the input data, with \(n\) features, and \(y_i\) is the target value; see Table <a href="#orgtable1">1</a>.</dd>
+<dt>Predictor</dt><dd>A parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x})\) which maps a record \(\boldsymbol{x}\) from the input space to a value \(y\) in the target space.</dd>
+<dt>Measure</dt><dd>A loss function \(\ell(y, \phi_\boldsymbol{w}(\boldsymbol{x}))\) to measure the prediction error.</dd>
+</dl>
+
+<table id="orgtable1" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 <caption class="t-above"><span class="table-number">Table 1:</span> Data table</caption>
 
 <colgroup>
@@ -702,8 +719,8 @@ To formulate the optimization problem, let us focus on the regression problem fi
 </colgroup>
 <thead>
 <tr>
-<th scope="col" class="org-left">X</th>
-<th scope="col" class="org-left">y</th>
+<th scope="col" class="org-left">\(X\)</th>
+<th scope="col" class="org-left">\(y\)</th>
 </tr>
 </thead>
 <tbody>
@@ -725,18 +742,51 @@ To formulate the optimization problem, let us focus on the regression problem fi
 </table>
 
 <p>
-A prediction model for the pair of input data \((X, y)\) is a parametric function \(\phi_w(x)\) which maps a record \(x\) from the features space to a value \(y\) in the target space. For example, \(\phi_w(x)=w^Tx+w_0\) is a linear model, where \(w\) and \(w_0\) are unknowns parameters. To find unknown parameters, we fit the model to a given set of training data with the objective of minimizing a proper loss function. For example, we can find unknown parameters by minimizing <i>sum of squared errors (SSE)</i> defined as:
+To find unknown parameters, we minimize total risk defined as the total loss over all \((\boldsymbol{x}, y)\) values in its defined space. Since, the total risk is generally unavailable, we approximate it using the <i>empirical</i> risk, defined as
 \[ 
-   \sum_{i=1}^n \left(y_i-\phi_w(x_{i:})\right)^2.
+   L_{\text{emp}}(\phi_\boldsymbol{w})=\frac{1}{m}\sum_{i=1}^m \ell(y_i, \phi_\boldsymbol{w}(\boldsymbol{x}_i)).
+\]
+Minimizing the latter total risk often yields a complex predictor. To obtain a simpler predictor, we add a regularization term with a multiplier \(\lambda\), known as the complexity parameter. The regularized total risk function is given as
+\[ 
+   L_{\text{reg}}(\phi_\boldsymbol{w})=\frac{1}{m}\sum_{i=1}^m \ell(y_i, \phi_\boldsymbol{w}(\boldsymbol{x}_i)) + \lambda R(\phi_\boldsymbol{w}).
 \]
 </p>
+</div>
 
+<div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4">Regression</h3>
+<div class="outline-text-3" id="text-orgheadline4">
 <p>
-In classification, we not only care about predicting class labels for unseen data, but also want to know how confident we are in predicting such. Therefore, we aim at predicting class probabilities or scores, from which class labels can be derived. For this, we may optimize the <b>maximum likelihood estimation (MLE)</b> or the <b>maximum a posteriori (MAP)</b> function, rather than optimizing loss functions directly. The <b>Expectation maximization(EM)</b> algorithm is often employed to solve MLE and MAP problems iteratively. 
+The target values \(y_i\) in the regression problem are scalar, representing features such as weight, height, price, etc. Scalar target values may also be referred as the response values.
 </p>
 
 <p>
-A classification model may map \(x\) values to scores or probabilities from which class labels can be easily derived. Scores are real values in \((-\infty, +\infty)\), but probabilities are real values in \([0,1]\). We will denote score of \(x\) by \(\phi_w(x)\), probability of \(x\) by \(\psi_w(x)\), and predicted label of \(x\) by \(b_w(x)\). Assuming without loss of generality, that the class labels are \(\{-1,1\}\), the following approach is often used to compute predicted labels from scores or probabilities:
+The linear regression model is one of well-studied and popular machine learning model. In linear regression, our choice of the predictor, loss function, and regularization term are as follows:
+</p>
+<ul class="org-ul">
+<li>Use the parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x})=\boldsymbol{w}^T\boldsymbol{x}\) as the predictor.</li>
+<li>Use the quadratic error \(\ell(y,\boldsymbol{w}^T\boldsymbol{x})=(y-\boldsymbol{w}^T\boldsymbol{x})^2\) as the loss function.</li>
+<li>Use squared \(\ell_2\) norm \(R(\boldsymbol{w})=\|\boldsymbol{w}\|_2^2\) as the regularization term.</li>
+</ul>
+<p>
+The regularized total risk is then computed as follows:
+\[
+  L(\boldsymbol{w})=\frac{1}{m}\sum_{i=1}^m (y_i-\boldsymbol{w}^T\boldsymbol{x}_i)^2+\lambda\|\boldsymbol{w}\|_2^2,
+\]
+also known as the <i>Ridge Regression</i>. The first term is well-known as the <i>mean squared errors (MSE)</i> and widely used in regression problems. The regularization term guarantees that the parameters of the predictor are small enough to yield a simple model.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline5" class="outline-3">
+<h3 id="orgheadline5">Classification</h3>
+<div class="outline-text-3" id="text-orgheadline5">
+<p>
+In classification, we not only care about predicting class labels for unseen data, but also want to know how confident we are in predicting such. Therefore, we aim at predicting class probabilities or scores, from which class labels can be derived. For this, we may optimize the <b>maximum likelihood estimation (MLE)</b> or the <b>maximum a posteriori (MAP)</b> function, rather than optimizing loss functions directly. The <b>Expectation maximization (EM)</b> algorithm is often employed to solve MLE and MAP problems iteratively. 
+</p>
+
+<p>
+A classification model may map \(x\) values to scores or probabilities from which class labels can be easily derived. Scores and probabilities are real values in \((-\infty, +\infty)\) and \([0,1]\), respectively. We will denote score of \(x\) by \(\phi_w(x)\), probability of \(x\) by \(\psi_w(x)\), and predicted label of \(x\) by \(b_w(x)\). Assuming without loss of generality, that the class labels are \(\{-1,1\}\), the following approach is often used to compute predicted labels from scores or probabilities:
 \[
   b_w(x)=\begin{cases}
           1\quad \phi_w(x) \ge 0,\\
@@ -755,12 +805,13 @@ Machine learning models typically have a complexity parameter. As model complexi
 </p>
 </div>
 </div>
+</div>
 
-<div id="outline-container-orgf2ad9c1" class="outline-2">
-<h2 id="orgf2ad9c1">Bias-Variance Tradeoff</h2>
-<div class="outline-text-2" id="text-orgf2ad9c1">
+<div id="outline-container-orgheadline6" class="outline-2">
+<h2 id="orgheadline6"><a id="orgtarget1"></a> Bias-Variance Tradeoff</h2>
+<div class="outline-text-2" id="text-orgheadline6">
 <p>
-As we discussed in the previous section, the prediction error on training data is not enough to assess the goodness of a model. A good model needs to be generalizable to unseen data as well. In can be shown that the expected error of a model is composed of three terms: <i>bias</i>, <i>variance</i>, and an irreducible error term; consult with <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">The Elements of Statistical Learning</a> for the proof and detailed discussion.
+As we discussed in the previous section, the prediction error on training data is not enough to assess the goodness of a model. A good model needs to be generalizable to unseen data as well. It can be shown that the expected error of a model is composed of three terms: <i>bias</i>, <i>variance</i>, and an irreducible error term; consult with <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">The Elements of Statistical Learning</a> for the proof and detailed discussion.
 </p>
 
 <p>
@@ -772,18 +823,18 @@ The variance is an error term that measures the <b>consistency</b> of a model. O
 </p>
 
 <p>
-Ideally, we want a model that captures hidden patterns in the training data (low bias) and generalizes well to unseen data (low variance). Thus, we need to minimize both bias and variance, simultaneously. As shown in Figure <a href="#orgd981fce">2</a>, a simple model usually has a high bias; such a model is under-fitted, regardless of having low or high variance. Assuming that we have enough training data, increasing model complexity will cause the bias and variance to decrease until a point where the variance will begin to grow. That point defines a model with optimal complexity that minimizes both bias and variance, simultaneously.
+Ideally, we want a model that captures hidden patterns in the training data (low bias) and generalizes well to unseen data (low variance). Thus, we need to minimize both bias and variance, simultaneously. As shown in Figure <a href="#orgparagraph1">2</a>, a simple model usually has a high bias; such a model is under-fitted, regardless of having low or high variance. Assuming that we have enough training data, increasing model complexity will cause the bias and variance to decrease until a point where the variance will begin to grow. That point defines a model with optimal complexity that minimizes both bias and variance, simultaneously.
 </p>
 
 
-<div id="orgd981fce" class="figure">
+<div id="orgparagraph1" class="figure">
 <p><img src="./images/bias-variance-tradeoff.png" alt="bias-variance-tradeoff.png" />
 </p>
-<p><span class="figure-number">Figure 2: </span>Bias-variance tradeoff in machine learning. A simple model yields high bias (low accuracy) on both training and test data. A complex model, on the other hand, yields high variance (low consistency) as it captures noise in the training data, too.</p>
+<p><span class="figure-number">Figure 2:</span> Bias-variance tradeoff in machine learning. A simple model yields high bias (low accuracy) on both training and test data. A complex model, on the other hand, yields high variance (low consistency) as it captures noise in the training data, too.</p>
 </div>
 
 <p>
-In summary, we have the following four cases, as depicted in Figure <a href="#orgd31ac5b">3</a>:
+In summary, we have the following four cases, as depicted in Figure <a href="#orgparagraph2">3</a>:
 </p>
 <ul class="org-ul">
 <li>High bias, high variance: The model is both inaccurate and inconsistent: under-fitted model. Typically, this occurs when there is no enough training data. To avoid this case, we simply collect more data.</li>
@@ -793,10 +844,10 @@ In summary, we have the following four cases, as depicted in Figure <a href="#or
 </ul>
 
 
-<div id="orgd31ac5b" class="figure">
+<div id="orgparagraph2" class="figure">
 <p><img src="./images/bias-variance-dart.jpg" alt="bias-variance-dart.jpg" />
 </p>
-<p><span class="figure-number">Figure 3: </span>Bias-variance variation. A good model has both low bias and low variance. High bias indicates that the model in under-fitted, and high variance signals that the model is over-fitted.</p>
+<p><span class="figure-number">Figure 3:</span> Bias-variance variation. A good model has both low bias and low variance. High bias indicates that the model in under-fitted, and high variance signals that the model is over-fitted.</p>
 </div>
 
 <p>
@@ -808,16 +859,16 @@ One solution is to collect many sample data and repeat the process to compute pr
 </p>
 
 <p>
-The problem with the latter solution is that we may not be able to collect many sets of data. Cross-validation technique, discussed in the next section, is a well-known approach to generate multiple sets of training and validation data from a single data set.
+The problem with the latter solution is that we may not be able to collect many sets of data. Cross-validation technique, discussed in the next section, is a well-known approach to generate multiple sets of training and test data from a single data set.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org0f45ca9" class="outline-2">
-<h2 id="org0f45ca9">Cross-Validation</h2>
-<div class="outline-text-2" id="text-org0f45ca9">
+<div id="outline-container-orgheadline7" class="outline-2">
+<h2 id="orgheadline7">Cross-Validation</h2>
+<div class="outline-text-2" id="text-orgheadline7">
 <p>
-One of the most widely-used methods to estimate the prediction error is the <i>\(K\)-fold cross-validation</i>. This method divides data into \(K\) parts and generates \(K\) pairs of training-validation data as follows. For each \(k\in\{1,2,\ldots,K\}\), the \(k\)-th part in Set \(k\) is the validation data, while the rest is the training data. A 4-fold cross-validation data partitioning is depicted in the following diagram.
+One of the most widely-used methods to estimate the prediction error of a machine learning algorithm is the <i>\(K\)-fold cross-validation</i>. This method partitions data into \(K\) parts and generates \(K\) pairs of training-test data as follows: for each \(k\in\{1,2,\ldots,K\}\), the \(k\)-th part in Set \(k\) is the test data, while the rest is the training data. A 4-fold cross-validation data partitioning is depicted in the following diagram.
 </p>
 
 
@@ -827,15 +878,19 @@ One of the most widely-used methods to estimate the prediction error is the <i>\
 </div>
 
 <p>
-To compute the prediction error of a machine learning algorithm, we build models on the training data sets and compute 
+After generating \(K\) sets of data, we build models on the training data sets and compute the prediction errors on the test data sets. The prediction error of a machine learning algorithm is then computed by combining all the computed prediction errors. For example, we can compute the average of the computed errors as the ultimate prediction error.
+</p>
+
+<p>
+<b>Note:</b> Stratified sampling may be employed in partitioning of the \(K\)-fold cross-validation technique for proportional distribution of the records into \(K\) parts. 
 </p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Date: 2018-08-17 Fri 00:00</p>
-<p class="author">Author: Ubuntu</p>
-<p class="date">Created: 2018-08-22 Wed 20:25</p>
+<p class="date">Date: 2018-08-17</p>
+<p class="author">Author: Eissa Nematollahi</p>
+<p class="date">Created: 2018-08-25 Sat 19:32</p>
 <p class="validation"></p>
 </div>
 </body>
