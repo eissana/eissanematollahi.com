@@ -59,44 +59,57 @@ In the next section, we will see how to formulate the supervised learning proble
 
 *Note:* This section discusses how to formulate a supervised learning problem as an optimization model. Readers who would like to understand the concept without getting deeper in the theory and mathematics may skip this section.
 
-A supervised machine learning problem (whether classification or regression) is to find the best parametric function, a.k.a /model/, that reliably predicts target values of unseen data. To define the /best/ model, we need a measure to compare different models. A loss functions is often used to measure the prediction error of a model. Therefore, a machine learning problem can be cast as an optimization problem to find model parameters that minimize total risk, defined based on the loss function. Note that we build a model using training data, thus called training a model, but compare models using test data to see how they can generalize to unseen data. Model accuracy and generalizability are both important and will be discussed in more details in the next section.
+A supervised machine learning problem (whether classification or regression) is to find the best parametric function, a.k.a /model/, that reliably predicts target values of unseen data. To estimate model parameters, we may use Maximum Likelihood Estimation (MLE) or Maximum A Posteriori (MAP). Another common approach is to estimate model parameters by minimizing a loss function that measures the prediction error. We will see that these two approaches are indeed equivalent.
 
-To formulate the optimization problem, we need a set of records, a parametric function to approximate the true predictor, and a loss function to measure the prediction error, described mathematically as follows:
-+ Data :: A set of records \(\{(\boldsymbol{x}_i, y_i): i=1,2,\ldots,m\}\), in which \(\boldsymbol{x}_i=(x_{i1},\ldots,x_{in})\) is the input data, with \(n\) features, and \(y_i\) is the target value; see Table [[data-table]].
-+ Predictor :: A parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x})\) which maps a record \(\boldsymbol{x}\) from the input space to a value \(y\) in the target space. 
-+ Measure :: A loss function \(\ell(y, \phi_\boldsymbol{w}(\boldsymbol{x}))\) to measure the prediction error. 
+A machine learning problem can thus be cast as an optimization problem to find model parameters that minimize total loss or maximizes likelihood or posterior probabilities. Note that we build a model using training data, thus called training a model, but compare models using test data to see how they can generalize to unseen data. Model accuracy and generalizability are both important and will be discussed in more details in the next section.
+
+To formulate the optimization problem, we need a set of records and a parametric function to approximate the true predictor, described mathematically as follows:
++ A set of records \(\{(\boldsymbol{x}_i, y_i): i=1,2,\ldots,m\}\), in which \(\boldsymbol{x}_i=(x_{i1},\ldots,x_{in})\) is the input data, with \(n\) features, and \(y_i\) is the target value; see Table [[data-table]].
++ A parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x})\) which maps a record \(\boldsymbol{x}\) from the input space to a value \(y\) in the target space. 
 
 #+caption: Data table
 #+name: data-table
-| \(X\)                                          | \(y\)      |
-|------------------------------------------------+------------|
-| \(x_{11}\quad x_{12}\quad \dots \quad x_{1n}\) | \(y_1\)    |
-| \(\vdots\quad\quad \vdots\qquad\qquad \vdots\) | \(\vdots\) |
-| \(x_{m1}\quad x_{m2}\quad \dots \quad x_{mn}\) | \(y_m\)    |
+| \(\boldsymbol{X}\)                             | \(\boldsymbol{y}\) |
+|------------------------------------------------+--------------------|
+| \(x_{11}\quad x_{12}\quad \dots \quad x_{1n}\) | \(y_1\)            |
+| \(\vdots\quad\quad \vdots\qquad\qquad \vdots\) | \(\vdots\)         |
+| \(x_{m1}\quad x_{m2}\quad \dots \quad x_{mn}\) | \(y_m\)            |
 
-To find unknown parameters, we minimize total risk defined as the total loss over all \((\boldsymbol{x}, y)\) values in its defined space. Since, the total risk is generally unavailable, we approximate it using the /empirical/ risk, defined as
-\[ 
-   L_{\text{emp}}(\phi_\boldsymbol{w})=\frac{1}{m}\sum_{i=1}^m \ell(y_i, \phi_\boldsymbol{w}(\boldsymbol{x}_i)).
+To find unknown parameters using MLE approach, we maximize \(p(\boldsymbol{X},\boldsymbol{y}|\boldsymbol{w})\), the likelihood of the input data given model parameters. Assuming that the data are iid (independent and identically distributed), we can derive the following equivalent maximization problem:
+\[
+  \max_{\boldsymbol{w}}\ \sum_{i=1}^m \log p(\boldsymbol{x}_i,y_i|\boldsymbol{w}).
 \]
-Minimizing the latter total risk often yields a complex predictor. To obtain a simpler predictor, we add a regularization term with a multiplier \(\lambda\), known as the complexity parameter. The regularized total risk function is given as
+As you noticed, we maximize the log likelihood instead of the likelihood itself. The reason is that while they both are theoretically equivalent, the log likelihood maximization yields a more tractable problem for optimization algorithms. 
+
+Maximum likelihood estimation often yields a complex predictor and results in over-fitting -- a concept discussed in the next section. It turns out that the MAP approach, maximizing posterior probabilities \(p(\boldsymbol{w}|\boldsymbol{X},\boldsymbol{y})\), yields simpler models because of incorporating prior knowledge of unknown parameters. From the Bayes rule, we have
+\[
+p(\boldsymbol{w}|\boldsymbol{X},\boldsymbol{y})=\frac{p(\boldsymbol{w})p(\boldsymbol{X},\boldsymbol{y}|\boldsymbol{w})}{p(\boldsymbol{X},\boldsymbol{y})}.
+\]
+Thus, maximizing posterior probabilities is equivalent to the following maximization problem:
 \[ 
-   L_{\text{reg}}(\phi_\boldsymbol{w})=\frac{1}{m}\sum_{i=1}^m \ell(y_i, \phi_\boldsymbol{w}(\boldsymbol{x}_i)) + \lambda R(\phi_\boldsymbol{w}).
+  \max_{\boldsymbol{w}}\ \sum_{i=1}^m \log p(\boldsymbol{x}_i,y_i|\boldsymbol{w})+\log p(\boldsymbol{w}).
 \]
 
 ** Regression
 The target values \(y_i\) in the regression problem are scalar, representing features such as weight, height, price, etc. Scalar target values may also be referred as the response values.
 
-The *linear regression model* is one of well-studied and popular machine learning model. In linear regression, our choice of the predictor, loss function, and regularization term are as follows:
-+ Use the parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x})=\boldsymbol{w}^T\boldsymbol{x}\) as the predictor.
-+ Use the quadratic error \(\ell(y,\boldsymbol{w}^T\boldsymbol{x})=(y-\boldsymbol{w}^T\boldsymbol{x})^2\) as the loss function.
-+ Use squared \(\ell_2\) norm \(R(\boldsymbol{w})=\|\boldsymbol{w}\|_2^2\) as the regularization term.
-The regularized total risk is then computed as follows:
+The *linear regression model* is one of the well-studied and popular machine learning models. In linear regression, we use the parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x})=\boldsymbol{w}^T\boldsymbol{x}\) as the predictor. We assume that the target (response) values \(y_i\) contain Gaussian noise \(\epsilon\), .i.e.,
 \[
-  L(\boldsymbol{w})=\frac{1}{m}\sum_{i=1}^m (y_i-\boldsymbol{w}^T\boldsymbol{x}_i)^2+\lambda\|\boldsymbol{w}\|_2^2,
+  y_i = \boldsymbol{w}^T\boldsymbol{x} + \epsilon,\qquad \epsilon \sim N(0,\sigma^2).
 \]
-also known as the /Ridge Regression/ model. The first term is well-known as the /mean squared errors (MSE)/ and widely used in regression problems. The regularization term guarantees that the parameters of the predictor are small enough to yield a simple model.
+We can show that the maximum likelihood estimation is equivalent to maximizing the following function:
+\[
+  \max_{\boldsymbol{w}}\ -\frac{1}{2\sigma^2}\sum_{i=1}^m (y_i-\boldsymbol{w}^T\boldsymbol{x}_i)^2,
+\]
+which is a weighted /sum of squared errors (SSE)/ term.
 
-The regression task is to first find \(\boldsymbol{w}\) that minimizes the regularized total risk \(L(\boldsymbol{w})\). Then, use the predictor \(\phi_\boldsymbol{w}(\boldsymbol{x})=\boldsymbol{w}^T\boldsymbol{x}\) to estimate target (response) values of unseen input data.
+For MAP, we assume that prior probabilities are Gaussian with \(\boldsymbol{w}\sim N(\boldsymbol{0}, \lambda^{-1}\boldsymbol{I})\). We can similarly show that MAP estimation is equivalent to the following maximization problem:
+\[
+  \max_{\boldsymbol{w}}\ -\frac{1}{2\sigma^2}\sum_{i=1}^m (y_i-\boldsymbol{w}^T\boldsymbol{x}_i)^2 - \frac{\lambda}{2}\|\boldsymbol{w}\|_2^2,
+\]
+also known as the /Ridge Regression/ model. The second (regularization) term guarantees that the parameters of the predictor are small enough to yield a simple model.
+
+The regression task is to first find \(\boldsymbol{w}\) that maximizes posterior probabilities. Then, use the predictor \(\phi_\boldsymbol{w}(\boldsymbol{x})=\boldsymbol{w}^T\boldsymbol{x}\) to estimate target (response) values of unseen input data.
 
 Although there is a closed form solution for the minimization problem, it is efficient to use iterative methods such as the /gradient descent/ algorithm.
 
