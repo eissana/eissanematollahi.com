@@ -64,7 +64,7 @@ A supervised machine learning problem (whether classification or regression) is 
 To formulate the optimization problem, we need a set of records, a parametric function to approximate the true predictor, and a loss function to measure the prediction error, described mathematically as follows:
 + Data :: A set of records \(\{(\boldsymbol{x}_i, y_i): i=1,2,\ldots,m\}\), in which \(\boldsymbol{x}_i=(x_{i1},\ldots,x_{in})\) is the input data, with \(n\) features, and \(y_i\) is the target value; see Table [[data-table]].
 + Predictor :: A parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x})\) which maps a record \(\boldsymbol{x}\) from the input space to a value \(y\) in the target space. 
-+ Measure :: A loss function \(L(y, \phi_\boldsymbol{w}(\boldsymbol{x}))\) to measure the prediction error. 
++ Measure :: A loss function \(\ell(y, \phi_\boldsymbol{w}(\boldsymbol{x}))\) to measure the prediction error. 
 
 #+caption: Data table
 #+name: data-table
