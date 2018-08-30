@@ -1,0 +1,88 @@
+\documentclass[dvipsnames]{minimal}
+\usepackage{tikz}
+\usepackage[pdftex,active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+
+\usepackage{pgfplots,filecontents}
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+  % \fill[gray!30] (-9,-11) rectangle (-14.2,11);
+  % \fill[gray!30] (-14.2,9) rectangle (8.5,11);
+  % \fill[gray!10] (-9,9) rectangle (8.5,-11);
+
+  % \draw (-9,-11) -- (-9, 11);
+  % \draw (-14.2,9) -- (8.5, 9);
+
+  \foreach \xshift in {-5,5}
+  {
+    \foreach \yshift in {-5,5}
+    {
+      \begin{scope}[xshift=\xshift cm, yshift=\yshift cm]
+        \foreach \r in {1.7,1.9,2.8,3}
+        \draw[very thick, color=gray] (0,0) circle (\r);
+        \foreach \r in {0,15,...,359}
+        {
+          \draw[thick, color=gray] (\r:0) -- (\r:3);
+        }
+        \draw[thick, color=gray, fill=black!40!green] (0,0) circle (0.4cm);
+        \draw[thick, color=gray, fill=red] (0,0) circle (0.2cm);
+      \end{scope}
+    }
+  }
+
+  \node[scale=3] at (-11.5,5) {Low Bias};
+  \node[scale=3] at (-11.5,-5) {High Bias};
+  \node[scale=3] at (-5.3,10) {Low Variance};
+  \node[scale=3] at (4.9,10) {High Valiance};
+
+  \node[scale=1.7, text width=3cm, align=center] at (-5,1) {Accurate and Consistent};
+  \node[scale=1.7, text width=3cm, align=center] at (5,1) {Accurate but Inconsistent};
+  \node[scale=1.7, text width=3cm, align=center] at (-5,-9) {Consistent but Inaccurate};
+  \node[scale=1.7, text width=3cm, align=center] at (5,-9) {Inaccurate and Inconsistent};
+
+  \begin{scope}[xshift=-5.5 cm, yshift=4.5 cm]
+    \begin{axis}[
+      xscale=.15, yscale=.17,
+      axis lines = none,
+      ]
+      \addplot [only marks, mark=star, mark size = .7cm, blue, very thick, samples=30, ] (rnd,rnd);
+    \end{axis}
+  \end{scope}
+
+  \begin{scope}[xshift=3.7 cm, yshift=3.7 cm]
+    \begin{axis}[
+      xscale=.4, yscale=.42,
+      axis lines = none,
+      ]
+      \addplot [only marks, mark=star, mark size = .2cm, blue, very thick, samples=30, ] (rnd,rnd);
+    \end{axis}
+  \end{scope}
+
+  \begin{scope}[xshift=5.5 cm, yshift=-5 cm]
+    \begin{axis}[
+      xscale=.35, yscale=.37,
+      axis lines = none,
+      ]
+      \addplot [only marks, mark=star, mark size = .3cm, blue, very thick, samples=30, ] (rnd,rnd);
+    \end{axis}
+  \end{scope}
+
+  \begin{scope}[xshift=-4.5 cm, yshift=-3.5 cm]
+    \begin{axis}[
+      xscale=.15, yscale=.17,
+      axis lines = none,
+      ]
+      \addplot [only marks, mark=star, mark size = .7cm, blue, very thick, samples=30, ] (rnd,rnd);
+    \end{axis}
+  \end{scope}
+\end{tikzpicture}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

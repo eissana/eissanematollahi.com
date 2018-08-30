@@ -43,8 +43,12 @@ The following diagram depicts a common approach to building machine learning mod
    + *Training* data-set to train models.
    + *Validation* data-set to assess the trained models.
    + *Test* data-set to compute the prediction error of the best model.
-2. We select a class of machine learning models, such as linear or logistic regression. These models are typically parametric whose parameters must be estimated on a training data-set. Statistical methods, such as the maximum-likelihood estimation or the maximum-aposteriori, may be used to compute the best estimates of the model parameters. Alternative methods include total loss or risk minimization. All these methods are formulated as optimization problems which can be solved using optimization algorithms, such as the gradient descent method.
-3. Machine learning models typically have a complexity parameter, which needs to be optimized for generalizability. For example, in the ridge regression, the multiplier \(\lambda\) of the regularization term is the complexity parameters. In \(k\)-nearest neighbors, the \(k\) is the complexity parameter of the model. In this step, we tune the complexity parameter to obtain the best prediction error on the test data-set. For this, we may require to repeat steps (2) and (3) multiple times.  
+2. We select a class of machine learning models, such as linear or logistic regression. These models are typically parametric whose parameters must be estimated on a training data-set. Model parameters estimation is formulated as one of the following optimization problems:
+   + *Maximum-likelihood estimation (MLE)* which maximizes the likelihood of data given model parameters.
+   + *Maximum-aposteriori (MAP)* estimation which maximizes posterior probabilities given prior probabibilities of the model parameters.
+   + *Minimum total risk* which minimizes the empirical total risk, defined based on a proper loss function.
+   These optimization problems can be solved using optimization algorithms, such as the gradient descent method.
+3. Machine learning models typically have a *complexity parameter*, which needs to be optimized for generalizability. For example, in the ridge regression, the multiplier \(\lambda\) of the regularization term is the complexity parameters. In \(k\)-nearest neighbors, the \(k\) is the complexity parameter of the model. In this step, we tune the complexity parameter to obtain the best prediction error on the test data-set. For this, we may require to repeat steps (2) and (3) multiple times.  
 
 In summary, a training data-set is used to train and build models. A validation data-set is used to evaluate the prediction power of the models, while tuning their parameters to generalize well on unseen data. Finally, a test data-set is used to compute the performance or the prediction power of the selected model.
 
@@ -176,7 +180,7 @@ In summary, we have the following four cases, as depicted in Figure [[fig:bias-v
 
 #+caption: Bias-variance variation. A good model has both low bias and low variance. High bias indicates that the model in under-fitted, and high variance signals that the model is over-fitted.
 #+name: fig:bias-varaince-dart
-[[./images/bias-variance-dart.jpg]]
+[[./images/bias-variance-dart.png]]
 
 So far we learned that a good model, trained on the training data-set, has a low prediction error on the test data-set. However, we cannot rely on one set of training and test data, as we may get lucky to obtain low prediction error on one test data-set. In other words, one set of data is not representative of the whole space of possible unseen data. 
 
@@ -226,7 +230,9 @@ A popular version of the cross-validation method is the *leave-one-out* approach
 + measuring models: ROC, etc.
 + cross validation: how to choose K
 
-# images/machine-learning-workflow.png https://eissanematollahi.com/wp-content/uploads/2018/08/machine-learning-workflow-2.png
-# ./images/bias-variance-tradeoff.png https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-tradeoff-1.png
-# ./images/bias-variance-dart.jpg https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-dart-1.jpg
-# images/cross-validation.png https://eissanematollahi.com/wp-content/uploads/2018/08/cross-validation-2.png
+
+# images/machine-learning-workflow.png https://eissanematollahi.com/wp-content/uploads/2018/08/machine-learning-workflow-3.png
+# ./images/bias-variance-tradeoff.png https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-tradeoff-2.png
+# images/cross-validation.png https://eissanematollahi.com/wp-content/uploads/2018/08/cross-validation-3.png
+
+# ./images/bias-variance-dart.png https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-dart.png
