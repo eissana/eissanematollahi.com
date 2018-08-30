@@ -1,10 +1,10 @@
 #+BLOG: eissanematollahi
 #+POSTID: 439
 #+ORG2BLOG:
-#+DATE: [2018-08-17]
+#+DATE: [2018-08-28]
 #+OPTIONS: toc:t num:nil todo:nil pri:nil tags:nil ^:nil ':t
 #+CATEGORY: Machine Learning
-#+TAGS: Machine Learning, Statistics, Prediction, Classification, Regression, Optimization, Bias-Variance Tradeoff, Suppervised Learning, Unsupervised Learning
+#+TAGS: Machine Learning, Statistics, Prediction, Classification, Regression, Optimization, Bias-Variance Tradeoff, Suppervised Learning, Unsupervised Learning, Cross-Validation, Maximum Likelihood Estimation, Maximum Aposteriori 
 #+DESCRIPTION:
 #+TITLE: Machine Learning: Basic Workflow
 #+SUBTITLE: Better understanding of the basic workflow in machine learning tasks
@@ -17,59 +17,67 @@ Machine learning is a statistical approach for making data-driven decisions thro
 + How much demand for a product is expected in a particular day? (regression)
 + Does a group of news belong to the same category? (clustering)
 + Are beer and diaper bought together frequently? (association rules)
+In addition, machine learning models can be trained to perform complex tasks, including:
++ Driving a car (self-driving cars)
++ Recognizing zip-codes from the images of hand-written postal envelopes
++ Describing details of a photo
 
-A common approach to build a machine learning model is depicted in the following diagram. This workflow is explained in more details next.
+The following diagram depicts a common approach to building machine learning models. This workflow is explained in more details next.
 
 #+caption: Machine learning workflow
 #+BEGIN_SRC ditaa :file images/machine-learning-workflow.png :cmdline -r
+                      +------------------+
+                      | Optimization cPNK|
 +-----------------+   +------------------+   +------------+
 | cBLU            |   | cBLU             |   | cBLU       |
 | Data Collection +-->| Model Parameters +-->|   Model    |
-| and Preparation |   |    Estimation    |   | Evaluation |
-|                 |   |                  |   |            |
+| and Preparation |   |    Estimation    |   |Optimization|
+|       (1)       |   |       (2)        |   |     (3)    |
 +-----------------+   +------------------+   +------+-----+
                                ^                    |
                                |                    |
                                +--------------------+
 #+END_SRC
 
-1. In the first step, we collect data and prepare them to feed machine learning algorithms. We partition data into multiple training and validation data sets to train and evaluate models as well as a test data set to estimate the prediction power of the selected model.
-2. In the second step, we select a class of machine learning algorithms, such as linear or logistic regression. These models are typically parametric whose parameters must be estimated given training data sets. Statistical methods, such as maximum likelihood estimation (MLE) or maximum a posteriori (MAP), may be used to compute the best estimates of the model parameters. Alternative methods include total loss or risk minimization. All these methods are formulated as optimization problems which can be solved using optimization algorithms, such as the gradient descent method.
-3. In the third step, we evaluate the model on the validation data set and repeat the process of model building and model evaluation on all the training and validation data sets. 
+1. We collect data and prepare them as input to machine learning algorithms. We require a
+   + *Training* data-set to train models.
+   + *Validation* data-set to assess the trained models.
+   + *Test* data-set to compute the prediction error of the best model.
+2. We select a class of machine learning models, such as linear or logistic regression. These models are typically parametric whose parameters must be estimated on a training data-set. Statistical methods, such as the maximum-likelihood estimation or the maximum-aposteriori, may be used to compute the best estimates of the model parameters. Alternative methods include total loss or risk minimization. All these methods are formulated as optimization problems which can be solved using optimization algorithms, such as the gradient descent method.
+3. Machine learning models typically have a complexity parameter, which needs to be optimized for generalizability. For example, in the ridge regression, the multiplier \(\lambda\) of the regularization term is the complexity parameters. In \(k\)-nearest neighbors, the \(k\) is the complexity parameter of the model. In this step, we tune the complexity parameter to obtain the best prediction error on the test data-set. For this, we may require to repeat steps (2) and (3) multiple times.  
 
-We now have multiple models trained on multiple training data sets and evaluated on their corresponding validation data sets. The model with the best prediction power is selected. However, its final prediction power is computed using the test data set.
-
-In summary, training data sets are used to train and build models. Validation data sets are used to evaluate the prediction powers of the models. Finally, the test data set is used to compute the performance or the prediction power of the selected model.
+In summary, a training data-set is used to train and build models. A validation data-set is used to evaluate the prediction power of the models, while tuning their parameters to generalize well on unseen data. Finally, a test data-set is used to compute the performance or the prediction power of the selected model.
 
 * Machine Learning Models
 Machine learning algorithms look for hidden patterns in historical data with the /hope/ that the patterns will appear in future unseen data. Machine learning models, or /learners/, are then built to capture the patterns and enable us to answer questions of interest by applying the models to unseen data. 
 
-In machine learning, a data set is typically a set of *records*, each containing a set of *features*. For example, in a clinical study, a record may represent information of a patient, while a feature may represent blood pressure of the patient. Some sample data can be downloaded from [[https://archive.ics.uci.edu/ml/index.php][UCI Machine Learning Repository]]. Popular machine learning libraries, such as scikit-learn in Python, provide APIs for loading popular data sets.
+In machine learning, a data-set is typically a set of *records*, each containing a set of *features*. For example, in a clinical study, a record may represent information of a patient, while a feature may represent blood pressure of the patient. Some sample data-sets can be downloaded from [[https://archive.ics.uci.edu/ml/index.php][UCI Machine Learning Repository]]. Popular machine learning libraries, such as scikit-learn in Python, provide APIs for loading popular data-sets.
 
 Feature values can be *scalar*, *categorical*, *ordinal*, or *text*. 
 + Scalar Features typically contain measurement values, such as price, age, height, blood pressure, etc.
 + Categorical Features hold categories of a small set. For example, spam filtering data may have a /Spam/ feature with values {YES, NO} to indicate whether or not an email (a record of spam data) is spam.
-+ Ordinal Features are the same as categorical features in which categories are ordered. For example, T-shirt sizes may consist of the values {SMALL, MEDIUM, LARGE} which define an order.
-+ Text Features may hold any data in the text format, such as name, home address, date, etc.
++ Ordinal Features are the same as categorical features in which categories are ordered. For example, T-shirt sizes may consist of the values {SMALL, MEDIUM, LARGE} which are obviously ordered.
++ Text Features may hold any data in the text format, such as name, address, date, etc.
 
 Machine learning algorithms include two major categories: supervised and unsupervised.
 
-In *supervised* learning, there is an outcome feature, beside other features, which is typically categorical or scalar. The goal is to predict the value of the outcome feature given the values of other features. The values of the outcome feature are given for historical data to /supervise/ training prediction models or learners. For example, given a set of emails, we can manually categorize them as spam or not-spam. Then, we build a model using some features of the emails along with their outcome values (spam/not-spam). The model can finally be used to categorize a new email as spam or not-spam. This problem is a typical example of the /binary classification/ problem. Other types include the /regression problem/ and the /multi-class classification problem/.
+In *supervised* learning, there is an outcome feature, beside others, which is typically categorical or scalar. The goal is to predict the value of the outcome feature given the values of other features. The values of the outcome feature are given for historical data to /supervise/ training of the prediction models or learners. For example, given a set of emails, we can manually categorize them as spam or not-spam. Then, we build a model using some features of the emails along with their outcome values (spam/not-spam). The model can finally be used to predict whether a new email is spam or not. This problem is a typical example of the /binary classification/ problem. Other types include the /regression problem/ and the /multi-class classification problem/.
 
-In *unsupervised* learning, there is no outcome feature, and the objective is find hidden relations among records. For example, given a set of news, we may want to know how to organize them into a few clusters. This is referred to as the /clustering problem/. As another example, suppose we are given a set of transactions in a store, and would like to discover subsets of items that are bought together. This problem is referred to as the /market basket analysis/ or /association rules/.
+In *unsupervised* learning, there is no outcome feature, and the objective is to find hidden relations among records. For example, given a set of news, we may want to know how to organize them into a few clusters. This is referred to as the /clustering problem/. As another example, suppose that we are given a set of transactions in a store and would like to discover subsets of items that are bought together. This problem is referred to as the /market basket analysis/ or /association rules/.
 
 In the next section, we will see how to formulate the supervised learning problem as an optimization model. You may skip the theory and mathematics and jump to Section [[Bias-Variance Tradeoff][Bias-Variance Tradeoff]].
+
 * Best Prediction Model
 
 *Note:* This section discusses how to formulate a supervised learning problem as an optimization model. Readers who would like to understand the concept without getting deeper in the theory and mathematics may skip this section.
 
-A supervised machine learning problem (whether classification or regression) is to find the best parametric function, a.k.a /model/, that reliably predicts target values of unseen data. To estimate model parameters, we may use Maximum Likelihood Estimation (MLE) or Maximum A Posteriori (MAP). Another common approach is to estimate model parameters by minimizing a loss function that measures the prediction error. We will see that these two approaches are indeed equivalent.
+A supervised machine learning problem (whether classification or regression) is to find the best parametric function, a.k.a /model/, that reliably predicts target values of unseen data. To estimate model parameters, we may use maximum-likelihood or maximum-aposteriori estimation. Another common approach is to estimate model parameters by minimizing a loss function that measures the prediction error. We will see that these two approaches are indeed equivalent.
 
-A machine learning problem can thus be cast as an optimization problem to find model parameters that minimize total loss or maximizes likelihood or posterior probabilities. Note that we build a model using training data, thus called training a model, but compare models using test data to see how they can generalize to unseen data. Model accuracy and generalizability are both important and will be discussed in more details in the next section.
+A machine learning problem can thus be cast as an optimization problem to find model parameters that minimize total loss or maximizes likelihood or posterior probabilities. Note that we build a model using training data-sets, thus called training a model, but compare models on test data-sets to see how they can generalize to unseen data. Model accuracy and generalizability are both important and will be discussed in more details in the next section.
 
 To formulate the optimization problem, we need a set of records and a parametric function to approximate the true predictor, described mathematically as follows:
 + A set of records \(\{(\boldsymbol{x}_i, y_i): i=1,2,\ldots,m\}\), in which \(\boldsymbol{x}_i=(x_{i1},\ldots,x_{in})\) is the input data, with \(n\) features, and \(y_i\) is the target value; see Table [[data-table]].
-+ A parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x})\) which maps a record \(\boldsymbol{x}\) from the input space to a value \(y\) in the target space. 
++ A parametric function \(f_\boldsymbol{w}(\boldsymbol{x})\) which maps a record \(\boldsymbol{x}\) from the input space to a value \(y\) in the target space. 
 
 #+caption: Data table
 #+name: data-table
@@ -79,84 +87,84 @@ To formulate the optimization problem, we need a set of records and a parametric
 | \(\vdots\quad\quad \vdots\qquad\qquad \vdots\) | \(\vdots\)         |
 | \(x_{m1}\quad x_{m2}\quad \dots \quad x_{mn}\) | \(y_m\)            |
 
-To find unknown parameters using MLE approach, we maximize \(p(\boldsymbol{X},\boldsymbol{y}|\boldsymbol{w})\), the likelihood of the input data given model parameters. Assuming that the data are i.i.d. (independent and identically distributed), we have \(p(\boldsymbol{X},\boldsymbol{y}|\boldsymbol{w})=\Pi_{i=1}^m p(\boldsymbol{x}_i,y_i|\boldsymbol{w})\). Therefore, the maximum likelihood estimation is equivalent to the following maximization problem:
+To find unknown parameters using *maximum-likelihood estimation (MLE)* approach, we maximize \(p(\boldsymbol{X},\boldsymbol{y}|\boldsymbol{w})\), the likelihood of the input data given model parameters. Assuming that the data are i.i.d. (independent and identically distributed), we have \(p(\boldsymbol{X},\boldsymbol{y}|\boldsymbol{w})=\Pi_{i=1}^m p(\boldsymbol{x}_i,y_i|\boldsymbol{w})\). Therefore, the maximum-likelihood estimation is equivalent to the following maximization problem:
 \[
-  \max_{\boldsymbol{w}}\ \sum_{i=1}^m \log p(\boldsymbol{x}_i,y_i|\boldsymbol{w}).
+  \max_{\boldsymbol{w}} \sum_{i=1}^m \log p(\boldsymbol{x}_i,y_i|\boldsymbol{w}).
 \]
 As you noticed, we maximize the log likelihood instead of the likelihood itself. The reason is that while they both are theoretically equivalent, the log likelihood maximization yields a more tractable problem for optimization algorithms. 
 
-Maximum likelihood estimation often yields a complex predictor and results in over-fitting -- a concept discussed in the next section. It turns out that the MAP approach, maximizing posterior probabilities \(p(\boldsymbol{w}|\boldsymbol{X},\boldsymbol{y})\), yields simpler models because of incorporating prior knowledge of unknown parameters. From the Bayes rule, we have
+The maximum-likelihood estimation often yields a complex predictor and results in over-fitting -- a concept discussed in the next section. It turns out that the *maximum aposteriori (MAP)* estimation approach, which maximizes posterior probabilities \(p(\boldsymbol{w}|\boldsymbol{X},\boldsymbol{y})\), yields simpler models because of incorporating prior knowledge of unknown parameters. From the Bayes rule, we have
 \[
 p(\boldsymbol{w}|\boldsymbol{X},\boldsymbol{y})=\frac{p(\boldsymbol{w})p(\boldsymbol{X},\boldsymbol{y}|\boldsymbol{w})}{p(\boldsymbol{X},\boldsymbol{y})}.
 \]
 Thus, maximizing posterior probabilities is equivalent to the following maximization problem:
 \[ 
-  \max_{\boldsymbol{w}}\ \sum_{i=1}^m \log p(\boldsymbol{x}_i,y_i|\boldsymbol{w})+\log p(\boldsymbol{w}).
+  \max_{\boldsymbol{w}} \sum_{i=1}^m \log p(\boldsymbol{x}_i,y_i|\boldsymbol{w})+\log p(\boldsymbol{w}).
 \]
 
 ** Regression
 The target values \(y_i\) in the regression problem are scalar, representing features such as weight, height, price, etc. Scalar target values may also be referred as the response values.
 
-The *linear regression model* is one of the well-studied and popular machine learning models. In linear regression, we use the parametric function \(\phi_\boldsymbol{w}(\boldsymbol{x_i})=\boldsymbol{w}^T\boldsymbol{x_i}\) as the predictor. We assume that the target (response) values \(y_i\) contain Gaussian noise \(\epsilon\), .i.e.,
+The *linear regression model* is one of the well-studied and popular machine learning models. In linear regression, we use the parametric function \(f_\boldsymbol{w}(\boldsymbol{x_i})=\boldsymbol{w}^T\boldsymbol{x_i}\) as the predictor. We assume that the target (response) values \(y_i\) contain Gaussian noise \(\epsilon\), .i.e.,
 \[
   y_i = \boldsymbol{w}^T\boldsymbol{x_i} + \epsilon,\qquad \epsilon \sim N(0,\sigma^2).
 \]
-We can show that the maximum likelihood estimation is equivalent to maximizing the following function:
+We can show that the maximum-likelihood estimation is equivalent to the following maximization problem:
 \[
-  \max_{\boldsymbol{w}}\ -\frac{1}{2\sigma^2}\sum_{i=1}^m (y_i-\boldsymbol{w}^T\boldsymbol{x}_i)^2,
+  \max_{\boldsymbol{w}} -\frac{1}{2\sigma^2}\sum_{i=1}^m (y_i-\boldsymbol{w}^T\boldsymbol{x}_i)^2,
 \]
 which is a weighted /sum of squared errors (SSE)/ term.
 
-For MAP, we assume that prior probabilities are Gaussian with \(\boldsymbol{w}\sim N(\boldsymbol{0}, \lambda^{-1}\boldsymbol{I})\). We can similarly show that MAP estimation is equivalent to the following maximization problem:
+For MAP, we assume that prior probabilities are Gaussian with \(\boldsymbol{w}\sim N(\boldsymbol{0}, \lambda^{-1}\boldsymbol{I})\). We can similarly show that the MAP estimation is equivalent to the following maximization problem:
 \[
-  \max_{\boldsymbol{w}}\ -\frac{1}{2\sigma^2}\sum_{i=1}^m (y_i-\boldsymbol{w}^T\boldsymbol{x}_i)^2 - \frac{\lambda}{2}\|\boldsymbol{w}\|_2^2,
+  \max_{\boldsymbol{w}} -\frac{1}{2\sigma^2}\sum_{i=1}^m (y_i-\boldsymbol{w}^T\boldsymbol{x}_i)^2 - \frac{\lambda}{2}\|\boldsymbol{w}\|_2^2,
 \]
-also known as the /Ridge Regression/ model. The second (regularization) term guarantees that the parameters of the predictor are small enough to yield a simple model.
+whose objective function is known as the /Ridge Regression/ model. The second (regularization) term guarantees that the parameters of the predictor are small enough to yield a simple model.
 
-The regression task is to first find \(\boldsymbol{w}\) that maximizes posterior probabilities. Then, use the predictor \(\phi_\boldsymbol{w}(\boldsymbol{x_i})=\boldsymbol{w}^T\boldsymbol{x_i}\) to estimate target (response) values of unseen input data.
+The regression task is to first find \(\boldsymbol{w}\) that maximizes posterior probabilities. Then, use the predictor \(f_\boldsymbol{w}(\boldsymbol{x_i})=\boldsymbol{w}^T\boldsymbol{x_i}\) to estimate target (response) values of unseen input data.
 
-Although there is a closed form solution for the minimization problem, it is efficient to use iterative methods such as the /gradient descent/ algorithm.
+Although there is a closed form solution for the maximization problem, it is efficient to use iterative methods such as the /gradient descent/ algorithm.
 
 ** Classification
-In classification, target values are categorical and taken from a finite set of categories. The number of categories must be at least two. Classification problems with two categories are referred to as the binary classification problems. Most classification algorithm are developed for the binary classification problems, since multi-class classification problems can be converted to a series of binary classification problems. 
+In classification, target values are categorical and taken from a finite set of categories. The number of categories must be at least two. Classification problems with two categories are referred to as the binary classification problems. Most classification algorithm are developed for the binary case, since multi-class classification problems can be converted to a series of binary classification problems. 
 
-The *generalized linear model (GLM)* extends the linear regression model by applying a /link function/ to the response values. Thus, the predictor of the GLM is given by \(\phi_\boldsymbol{w}(\boldsymbol{x}_i)=g(\boldsymbol{w}^T\boldsymbol{x}_i)\), where \(g\) is the link function. Unlike the linear regression model, which is not suitable for the classification problems, we can use GLM with proper link functions for classification tasks. 
+The *generalized linear model (GLM)* extends the linear regression by applying a /link function/ to the response values. Thus, the predictor of the GLM is given by \(f_\boldsymbol{w}(\boldsymbol{x}_i)=g(\boldsymbol{w}^T\boldsymbol{x}_i)\), where \(g\) is the link function. Unlike the linear regression, which is not suitable for the classification problems, we can use GLM with proper link functions for classification tasks. 
 
 The *logistic regression model*, which is widely used for the binary classification task, is an example of GLM, with /sigmoid/ function \(g(z)=1/(1+e^{-z})\) as its link function. Consider the binary classification problem and, without loss of generality, assume that \(y_i\in\{-1,1\}\). Thus, the predictor in the logistic regression is  
-\begin{align}\label{logistic-predictor}
-  \phi_\boldsymbol{w}(\boldsymbol{x}_i)=\frac{1}{1+e^{-\boldsymbol{w}^T\boldsymbol{x}_i}},
-\end{align}
+\begin{align*}
+  f_\boldsymbol{w}(\boldsymbol{x}_i)=\frac{1}{1+e^{-\boldsymbol{w}^T\boldsymbol{x}_i}},
+\end{align*}
 whose value is interpreted as the probability of having \(y_i=1\) given \(\boldsymbol{x}_i\). In other words, we have
 \begin{align*}
 p(y_i=y|\boldsymbol{x}_i) &= \frac{1}{1+e^{-y\boldsymbol{w}^T\boldsymbol{x}_i}},\qquad y\in\{-1,1\}.
 \end{align*}
-We observe that the Bernoulli model can describe the outcome of the target value with the latter probabilities. Thus, assuming that the records are i.i.d., we can show that the maximum a posteriori estimation of \(\boldsymbol{w}\) can be obtained by solving the following optimization problem:
+We observe that the Bernoulli model can describe the outcome of the target value with the latter probabilities. Thus, assuming that the records are i.i.d., we can show that the maximum-aposteriori estimation of \(\boldsymbol{w}\) can be obtained by solving the following optimization problem:
 \[
-\max_{\boldsymbol{w}}\ -\sum_{i=1}^m \log(1+e^{-y_i\boldsymbol{w}^T\boldsymbol{x}_i}) -\frac{\lambda}{2}\|\boldsymbol{w}\|_2^2.
+\max_{\boldsymbol{w}} -\sum_{i=1}^m \log(1+e^{-y_i\boldsymbol{w}^T\boldsymbol{x}_i}) -\frac{\lambda}{2}\|\boldsymbol{w}\|_2^2.
 \]
-As noted previously, the gradient descent algorithm can be used to solve the latter optimization problem and obtain unknown vector \(\boldsymbol{w},\) which defines the predictor model. The predictor can then be used to compute the posterior probabilities of unseen records. Of course, label \(y\) of an unseen record \(\boldsymbol{x}\) can be easily computed from its posterior probabilities:
+As noted previously, the gradient descent algorithm can be used to solve the latter optimization problem and obtain the unknown vector \(\boldsymbol{w},\) which defines the predictor model. The predictor can then be used to compute the posterior probabilities of unseen records. Of course, label \(y\) of an unseen record \(\boldsymbol{x}\) can be easily computed from its posterior probabilities:
 \[
   y(x)=\begin{cases}
-          1\quad \phi_\boldsymbol{w}(\boldsymbol{x}) \ge 0.5,\\
+          1\quad f_\boldsymbol{w}(\boldsymbol{x}) \ge 0.5,\\
           0\quad \text{otherwise.}
          \end{cases}
 \] 
 
 ** Summary
-In summary, we saw that machine learning problems can be cast as optimization models. To formulate the optimization model, we need a set of records (training data), a parametric function (model), and a measure to find best model parameters. For example, likelihood of data given parameters may be maximized to yield maximum likelihood estimation (MLE) of the model parameters. Alternatively, posterior probabilities may be maximized to yield maximum a posteriori (MAP) estimation of the parameters. The latter yields an optimization problem which yields models whose complexity can be adjusted by a parameter \(\lambda\).
+In summary, we saw that machine learning problems can be cast as optimization models. To formulate the optimization model, we need a set of records (training data-set), a parametric function (model), and a measure to find best model parameters. For example, likelihood of data given parameters may be maximized to yield maximum-likelihood estimation (MLE) of the model parameters. Alternatively, posterior probabilities may be maximized to yield maximum-aposteriori (MAP) estimation of the parameters. The latter yields an optimization problem which yields models whose complexity can be adjusted by a parameter \(\lambda\).
  
-As the model complexity increases, the prediction error on training data is expected to decrease. Although very accurate on training data, highly complex models are not generalizable to unseen data. Thus, there is a tradeoff between accuracy and generalizability of a model. In the next section, we will learn more about this tradeoff and characteristics of a good model.
+As the model complexity increases, the prediction error on training data-sets is expected to decrease. Although very accurate on training data-sets, highly complex models are not generalizable to unseen data. Thus, there is a tradeoff between accuracy and generalizability of a model. In the next section, we will learn more about this tradeoff and characteristics of a good model.
 
 * <<Bias-Variance Tradeoff>> Bias-Variance Tradeoff
-As we discussed in the previous section, the prediction error on training data is not enough to assess the goodness of a model. A good model needs to be generalizable to unseen data as well. It can be shown that the expected error of a model is composed of three terms: /bias/, /variance/, and an irreducible error term; consult with [[https://web.stanford.edu/~hastie/ElemStatLearn/][The Elements of Statistical Learning]] for the proof and detailed discussion.
+As we discussed in the previous section, the prediction error on training data-sets is not enough to assess the goodness of a model. A good model needs to be generalizable to unseen data as well. It can be shown that the expected error of a model is composed of three terms: /bias/, /variance/, and an irreducible error term; consult with [[https://web.stanford.edu/~hastie/ElemStatLearn/][The Elements of Statistical Learning]] for the proof and detailed discussion.
 
-Bias is an error term that measures the *accuracy* of a model. High bias means that the model does not really capture the hidden pattern in the data. This is referred to as *under-fitting*. We ideally want a low bias model; but how low the bias should be? Models with a very low bias tend to capture the noise in the training data, resulting in an *over-fitted* model. Therefore, the bias itself as a measure is not enough for building a good model; we need another measure.
+Bias is an error term that measures the *accuracy* of a model. High bias means that the model does not really capture hidden patterns in the data. This is referred to as *under-fitting*. We ideally want a low bias model; but how low the bias should be? Models with a very low bias tend to capture the noise in the training data-set, resulting in an *over-fitted* model. Therefore, the bias itself as a measure is not enough for building a good model; we need another measure.
 
 The variance is an error term that measures the *consistency* of a model. Over-fitted models usually have high variance. A high variance indicates that the model is not generalizable to unseen data.
 
-Ideally, we want a model that captures hidden patterns in the training data (low bias) and generalizes well to unseen data (low variance). Thus, we need to minimize both bias and variance, simultaneously. As shown in Figure [[fig:bias-variance-tradeoff]], a simple model usually has a high bias; such a model is under-fitted, regardless of having low or high variance. Assuming that we have enough training data, increasing model complexity will cause the bias and variance to decrease until a point where the variance will begin to grow. That point defines a model with optimal complexity that minimizes both bias and variance, simultaneously.
+Ideally, we want a model that captures hidden patterns in the training data-set (low bias) and generalizes well to unseen data (low variance). Thus, we need to minimize both bias and variance, simultaneously. As shown in Figure [[fig:bias-variance-tradeoff]], a simple model usually has a high bias; such a model is under-fitted, regardless of having low or high variance. Assuming that we have enough training data-set, increasing model complexity will cause the bias and variance to decrease until a point where the variance will begin to grow. That point defines a model with optimal complexity that minimizes both bias and variance, simultaneously.
 
-#+caption: Bias-variance tradeoff in machine learning. A simple model yields high bias (low accuracy) on both training and test data. A complex model, on the other hand, yields high variance (low consistency) as it captures noise in the training data, too.
+#+caption: Bias-variance tradeoff in machine learning. A simple model yields high bias (low accuracy) on both training and test data-sets. A complex model, on the other hand, yields high variance (low consistency) as it captures noise in the training data-set, too.
 #+name: fig:bias-variance-tradeoff
 [[./images/bias-variance-tradeoff.png]]
 
@@ -170,48 +178,55 @@ In summary, we have the following four cases, as depicted in Figure [[fig:bias-v
 #+name: fig:bias-varaince-dart
 [[./images/bias-variance-dart.jpg]]
 
-So far we learned that a good model, trained on the training data, has a low prediction error on the test data. However, we cannot rely on one set of training and test data, as we may get lucky to obtain low prediction error on one test data. In other words, one set of data is not representative of the whole space of possible unseen data. 
+So far we learned that a good model, trained on the training data-set, has a low prediction error on the test data-set. However, we cannot rely on one set of training and test data, as we may get lucky to obtain low prediction error on one test data-set. In other words, one set of data is not representative of the whole space of possible unseen data. 
 
 One solution is to collect many sample data and repeat the process to compute prediction errors and combine them to obtain a good estimate of the true prediction error of the model. One way to combine the prediction errors is to take the average of them.
 
-The problem with the latter solution is that we may not be able to collect many sets of data. Cross-validation technique, discussed in the next section, is a well-known approach to generate multiple sets of training and test data from a single data set.
+The problem with the latter solution is that we may not be able to collect many sets of data. Cross-validation technique, discussed in the next section, is a well-known approach to generate multiple sets of training and test data-sets from a single data-set.
 
 * Cross-Validation
-One of the most widely-used methods to estimate the prediction error of a machine learning algorithm is the /\(K\)-fold cross-validation/. This method partitions data into \(K\) parts and generates \(K\) pairs of training-test data as follows: for each \(k\in\{1,2,\ldots,K\}\), the \(k\)-th part in Set \(k\) is the test data, while the rest is the training data. A 4-fold cross-validation data partitioning is depicted in the following diagram.
+One of the most widely-used methods to estimate the prediction error of a machine learning algorithm is the /\(K\)-fold cross-validation/. This method partitions data into \(K\) parts and generates \(K\) pairs of training-test data-sets as follows: for each \(k\in\{1,2,\ldots,K\}\), the \(k\)-th part in Set \(k\) is the test data-set, while the rest forms the training data-set. Typical values of \(K\) are 5 and 10. A 5-fold cross-validation data-partitioning is depicted in the following diagram.
 
-#+caption: \(K\)-fold cross-validation
+#+caption: 5-fold cross-validation
 #+BEGIN_SRC ditaa :file images/cross-validation.png :cmdline -r
-   Set 1         Set 2         Set 3         Set 4
-+----------+  +----------+  +----------+  +----------+
-|cPNK      |  |cBLU      |  |cBLU      |  |cBLU      |
-|   Test   |  | Training |  | Training |  | Training |
-|          |  |          |  |          |  |          |
-+----------+  +----------+  +----------+  +----------+
-|cBLU      |  |cPNK      |  |cBLU      |  |cBLU      |
-| Training |  |   Test   |  | Training |  | Training |
-|          |  |          |  |          |  |          |
-+----------+  +----------+  +----------+  +----------+
-|cBLU      |  |cBLU      |  |cPNK      |  |cBLU      |
-| Training |  | Training |  |   Test   |  | Training |
-|          |  |          |  |          |  |          |
-+----------+  +----------+  +----------+  +----------+
-|cBLU      |  |cBLU      |  |cBLU      |  |cPNK      |
-| Training |  | Training |  | Training |  |   Test   |
-|          |  |          |  |          |  |          |
-+----------+  +----------+  +----------+  +----------+  
+   Fold 1        Fold 2        Fold 3        Fold 4        Fold 5
++----------+  +----------+  +----------+  +----------+  +----------+
+|cPNK      |  |cBLU      |  |cBLU      |  |cBLU      |  |cBLU      |
+|   Test   |  | Training |  | Training |  | Training |  | Training |
+|          |  |          |  |          |  |          |  |          |
++----------+  +----------+  +----------+  +----------+  +----------+
+|cBLU      |  |cPNK      |  |cBLU      |  |cBLU      |  |cBLU      |
+| Training |  |   Test   |  | Training |  | Training |  | Training |
+|          |  |          |  |          |  |          |  |          |
++----------+  +----------+  +----------+  +----------+  +----------+
+|cBLU      |  |cBLU      |  |cPNK      |  |cBLU      |  |cBLU      |
+| Training |  | Training |  |   Test   |  | Training |  | Training |
+|          |  |          |  |          |  |          |  |          |
++----------+  +----------+  +----------+  +----------+  +----------+
+|cBLU      |  |cBLU      |  |cBLU      |  |cPNK      |  |cBLU      |
+| Training |  | Training |  | Training |  |   Test   |  | Training |
+|          |  |          |  |          |  |          |  |          |
++----------+  +----------+  +----------+  +----------+  +----------+  
+|cBLU      |  |cBLU      |  |cBLU      |  |cBLU      |  |cPNK      |
+| Training |  | Training |  | Training |  | Training |  |   Test   |
+|          |  |          |  |          |  |          |  |          |
++----------+  +----------+  +----------+  +----------+  +----------+  
 #+END_SRC
 
-After generating \(K\) sets of data, we build models on the training data sets and compute the prediction errors on the test data sets. The prediction error of a machine learning algorithm is then computed by combining all the computed prediction errors. For example, we can compute the average of the computed errors as the ultimate prediction error.
+After generating \(K\) sets of data, we build models on the training data-sets and compute the prediction errors on the test data-sets. The prediction error of a machine learning algorithm is then computed by combining all the computed prediction errors. For example, we can compute the average of the computed errors as the ultimate prediction error.
 
-*Note:* Stratified sampling may be employed in partitioning of the \(K\)-fold cross-validation technique for proportional distribution of the records into \(K\) parts. 
+A popular version of the cross-validation method is the *leave-one-out* approach. In this approach, we choose \(K=m\), the number of records in the training data-set. Therefore, in each fold, there is only one record for the test data-set, while the rest of the records are used for training the model.
+
+*Note 1:* Stratified sampling may be employed in partitioning of the \(K\)-fold cross-validation technique for proportional distribution of the records into \(K\) parts. 
+
+*Note 2:* The cross-validation method is not used for model building; its purpose is to obtain more accurate estimate of the prediction error of a given model.
 
 * To-do List :noexport:
-+ Machine learning vs statistics vs AI vs data mining
 + how to reduce bias and variance
 + measuring models: ROC, etc.
 + cross validation: how to choose K
 
-# ./images/bias-variance-tradeoff.png https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-tradeoff.png
-# ./images/bias-variance-dart.jpg https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-dart.jpg
-
-# images/cross-validation.png https://eissanematollahi.com/wp-content/uploads/2018/08/cross-validation-1.png
+# images/machine-learning-workflow.png https://eissanematollahi.com/wp-content/uploads/2018/08/machine-learning-workflow-2.png
+# ./images/bias-variance-tradeoff.png https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-tradeoff-1.png
+# ./images/bias-variance-dart.jpg https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-dart-1.jpg
+# images/cross-validation.png https://eissanematollahi.com/wp-content/uploads/2018/08/cross-validation-2.png
