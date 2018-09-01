@@ -1,10 +1,10 @@
 #+BLOG: eissanematollahi
 #+POSTID: 439
 #+ORG2BLOG:
-#+DATE: [2018-08-28]
+#+DATE: [2018-09-01]
 #+OPTIONS: toc:t num:nil todo:nil pri:nil tags:nil ^:nil ':t
 #+CATEGORY: Machine Learning
-#+TAGS: Machine Learning, Statistics, Prediction, Classification, Regression, Optimization, Bias-Variance Tradeoff, Suppervised Learning, Unsupervised Learning, Cross-Validation, Maximum Likelihood Estimation, Maximum Aposteriori 
+#+TAGS: Machine Learning, Statistics, Prediction, Classification, Regression, Optimization, Bias-Variance Tradeoff, Supervised Learning, Unsupervised Learning, Cross-Validation, Maximum Likelihood Estimation, Maximum Aposteriori 
 #+DESCRIPTION:
 #+TITLE: Machine Learning: Basic Workflow
 #+SUBTITLE: Better understanding of the basic workflow in machine learning tasks
@@ -21,6 +21,11 @@ In addition, machine learning models can be trained to perform complex tasks, in
 + Driving a car (self-driving cars)
 + Recognizing zip-codes from the images of hand-written postal envelopes
 + Describing details of a photo
+
+#+ATTR_HTML: :class aligncenter :width 400px
+#+name: fig:machine-learning.png
+[[./images/machine-learning.png]]
+
 
 The following diagram depicts a common approach to building machine learning models. This workflow is explained in more details next.
 
@@ -45,7 +50,7 @@ The following diagram depicts a common approach to building machine learning mod
    + *Test* data-set to compute the prediction error of the best model.
 2. We select a class of machine learning models, such as linear or logistic regression. These models are typically parametric whose parameters must be estimated on a training data-set. Model parameters estimation is formulated as one of the following optimization problems:
    + *Maximum-likelihood estimation (MLE)* which maximizes the likelihood of data given model parameters.
-   + *Maximum-aposteriori (MAP)* estimation which maximizes posterior probabilities given prior probabibilities of the model parameters.
+   + *Maximum-aposteriori (MAP)* estimation which maximizes posterior probabilities given prior probabilities of the model parameters.
    + *Minimum total risk* which minimizes the empirical total risk, defined based on a proper loss function.
    These optimization problems can be solved using optimization algorithms, such as the gradient descent method.
 3. Machine learning models typically have a *complexity parameter*, which needs to be optimized for generalizability. For example, in the ridge regression, the multiplier \(\lambda\) of the regularization term is the complexity parameters. In \(k\)-nearest neighbors, the \(k\) is the complexity parameter of the model. In this step, we tune the complexity parameter to obtain the best prediction error on the test data-set. For this, we may require to repeat steps (2) and (3) multiple times.  
@@ -172,14 +177,14 @@ Ideally, we want a model that captures hidden patterns in the training data-set 
 #+name: fig:bias-variance-tradeoff
 [[./images/bias-variance-tradeoff.png]]
 
-In summary, we have the following four cases, as depicted in Figure [[fig:bias-varaince-dart]]:
+In summary, we have the following four cases, as depicted in Figure [[fig:bias-variance-dart]]:
 + High bias, high variance: The model is both inaccurate and inconsistent: under-fitted model. Typically, this occurs when there is no enough training data. To avoid this case, we simply collect more data.
 + High bias, low variance: The model is consistently inaccurate: under-fitted model.
 + Low bias, high variance: The model is accurate but inconsistent: over-fitted model.
 + Low bias, low variance: The model is both accurate and consistent: well-fitted model.
 
 #+caption: Bias-variance variation. A good model has both low bias and low variance. High bias indicates that the model in under-fitted, and high variance signals that the model is over-fitted.
-#+name: fig:bias-varaince-dart
+#+name: fig:bias-variance-dart
 [[./images/bias-variance-dart.png]]
 
 So far we learned that a good model, trained on the training data-set, has a low prediction error on the test data-set. However, we cannot rely on one set of training and test data, as we may get lucky to obtain low prediction error on one test data-set. In other words, one set of data is not representative of the whole space of possible unseen data. 
@@ -219,7 +224,9 @@ One of the most widely-used methods to estimate the prediction error of a machin
 
 After generating \(K\) sets of data, we build models on the training data-sets and compute the prediction errors on the test data-sets. The prediction error of a machine learning algorithm is then computed by combining all the computed prediction errors. For example, we can compute the average of the computed errors as the ultimate prediction error.
 
-A popular version of the cross-validation method is the *leave-one-out* approach. In this approach, we choose \(K=m\), the number of records in the training data-set. Therefore, in each fold, there is only one record for the test data-set, while the rest of the records are used for training the model.
+A version of the cross-validation is the *leave-one-out* approach. In this approach, we choose \(K=m\), the number of records in the training data-set. Therefore, in each fold, there is only one record for the test data-set, while the rest of the records are used for training the model.
+
+As we increase \(K\), the training data-set size increases while the size of the data-set shrinks. Thus, we should expect low bias and high variance for large values of \(K\). 
 
 *Note 1:* Stratified sampling may be employed in partitioning of the \(K\)-fold cross-validation technique for proportional distribution of the records into \(K\) parts. 
 
@@ -230,9 +237,3 @@ A popular version of the cross-validation method is the *leave-one-out* approach
 + measuring models: ROC, etc.
 + cross validation: how to choose K
 
-
-# images/machine-learning-workflow.png https://eissanematollahi.com/wp-content/uploads/2018/08/machine-learning-workflow-3.png
-# ./images/bias-variance-tradeoff.png https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-tradeoff-2.png
-# images/cross-validation.png https://eissanematollahi.com/wp-content/uploads/2018/08/cross-validation-3.png
-
-# ./images/bias-variance-dart.png https://eissanematollahi.com/wp-content/uploads/2018/08/bias-variance-dart.png
