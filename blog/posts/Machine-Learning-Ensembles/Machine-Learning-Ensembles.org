@@ -6,3 +6,14 @@
 #+DESCRIPTION:
 #+TITLE: Machine Learning: Ensembles
 #+SUBTITLE: Improving prediction power by combining weak learners
+
+* Introduction
+* Condorcet's Jury
+* Ensemble Learners
+** Boosting
+** Bagging
+** Combination Methods
+
+* To-do List :noexport:
++ measuring models: ROC, etc.
++ ensembles

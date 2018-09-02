@@ -1,0 +1,48 @@
+\documentclass[dvipsnames]{minimal}
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage[pdftex,active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+
+\usepackage{pgfplots,filecontents}
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+\begin{tikzpicture}
+\def\s{0.1}
+\def\numrect{10}
+\def\boxwidth{2}
+\def\boxheight{1}
+
+\pgfmathsetseed{7}
+\foreach \i in {1,2,...,\numrect} {
+  \pgfmathsetmacro\y{rand}
+  \pgfmathsetmacro\x{(\i-1)*(\s+\boxwidth)}
+  \fill[color=orange!25,rounded corners=4pt] (\x,\y) rectangle ++(\boxwidth,\boxheight);
+  \node[align=center] at (\x+0.5*\boxwidth,\y+0.5*\boxheight) {Learner \i};
+  \draw [line width=0.35mm,-] (\x+0.5*\boxwidth,\y+\boxheight) -- (\x+0.5*\boxwidth,\boxheight+2);
+}
+
+\pgfmathsetmacro\linewidth{\numrect*(\boxwidth+\s)+\s}
+
+\fill[color=blue!25,rounded corners=4pt] ({0.5*(\linewidth-\boxwidth)},\boxheight+3.5) rectangle ++(\boxwidth,\boxheight);
+\node[align=center] at (0.5*\linewidth,1.5*\boxheight+3.5) {Ensemble\\ learner}; 
+\draw [line width=0.35mm,->] (0.5*\linewidth,\boxheight+2) -- (0.5*\linewidth,\boxheight+3.5);
+\draw [line width=0.35mm,-] (0.5*\boxwidth,\boxheight+2) -- (\linewidth-0.5*\boxwidth-2*\s,\boxheight+2); % middle line
+
+\draw [line width=0.5mm,-,color=blue] (0,\boxheight+5) -- (\linewidth,\boxheight+5); % top blue line
+\node[align=left,color=blue] at (-2.5,\boxheight+5) {Perfect predictor}; 
+
+\draw [line width=0.5mm,-,color=red] (0,-1) -- (\linewidth,-1); % bottom red line
+\node[align=left,color=red] at (-2.5,-1) {Random predictor}; 
+
+\node[align=left] at (-2.5,0.7) {Slightly better than\\ random predictor};
+\node[align=left] at (-2.5,\boxheight+4) {Nearly perfect\\ ensemble predictor};
+
+\end{tikzpicture}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
