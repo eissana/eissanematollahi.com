@@ -1,0 +1,8 @@
+#+ORG2BLOG:
+#+DATE: [2018-09-02]
+#+OPTIONS: toc:t num:nil todo:nil pri:nil tags:nil ^:nil ':t
+#+CATEGORY: Machine Learning
+#+TAGS: Machine Learning, Ensembles, Condorcet's Jury, Classification, Majority Vote
+#+DESCRIPTION:
+#+TITLE: Machine Learning: Ensembles
+#+SUBTITLE: Improving prediction power by combining weak learners
