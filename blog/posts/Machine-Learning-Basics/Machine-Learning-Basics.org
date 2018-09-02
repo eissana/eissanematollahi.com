@@ -199,10 +199,6 @@ A version of the cross-validation is the *leave-one-out* or \(m\)-fold cross-val
 
 As \(K\) decreases, both the number of data-sets (folds) and the size of each training data-set shrink while the test data-set expands. It means that the amount of computation decreases since there are fewer models to train. Nevertheless, the prediction errors are expected to have higher bias and lower variance. The optimal choice of \(K\) is problem dependent; however, \(K=5\) and \(K=10\) are commonly used values in practice.
 
-* To-do List :noexport:
-+ measuring models: ROC, etc.
-+ ensembles
-
 
 # ./images/machine-learning.png https://eissanematollahi.com/wp-content/uploads/2018/09/machine-learning-6.png
 # ./images/machine-learning-workflow.png https://eissanematollahi.com/wp-content/uploads/2018/09/machine-learning-workflow-4.png
