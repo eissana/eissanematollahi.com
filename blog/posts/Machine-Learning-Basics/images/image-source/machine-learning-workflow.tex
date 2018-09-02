@@ -1,0 +1,39 @@
+\documentclass[dvipsnames]{minimal}
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage[pdftex,active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+
+\usepackage{pgfplots,filecontents}
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+\begin{tikzpicture}
+\def\w{4}
+\def\h{2}
+\def\s{.5}
+\fill[color=blue!25,rounded corners=4pt] (0,0) rectangle ++(\w,\h);
+\node[text width=\w cm, align=center] at (0.5*\w,0.5*\h) {(1)\\ Data Collection and Preparation};
+
+\fill[color=blue!25,rounded corners=4pt] (\w+\s,0) rectangle ++(\w,\h);
+\node[text width=\w cm, align=center] at (\w+\s + 0.5*\w,0.5*\h) {(2)\\ Model Parameters Estimation};
+
+\fill[color=blue!25,rounded corners=4pt] (2*\w+2*\s,0) rectangle ++(\w,\h);
+\node[text width=\w cm, align=center] at (2*\w+2*\s + 0.5*\w,0.5*\h) {(3)\\ Model Optimization};
+
+\fill[color=red!25,rounded corners=4pt] (\w+\s,\h + 0.1) rectangle ++(\w,\h/3);
+\node[text width=\w cm, align=center] at (\w+\s + 0.5*\w,\h + 0.1 + 0.5*\h/3) {Optimization};
+
+\draw [line width=0.35mm, ->] (\w,0.5*\h) -- (\w+\s,0.5*\h);
+\draw [line width=0.35mm,->] (2*\w+\s,0.5*\h) -- (2*\w+2*\s,0.5*\h);
+\draw [line width=0.35mm,-] (2*\w+2*\s+0.5*\w,0) -- (2*\w+2*\s+0.5*\w,-1);
+\draw [line width=0.35mm,-] (2*\w+2*\s+0.5*\w,-1) -- (2*\w+\s-0.5*\w,-1);
+\draw [line width=0.35mm,->] (2*\w+\s-0.5*\w,-1) -- (2*\w+\s-0.5*\w,0);
+
+\end{tikzpicture}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

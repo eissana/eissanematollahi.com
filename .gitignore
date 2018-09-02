@@ -1,4 +1,7 @@
 *~
 .#*
 blog/posts/**/*.htm*
-
+blog/posts/**/images/**/auto/
+blog/posts/**/*.aux
+blog/posts/**/*.log
+blog/posts/**/*.synctex.gz

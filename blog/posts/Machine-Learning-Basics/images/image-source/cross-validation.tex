@@ -1,0 +1,46 @@
+\documentclass[dvipsnames]{minimal}
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage[pdftex,active,tightpage]{preview}
+\PreviewEnvironment{tikzpicture}
+
+\usepackage{pgfplots,filecontents}
+\pgfplotsset{compat=1.12}
+
+\begin{document}
+
+\begin{tikzpicture}
+\def\w{2}
+\def\h{.7}
+\pgfmathsetmacro\a{\w + .2}
+\pgfmathsetmacro\b{\h + .1}
+\foreach \i in {1,2,...,5} {
+  \def\x{\i*\a}
+  \foreach \j in {1,2,...,5} {
+    \def\y{-\j*\b}
+    \ifthenelse{\equal{\i}{\j}}{
+      \def\mycol{red!25}
+      \def\mytext{Test}
+    }{
+      \def\mycol{blue!25}
+      \def\mytext{Training}
+    }
+    \fill[color=\mycol,rounded corners=4pt] (\x,\y) rectangle ++(\w,\h);
+    \node at (\x+0.5*\a-.1,\y+0.5*\b-.05) {\mytext};
+  }
+}
+\foreach \i in {1,2,...,5} {
+  \def\x{\i*\a}
+  \node at (\x+0.5*\a-.1, .2) {Split \i};
+}
+\foreach \j in {1,2,...,5} {
+  \def\y{-\j*\b}
+  \node at (1.5,\y+0.5*\b-.05) {Fold \j};
+}
+\end{tikzpicture}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
