@@ -1,4 +1,4 @@
-% Created 2018-07-17 Tue 23:52
+% Created 2018-09-07 Fri 18:59
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -15,7 +15,7 @@
 \usepackage{capt-of}
 \usepackage{hyperref}
 \author{Eissa Nematollahi}
-\date{2018-06-29}
+\date{2018-07-20}
 \title{Things I Like about Go Language\\\medskip
 \large A brief comparison of Go features with those of C++ and Java}
 \hypersetup{
@@ -23,15 +23,18 @@
  pdftitle={Things I Like about Go Language},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 24.5.1 (Org mode 8.3.1)},
+ pdfcreator={Emacs 24.5.1 (Org mode 8.3.1)}, 
  pdflang={English}}
 \begin{document}
 
 \maketitle
+\tableofcontents
+
 I recently had a chance to design and develop a library in Go language, also known as Golang, which has been used by some Kubernetes-based services in Huawei's cloud platform. Having developed several C++ and Java libraries in the past, I have come to admire the simplistic design of Go.
 
 In this blog post, I will share my personal thoughts on the pragmatic approach of Go that I found particularly interesting. For example, Go deliberately forbids inheritance and only allows composition, while Java allows single inheritance and C++ permits multiple. Note that best practices advise using composition over inheritance. It is debatable whether forbidding inheritance is a good thing or not, but composition definitely yields a simpler, highly decoupled, and easily maintainable code than does inheritance.
 
+\includegraphics[width=.9\linewidth]{./images/golang-card.png}
 
 \section*{History of Go}
 \label{sec:orgheadline1}
@@ -67,24 +70,24 @@ Concurrent programming in Go is modeled as communicating sequential processes (C
 A goroutine is a function called with the keyword \texttt{go}, which runs in a different thread from the main one. In the following code, \texttt{counter} runs in the main thread, while \texttt{spinner} runs in a separate thread.
 \begin{verbatim}
 func main() {
-	go spinner(100 * time.Millisecond)
-	counter(10, 500 * time.Millisecond)
+    go spinner(100 * time.Millisecond)
+    counter(10, 500 * time.Millisecond)
 }
 
 func spinner(delay time.Duration) {
-	for {
-		for _, r := range `-\|/` {
-			fmt.Printf("\r%c", r)
-			time.Sleep(delay)
-		}
-	}
+    for {
+        for _, r := range `-\|/` {
+            fmt.Printf("\r%c", r)
+            time.Sleep(delay)
+        }
+    }
 }
 
 func counter(n int, delay time.Duration) {
-	for i := 1; i <= n; i++ {
-		fmt.Printf("\r\t%d", i)
-		time.Sleep(delay)
-	}
+    for i := 1; i <= n; i++ {
+        fmt.Printf("\r\t%d", i)
+        time.Sleep(delay)
+    }
 }
 \end{verbatim}
 Goroutines communicate through channels. Channels are first-class object types in Go that can be declared, initialized, and passed to functions similar to any other variables. They may be bidirectional, both sender and receiver, or unidirectional, either sender or receiver. Let us illustrate using channels with an example.
@@ -97,25 +100,25 @@ Such a problem is called \emph{embarrassingly parallel}, since computation of fu
 
 \begin{verbatim}
 func SumSerial(x []int, f func(int) int) int {
-	sum := 0
-	for _, xi := range x {
-		sum += f(xi)
-	}
-	return sum
+    sum := 0
+    for _, xi := range x {
+        sum += f(xi)
+    }
+    return sum
 }
 
 func SumConcurrent(x []int, f func(int) int) int {
-	entries := make(chan int)
-	for _, xi := range x {
-		go func(val int) {
-			entries <-f(val)
-		}(xi)
-	}
-	sum := 0
-	for range x {
-		sum += <-entries
-	}
-	return sum
+    entries := make(chan int)
+    for _, xi := range x {
+        go func(val int) {
+            entries <-f(val)
+        }(xi)
+    }
+    sum := 0
+    for range x {
+        sum += <-entries
+    }
+    return sum
 }
 \end{verbatim}
 In function \texttt{SumConcurrent}, we create \(n\) goroutines, each responsible for computing one function value and sending the result to \texttt{entries} channel. The main goroutine receives from the channel and adds up the values.
@@ -189,33 +192,152 @@ Avoid membership fees: Where possible, prefer making functions nonmember nonfrie
 Go resolves such a tight coupling problem by design: having no classes at all! How does it then support the object-oriented design without having classes? Go does it in an unconventional way. Custom types in Go are defined by means of structs, as in the C language, without any knowledge of its methods. However, methods of a custom type may be defined with a \emph{receiver}, without altering the struct. This is illustrated in the following code snippet:
 \begin{verbatim}
 type Car struct {
-	make string
-	model string
-	year int
+    make string
+    model string
+    year int
 }
 func (car Car) Drive() {
-	// implement driving behavior
+    // implement driving behavior
 }
 \end{verbatim}
 In this design, the custom type \texttt{Car} and its method \texttt{Drive} are loosely coupled.
 
 \subsection*{Types and Interfaces}
 \label{sec:orgheadline8}
-Interfaces and types defining them are also loosely coupled. As we explained types are not bound to their methods; interestingly, neither are they to the interfaces they implement. A type does not need to be explicitly altered to implement an interface, as in Java \texttt{class Car implements Driver}, for example; it merely need to implements all the methods specified by the interface.
+Interfaces and types defining them are also loosely coupled. As we explained types are not bound to their methods; interestingly, neither are they to the interfaces they implement. A type does not need to be explicitly altered to implement an interface, as in Java \texttt{class Car implements Driver}, for example; it merely needs to implement all the methods specified by the interface.
 
-Such a loose decoupling in important for having a more maintainable and more manageable code. In addition, it is more flexible; one can always define interfaces for third party libraries without altering their codes. For example, suppose that the \texttt{Car} type with the \texttt{Drive} method is from a different library. Without modifying that library, we can define the following interface \texttt{Driver} and \texttt{Car} will immediately satisfy the interface.
+Such a loose decoupling is important for having a more maintainable and more manageable code. In addition, it is more flexible; one can always define interfaces for third party libraries without altering their codes. For example, suppose that the \texttt{Car} type with the \texttt{Drive} method is from a different library. Without modifying that library, we can define the following interface \texttt{Driver} and \texttt{Car} will immediately satisfy the interface.
 \begin{verbatim}
 type Driver interface {
-	Drive()
+    Drive()
 }
 \end{verbatim}
 
-\section*{Empty Interfaces}
+\section*{Inheritance vs. Composition}
 \label{sec:orgheadline10}
+It's widely accepted that composition should be preferred over inheritance. Rule 34 from \href{http://www.gotw.ca/publications/c++cs.htm}{\emph{C++ Coding Standards}} by Herb Sutter and Andrei Alexandrescu recommends to:
+\begin{quote}
+Avoid inheritance taxes: Inheritance is the second-tightest coupling relationship in C++, second only to friendship. Tight coupling is undesirable and should be avoided where possible.
+\end{quote}
+C++ allows multiple inheritance, which is advised to be used judiciously, since it may yield ambiguities and complexities like the \emph{diamond problem}; see Item 40 of \href{http://www.aristeia.com/books.html}{Effective C++} by Scott Meyers.
+
+To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing minor benefits of the multiple inheritance. Such a limitation is good as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definitions; consult Item 16 of \href{https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/}{Effective Java™} by Joshua Bloch.
+
+Considering all such issues with inheritance, Go deliberately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the empty interface in Go.
+
+Using composition in C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the \emph{struct embedding} mechanism, described in Section 6.3 of \href{https://dl.acm.org/citation.cfm?id=2851099}{The Go Programming Language}, by Alan A.A. Donovan and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
+\begin{verbatim}
+type Point struct {
+    X, Y float64
+}
+
+type Circle struct {
+    Point  // embedded
+    Radius float64
+}
+
+var c Circle
+c.X = 1 // implicit access: X is forwarded from Point to Circle
+c.Point.Y = 2 // explicit access
+\end{verbatim}
+Fields of the embedded struct Point can be both explicitly and implicitly accessed by Circle instances. In the case of an explicit access, the type name (Point) is used as an instance name.
+
+Note that the composition can be done without embedding. In this case, the fields of the composed struct are not promoted to the including struct. In the following example, Point is composed in Circle without embedding:
+\begin{verbatim}
+type Circle struct {
+    Center Point
+    Radius float64
+}
+
+var c Circle
+c.Center.X = 1
+c.Center.Y = 2
+\end{verbatim}
+
+\section*{Multi-valued Expressions and Blank Identifiers}
+\label{sec:orgheadline11}
+Functions in Go can return multiple values, any of which may be ignored using the \emph{blank identifier}, denoted by underscore. Its syntax is similar to that of high-level languages, like Python. In Java or C++, a new object holding multiple fields should be defined to fulfill such a task. In recent versions of C++, a tuple (\texttt{std::tuple}) gluing multiple variables together can be a return type of a function. Some of the outputs may be ignored using \texttt{std::ignore}. The usage in Go is, however, significantly more convenient. For example, the following code swaps two values:
+\begin{verbatim}
+a, b = b, a
+\end{verbatim}
+As another example, we can compute Fibonacci numbers as follows:
+\begin{verbatim}
+func fib(n int) int {
+    x, y := 0, 1
+    for i := 0; i < n; i++ {
+        x, y = y, x + y
+    }
+    return x
+}
+\end{verbatim}
+The following function illustrates returning both minimum and maximum of a slice:
+\begin{verbatim}
+func MinMax(arr []int) (int, int, error) {
+    if len(arr) == 0 {
+       return 0, 0, fmt.Errorf("Input slice is empty")
+    }
+    min, max := arr[0], arr[0]
+    for _, a := range arr {
+        if a < min {
+            min = a
+        } else if a > max {
+            max = a
+        }
+    }
+    return min, max, nil
+}
+\end{verbatim}
+It's idiomatic in Go to return error as the last return value. To ignore the maximum value, for example, we can write:
+\begin{verbatim}
+min, _, err := MinMax(arr)
+\end{verbatim}
+In Go, return values can be named. Named return variables are initialized to their default values, thus, there is no need to specify defaults values, 0 for \texttt{int} type and \texttt{nil} for \texttt{error} type. This is illustrated in the following code snippet:
+\begin{verbatim}
+func MinMax(arr []int) (min, max int, err error) {
+    if len(arr) == 0 {
+       err = fmt.Errorf("Input slice is empty")
+       return
+    }
+    min, max = arr[0], arr[0]
+    for _, a := range arr {
+        if a < min {
+            min = a
+        } else if a > max {
+            max = a
+        }
+    }
+    return
+}
+\end{verbatim}
+
+\section*{Defer Statement}
+\label{sec:orgheadline12}
+Some resources, like files and database connections, need to be explicitly closed. In case of an error, they might be left open, which may cause further issues. Go resolves such an issue with the \texttt{defer} statement, which is a means to delay execution of a function to immediately before it leaves the scope. It is guaranteed to be executed at any circumstances. The behavior of the \texttt{defer} statement is similar to that of destructors in C++. The closet behavior in Java is achieved using finalizers, but there is no guarantee that they will be executed. The following code is a simple example to illustrate how to use <code>defer</code> statement:
+\begin{verbatim}
+if file, err := os.Open(filename); err != nil {
+   // report error
+}
+defer file.Close()
+// Use file here. No matter what, file will be closed after returning
+\end{verbatim}
+Another typical use-case of \texttt{defer} statement is to defer unlocking a mutex, as illustrated in the following example:
+\begin{verbatim}
+type App struct {
+    version int
+    sync.Mutex
+}
+func (app *App) increment() {
+    app.Lock()
+    defer app.Unlock()
+    app.version++
+}
+\end{verbatim}
+\section*{Empty Interfaces}
+\label{sec:orgheadline13}
 An empty interface is simply declared as \texttt{interface\{\}} and any type satisfies the empty interface, since it has no methods. Thus, it is a type that can hold \emph{any} type: integer, string, slice, map, channel, or any custom type. In C++17, \texttt{std::any} provides similar functionalities. The following example illustrates this.
 \begin{verbatim}
 func MyPrint(v interface{}) {
-	fmt.Printf("Input is: %+v\n", v)
+    fmt.Printf("Input is: %+v\n", v)
 }
 MyPrint(10)
 MyPrint("hello")
@@ -223,7 +345,7 @@ MyPrint("hello")
 As a matter of fact, the signature of the built-in function \texttt{fmt.Printf} is
 \begin{verbatim}
 func Printf(format string, a ...interface{}) (n int, err error) {
-	return Fprintf(os.Stdout, format, a...)
+    return Fprintf(os.Stdout, format, a...)
 }
 \end{verbatim}
 which accepts zero or more (variadic) number of empty interface types as the second argument. Further exploring the \texttt{fmt} library in Go, we can discover that to implement type-specific logic, we can use a \texttt{switch} statement on empty interface type \texttt{arg} as follows:
@@ -231,14 +353,14 @@ which accepts zero or more (variadic) number of empty interface types as the sec
 // arg is of type interface{}
 switch f := arg.(type) {
 case bool:
-	// do Boolean-specific task
+    // do Boolean-specific task
 case int:
-	// do integer-specific task
+    // do integer-specific task
 /* the cases go on */
 }
 \end{verbatim}
 
-It is possible to do meta-programming using empty interfaces and reflection in Go. However, this approach must be avoided. The reason is that the compiler is unable to understand what type is passed to functions accepting empty interfaces. Thus, the code becomes less stable and prone to panic. Moreover, excessive use of reflection and empty interfaces results in less readable code.
+It is possible to do meta-programming using empty interfaces and reflection in Go. However, this approach must be avoided. The reason is that the compiler is unable to understand what type is passed to functions accepting empty interfaces. Thus, the code becomes less stable and prone to panic. Moreover, excessive use of reflection and empty interfaces result in less readable code.
 
 Generics in Java and templates in C++ are means of meta-programming to automatically generate code. This reduces the amount of boilerplate source code, with the cost of increasing compile time. Also, meta-program debugging is typically more difficult.
 
@@ -247,11 +369,11 @@ Go approaches meta-programming to generate boilerplate code in a different way: 
 package main
 //go:generate ./gen_name.sh
 import (
-	"fmt"
-	"person"
+    "fmt"
+    "person"
 )
 func main() {
-	fmt.Printf("Person: %+v\n", person.Person{"Alice", 23})
+    fmt.Printf("Person: %+v\n", person.Person{"Alice", 23})
 }
 \end{verbatim}
 Beside this file in the source folder, there is a shell script file \texttt{gen\_names.sh} as follows:
@@ -263,8 +385,8 @@ cat <<EOF > person.go
 package person
 
 type Person struct {
-	Name string
-	Age int
+    Name string
+    Age int
 }
 EOF
 \end{verbatim}
@@ -274,94 +396,11 @@ go generate
 go run main.go
 \end{verbatim}
 
-\section*{Inheritance vs. Composition}
-\label{sec:orgheadline11}
-It's widely accepted that composition should be preferred over inheritance. Rule 34 from \href{http://www.gotw.ca/publications/c++cs.htm}{\emph{C++ Coding Standards}} by Herb Sutter and Andrei Alexandrescu recommends to:
-\begin{quote}
-Avoid inheritance taxes: Inheritance is the second-tightest coupling relationship in C++, second only to friendship. Tight coupling is undesirable and should be avoided where possible.
-\end{quote}
-C++ allows multiple inheritance, which is advised to be used judiciously, since it may yield ambiguities and complexities like the \emph{diamond problem}; see Item 40 of \href{http://www.aristeia.com/books.html}{Effective C++} by Scott Meyers.
-
-To avoid such ambiguities and complexities, Java only allows single inheritance, sacrificing minor benefits of the multiple inheritance. Such a limitation is a good feature as it yields less complicated design and more manageable code. Even the use of single inheritance is advised to be restricted for merely type definitions; consult Item 16 of \href{https://www.safaribooksonline.com/library/view/effective-java-2nd/9780137150021/}{Effective Java™} by Joshua Bloch.
-
-Considering all such issues with inheritance, Go deliberately forbids inheritance. Does this mean Go limits capabilities of the developer? Not really! All the benefits of inheritance can be attained, without any sacrifices, by means of composition and the empty interface in Go.
-
-Using composition is C++ and Java is cumbersome, since all required methods of a class must be forwarded. Go, however, automates this process for developers through the \emph{struct embedding} mechanism, described in Section 6.3 of \href{https://dl.acm.org/citation.cfm?id=2851099}{The Go Programming Language}, by Alan A.A. Donovan and Brian W. Kernighan. Embedding is carried out by including an anonymous struct into another. In the following code snippet, struct Point is embedded in struct Circle:
-\begin{verbatim}
-type Point struct {
-	X, Y float64
-}
-
-type Circle struct {
-	Point  // embedded
-	Radius float64
-}
-
-var c Circle
-c.X = 1 // implicit access: X is forwarded from Point to Circle
-c.Point.Y = 2 // explicit access
-\end{verbatim}
-Fields of the embedded struct Point can be both explicitly and implicitly accessed by the Circle instances. In the case of an explicit access, the type name (Point) is used as an instance name.
-
-Note that the composition can be done without embedding. In this case, the fields of the composed struct are not promoted to the including struct. In the following example, Point is composed in Circle without embedding:
-\begin{verbatim}
-type Circle struct {
-	Center Point
-	Radius float64
-}
-
-var c Circle
-c.Center.X = 1
-c.Center.Y = 2
-\end{verbatim}
-
-\section*{Multiple Return Values and Blank Identifiers}
-\label{sec:orgheadline12}
-Functions in Go can return multiple values, any of which may be ignored using the \emph{blank identifier}, denoted by underscore. Its syntax is similar to that of high-level languages, like Python. In Java or C++, a new object holding multiple fields should be defined to fulfill such a task. In recent versions of C++, a tuple (\texttt{std::tuple}) gluing multiple variables together can be a return type of a function. Some of the outputs may be ignored using \texttt{std::ignore}. The usage in Go is, however, significantly more convenient. The following function illustrates returning both minimum and maximum of a slice:
-\begin{verbatim}
-func MinMax(arr []int) (int, int, error) {
-	if len(arr) == 0 {
-	   return 0, 0, fmt.Errorf("Input slice is empty")
-	}
-	min, max := arr[0], arr[0]
-	for _, a := range arr {
-		if a < min {
-			min = a
-		} else if a > max {
-			max = a
-		}
-	}
-	return min, max, nil
-}
-\end{verbatim}
-It's idiomatic in Go to return error as the last return value. To ignore the maximum value, for example, we can write:
-\begin{verbatim}
-min, _, err := MinMax(arr)
-\end{verbatim}
-In Go, return values can be named. Named return variables are initialized to their default values, thus, there is no need to specify defaults values, 0 for \texttt{int} type and \texttt{nil} for \texttt{error} type. This is illustrated in the following code snippet:
-\begin{verbatim}
-func MinMax(arr []int) (min, max int, err error) {
-	if len(arr) == 0 {
-	   err = fmt.Errorf("Input slice is empty")
-	   return
-	}
-	min, max = arr[0], arr[0]
-	for _, a := range arr {
-		if a < min {
-			min = a
-		} else if a > max {
-			max = a
-		}
-	}
-	return
-}
-\end{verbatim}
-
 \section*{Type Inference}
-\label{sec:orgheadline13}
+\label{sec:orgheadline14}
 In dynamically-typed languages, like Python, a variable can be initialized without specifying its type: \texttt{a = 10}. In statically-typed languages, like Java and C++, however, the type of a variable must be specified when declared: \texttt{int a = 10}.
 
-Variable declaration is simplified in later versions of C++, thus one can write \texttt{auto a = 10} and the type of \texttt{a} (\texttt{int}) is inferred from the right-hand-side value. This is particularly useful when you have template (generic) types or defining lambda functions. For example, compare the following two equivalent lambda function declarations:
+Variable declaration is simplified in later versions of C++, thus one can write \texttt{auto a = 10} and the type of \texttt{a} (\texttt{int}) is inferred from the right-hand-side value. This is particularly useful when declaring template (generic) types or defining lambda functions. For example, compare the following two equivalent lambda function declarations:
 \begin{verbatim}
 function<int(int, int)> sum = [](int a, int b) { return a + b; };
 auto sum = [](int a, int b) { return a + b; }; // more concise
@@ -371,54 +410,66 @@ The second declaration is concise and more readable, while the first one has to 
 In Java, types must be declared in full. This can be annoying particularly in \texttt{for} loops:
 \begin{verbatim}
 for(Map.Entry<String, String> item : items.entrySet()) {
-	// do something on item
+    // do something on item
 }
 \end{verbatim}
 Java 10 introduces \texttt{var} keyword for type inference, similar to \texttt{auto} in C++. Thus, in Java 10, the latter code snippet can be simplified to:
 \begin{verbatim}
 for(var item : items.entrySet()) {
-	// do something on item
+    // do something on item
 }
 \end{verbatim}
 
-In Go, a variable can be declared and initialized in a concise form as \texttt{a := 10}, referred to as the \emph{short variable declaration}. Short variable declarations are particularly useful in \texttt{for} loops or even \texttt{if} statements, a distinguishing feature of Go which will be discussed later. A typical Go code may include the following statements:
+In Go, a variable can be declared and initialized in a concise form as \texttt{a := 10}, referred to as the \emph{short variable declaration}. Short variable declarations are particularly useful in \texttt{for} loops and \texttt{if} statements. A typical Go code may include the following statements:
 \begin{verbatim}
 for i, item := range items {
-	// do something on index i and value item
+    // do something on index i and value item
 }
 if val, err := getValue(); err != nil {
-	// report error; disregard val
+    // report error; disregard val
 } else {
-	// do something with val
+    // do something with val
 }
 \end{verbatim}
 Note that the types are inferred and not specified explicitly, resulting in clean and readable code.
 
-A few more notes are in order. The parentheses around the \texttt{if} and \texttt{for} statements \emph{can} be omitted. A local variable, such as \texttt{val} and \texttt{err}, can be declared in the \texttt{if} statement before checking the condition. The key word \texttt{range} is used in the \texttt{for} loop to ease iterating over the items of a list. This is similar to \texttt{enumerate} in Python. Other typical ways for iterating over lists include
+A few more notes are in order. The parentheses around the \texttt{if} and \texttt{for} statements \emph{can} be omitted. A local variable, such as \texttt{val} and \texttt{err}, can be declared in the \texttt{if} statement before checking the condition. The key word \texttt{range} is used in the \texttt{for} loop to ease iterating over the items of a list. This is similar to \texttt{enumerate} in Python. Other typical ways of using \texttt{for} loop include
 \begin{verbatim}
-for i := range items {
-	// do something on index i
-	// items[i] can still be used to access items
+for i := 0; i < len(items); i++ {
+    // typical for loop
 }
 for _, item := range items {
-	// ignore index i and use item
+    // ignore index i and use item
+}
+for i := range items {
+    // do something on index i
+    // items[i] can still be used to access items
+}
+for range items {
+    // repeat as many times as the length of items
+}
+for i < len(items) {
+    // equivalent of while loop
+}
+for {
+   // infinite loop
 }
 \end{verbatim}
 
 \section*{Access Level}
-\label{sec:orgheadline14}
-In C++, access levels of fields and methods of a class can be public, private, or protected. Java adds one more access level beside them: package private. In Go, there are only private (non-exported) and public (exported) access levels.
+\label{sec:orgheadline15}
+In C++, access levels of fields and methods of a class can be public, private, or protected. Java adds one more access level beside them: package private. In Go, there are only exported (public) and non-exported (package private) access levels.
 
 C++ originally had private and public access levels. Mark Linton, the main architect of the InterViews library, campaigned for the addition of the protected access level. Few years later, he banned using it in the library as it was one of the main sources of many bugs; see \href{http://www.stroustrup.com/dne.html}{The Design and Evolution of C++}, by Bjarne Stroustrup.
 
-Go's simplistic design restricts access levels to private and public with a simple rule: fields and methods starting with capital letters are exported; otherwise non-exported.
+Go has a simple rule for exported and non-exported fields and methods: those starting with capital letters are exported; otherwise non-exported.
 
 \section*{Data Types}
-\label{sec:orgheadline17}
+\label{sec:orgheadline18}
 Beside having basic types, Boolean, numbers, and strings, Go has composite data types array, slices, structs, and maps. Functions and channels are also first-class data types in Go.
 
 \subsection*{Array and Slices}
-\label{sec:orgheadline15}
+\label{sec:orgheadline16}
 Arrays and slices are sequences of homogeneous basic types. An Array has fixed size and its size is known at compile time. However, a slice is dynamically sized and its size can change at runtime. Using slices in Go is as easy as using lists in Python, which differentiates it from similar compiled languages like C++ and Java. In particular, for a given slice or even an array \texttt{s}, we can construct the following slices:
 \begin{itemize}
 \item \texttt{s[i:j]}, representing a slice with elements \texttt{s[i],..., s[j-1]}
@@ -439,7 +490,7 @@ s = append(s, b...)
 \end{verbatim}
 Note three different ways of declaring slices: \texttt{a} is declared and initialized using slice literals; \texttt{b} is declared as a slice with length 3 using built-in \texttt{make} function; \texttt{s} is just declared without initialization. Function \texttt{make} accepts an optional third arguments as the capacity of the slice.
 \subsection*{Maps}
-\label{sec:orgheadline16}
+\label{sec:orgheadline17}
 Maps are references to hash tables, which are one of the most important data structures. Unlike slices, maps have to be initialized first, before they are used. As shown in the following code snippet, the first two methods work, while the last one results in panic.
 \begin{verbatim}
 height := make(map[string]float32)
@@ -447,8 +498,8 @@ height["Mike"] = 180.35 // cm
 height["Sarah"] = 167.42
 
 height := map[string]int {
-	"Mike": 180.35,
-	"Sarah": 167.42, // comma is required
+    "Mike": 180.35,
+    "Sarah": 167.42, // comma is required
 }
 
 var height map[string]int
@@ -470,7 +521,7 @@ for key, value := range height {
 \end{verbatim}
 
 \section*{Pointers and References}
-\label{sec:orgheadline18}
+\label{sec:orgheadline19}
 Analogous to C and C++, Go has pointers and references too. Using pointers and references in C can be pretty daunting for many developers. However, due largely to the garbage collector, the use of pointers and references in Go is relatively straightforward, since one does not need to worry about manual memory management and memory leaks. In C++, smart pointers are designed to facilitate memory management.
 
 Similar to C/C++, objects in Go may be passed by value or by reference as function parameters. There is no definite rule on when to pass objects by value or by reference, however, the following guideline may help in making such a decision:
@@ -480,14 +531,14 @@ Similar to C/C++, objects in Go may be passed by value or by reference as functi
 \item Large objects are often passed by reference for efficiency, while small objects are passed by value. There is one subtlety here. A struct holding a pointer to a large data structure is still a small object. Consider the following example:
 \begin{verbatim}
 type largeData struct {
-	// lots of fields
+    // lots of fields
 }
 type smallObject struct {
-	ld *largeData
+    ld *largeData
 }
 
 func processData(ld *largeData, so smallObject) {
-	// use ld and so objects
+    // use ld and so objects
 }
 \end{verbatim}
 To avoid costly copy of large data, we pass \texttt{ld} by reference, while it is perfectly fine to pass \texttt{so} by value.
@@ -495,27 +546,27 @@ To avoid costly copy of large data, we pass \texttt{ld} by reference, while it i
 Note that maps and slices in Go are data types holding pointers to actual data structures -- similar to \texttt{smallObject}. Thus, it is efficient to pass them by value, regardless of how much data they hold.
 \end{itemize}
 
-Unlike C/C++, the address of a local variable can be returned by a function prolonging the lifetime of the variable beyond its initial scope. The following approach is quite common in Go:
+Unlike C/C++, the address of a local variable can be returned by a function prolonging the lifetime of the variable beyond its initial scope. The following approach is quite common, since there are no constructors in Go:
 \begin{verbatim}
 type Person struct {
-	name string
-	height float32
+    name string
+    height float32
 }
 
 func CreatePerson(name string, height float32) *Perosn {
-	return &Person {
-			   name: name,
-			   height: height,
-			}
+    return &Person {
+               name: name,
+               height: height,
+            }
 }
 \end{verbatim}
 There is yet another way to declare a pointer type using \texttt{new} function, as shown below:
 \begin{verbatim}
 func CreatePerson(name string, height float32) *Perosn {
-	person := new(Person)
-	person.name = name
-	person.height = height
-	return person
+    person := new(Person)
+    person.name = name
+    person.height = height
+    return person
 }
 \end{verbatim}
 Note that \texttt{new} function return the address to an instance of \texttt{Person} which is of type pointer. In C/C++ address of a value -- not variable -- does not have any meaning. Go, however, creates a variable, initializes it, prolongs its lifetime, and return the address of the variable.
@@ -531,7 +582,7 @@ a = 2;
 
 
 \section*{Fast Compilation}
-\label{sec:orgheadline19}
+\label{sec:orgheadline20}
 Go is a compiled language, and its compilation is notably faster than most other compiled languages, like C and C++. Fast compilation was one of the main considerations in the design of Go. The main reason for its compilation speed may be because of its unique way of managing dependencies. As previously mentioned, Go has borrowed design ideas for its package management from Pascal and its successors, which are well known for their lightening fast compilers. Beside better dependency management, the following features, or lack of features, may also contribute to its fast compilation:
 \begin{enumerate}
 \item Imports must be included explicitly at the top of each source file.
@@ -542,7 +593,7 @@ Go is a compiled language, and its compilation is notably faster than most other
 \end{enumerate}
 
 \section*{Command-line Utilities}
-\label{sec:orgheadline20}
+\label{sec:orgheadline21}
 Go comes with great command line tools that make it easy to perform operations, such as building the source code, much easier than those in C++ and Java. For example, Go standardizes source code formatting through \texttt{go fmt} command, which is important in collaboration projects. Below is a list of commonly used commands; for the complete list of commands and their options, consult \href{https://golang.org/cmd/go/}{Command Go}.
 \begin{itemize}
 \item \texttt{go help} provides help regarding Go commands.
@@ -560,9 +611,9 @@ func TestMyFunc(t *testing.T) {
 In addition, Go has a great benchmark tool. A typical benchmark function may look like as follows:
 \begin{verbatim}
 func BenchmarkMyFunc(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		MyFunc()
-	}
+    for i := 0; i < b.N; i++ {
+        MyFunc()
+    }
 }
 \end{verbatim}
 To run benchmark, simply run \texttt{go test -bench=.}, where \texttt{.} indicates running all functions starting with \emph{Benchmark}. Note that regular expressions can be used to select which functions should run.
@@ -572,30 +623,10 @@ To run benchmark, simply run \texttt{go test -bench=.}, where \texttt{.} indicat
 \end{itemize}
 
 \section*{Summary and Conclusion}
-\label{sec:orgheadline21}
+\label{sec:orgheadline22}
 In summary, Go is a modern language designed with simplicity in mind. It deliberately omits some well-known features in similar languages, like inheritance, and resolves known issues in a rather unconventional way to minimize coupling among types, their methods, and interfaces. Go is widely used in many products, including Kubernetes, Docker, Dropbox, Heroku, Hyperledger Fabric, CoreOS, InfluxDB, and many others.
 
-Some features of Go makes programming so easy as high-level languages like Python. These features include multiple return values, blank identifiers, easy-to-use slices and maps, first class functions, and exceptionaly handy channels and goroutines for concurrent programming. Moreover, Go is equipped with great command-line tools to do formatting, building, running, code generation, testing, benchmarking, getting missing libraries, and many others.
+Some features of Go makes programming as easy as in high-level languages like Python. These features include multiple return values, blank identifiers, easy-to-use slices and maps, first class functions, and exceptionaly handy channels and goroutines for concurrent programming. Moreover, Go is equipped with great command-line tools to do formatting, building, running, code generation, testing, benchmarking, getting missing libraries, and many others.
 
 A high-level language, like Python, is typically used for quick prototyping and a proof of concept. Once the idea is satisfactory, a low-level language, like C++, is used to implement the idea and deliver as a product. With Go, these two steps are combined since it is not only high-level enough to be used for quick prototyping but also low-level enough to be compiled in an executable file to be shipped as a final product.
-
-\section*{Main topics}
-\label{sec:orgheadline24}
-\subsection*{Any comparison between async callbacks and sync goroutines/channels?}
-\label{sec:orgheadline22}
-Check if Go is used for async programming. If so, compare it with Javascript or Vertx framework in Java.
-\subsection*{defer statement}
-\label{sec:orgheadline23}
-
-\section*{Links:}
-\label{sec:orgheadline25}
-\begin{itemize}
-\item \url{https://medium.com/exploring-code/why-should-you-learn-go-f607681fad65}
-\item \url{https://www.quora.com/What-reasons-are-there-to-not-use-Go-programming-language}
-\item \href{https://github.com/golang/go/issues/22013}{proposal: Go 2: remove embedded struct \#22013}
-\item \href{https://bluxte.net/musings/2018/04/10/go-good-bad-ugly/#a-few-days-later-3-on-hacker-news}{Go: the Good, the Bad and the Ugly}
-\item \href{https://notes.shichao.io/gopl/ch8/}{Chapter 8. Goroutines and Channels}
-\item \href{https://dominik.honnef.co/posts/2014/12/an_incomplete_list_of_go_tools/}{An incomplete list of Go tools}
-\item \href{https://blog.carlmjohnson.net/post/2016-11-27-how-to-use-go-generate/}{go generate}
-\end{itemize}
 \end{document}
