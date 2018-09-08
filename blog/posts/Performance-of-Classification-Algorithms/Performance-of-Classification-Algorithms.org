@@ -1,0 +1,39 @@
+#+BLOG: eissanematollahi
+#+POSTID: 610
+#+ORG2BLOG:
+#+DATE: [2018-11-01]
+#+OPTIONS: toc:t num:nil todo:nil pri:nil tags:nil ^:nil ':t
+#+CATEGORY: Machine Learning
+#+TAGS: Machine Learning, Classification, Prediction Error, ROC Curve 
+#+DESCRIPTION:
+#+TITLE: Performance of Binary Classifiers
+#+SUBTITLE: 
+
+
+
+* To-do List :noexport:
++ add source link in github to the blogs. 
++ create pdf formats (check if they are formatted well) and share it in the website
++ add your website address to stackoverflow linkedin, etc.
+
++ check this: https://www.kdnuggets.com/2016/02/21-data-science-interview-questions-answers.html
++ check this: https://www.kdnuggets.com/2017/02/17-data-science-interview-questions-answers.html
++ Is it better to have too many false positives, or too many false negatives?
+  - medical science example: identifying a healthy person as having cancer vs. identifying a patient with cancer as healthy. former is preferred to latter.
+  - law: putting an innocent into jail vs letting a guilty free. Latter is preferable to the former.
+    quote the famous law: it's better to let 10 guilty free than putting an innocent into jail.
+  - spam filtering: filtering regular email as spam (customer may lose important messages) or polluting mailbox with many spams that are not filtered. (latter is preferable to the former) 
++ Confusion matrix
+|                | predicted negative | predicted positive |
+|----------------+--------------------+--------------------|
+| negative cases | TN                 | FP                 |
+| positive cases | FN                 | TP                 |
++ accuracy (percentage of correct predictions)
+  (TN+TP)/(TN+TP+FP+FN)
++ recall or sensitivity (percentage of correctly-predicted positive cases)
+  TP/(TP+FN)
++ precision (percentage of correct positive predictions)
+  TP(TP+FP)
++ specificity (percentage of correctly-predicted negative cases)
+  TN/(TN+FP)
++ ROC curve (graph of recall vs specificity)
