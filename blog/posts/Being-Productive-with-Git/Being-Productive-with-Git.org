@@ -9,7 +9,8 @@
 #+TITLE: Being More Productive with Git
 #+SUBTITLE: 20% of Git you need to know to do 80% percent of the work efficiently
 
-[[./Being-Productive-with-Git.pdf][Click to download a PDF version of this article]]
+#+ATTR_HTML: :width 20px
+[[file:./Being-Productive-with-Git.pdf][Download this article in PDF format file:../adobe-pdf-icon.png]]
 
 Git is the most popular /Version Control System (VCS)/ used by many software developers on projects of any scale. Most developers use Git on a daily basis, without having a deep understanding of how it actually works. You can significantly boost your productivity with a little more understanding of the Git workflow and how Git, as a distributed version control system, operates to manage repositories. My attempt, in this blog post, is to present minimal information you need to know to maximize your productivity with Git. For more detailed information, the reader may refer to Pro Git, which covers topics ranging from basic and intermediate levels, such as branching, merging, and rebasing, to advanced ones, such as rewriting history and working with submodules.
 
@@ -476,3 +477,5 @@ Most advanced topics, such as submodules, rewriting commits history, dealing wit
 # ./images/git-log-pretty-1.png https://eissanematollahi.com/wp-content/uploads/2018/08/git-log-pretty-1.png
 
 # ./Being-Productive-with-Git.pdf https://eissanematollahi.com/wp-content/uploads/2018/09/Being-Productive-with-Git.pdf
+
+# ../adobe-pdf-icon.png https://eissanematollahi.com/wp-content/uploads/2018/09/adobe-pdf-icon-2.png

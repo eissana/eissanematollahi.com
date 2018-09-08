@@ -9,7 +9,8 @@
 #+TITLE: Machine Learning: Basic Workflow
 #+SUBTITLE: Better understanding of the basic workflow in machine learning tasks
 
-[[./Machine-Learning-Basics.pdf][Click to download a PDF version of this article]]
+#+ATTR_HTML: :width 20px
+[[file:./Machine-Learning-Basics.pdf][Download this article in PDF format file:../adobe-pdf-icon.png]]
 
 * Introduction
 Machine learning is a statistical approach for making data-driven decisions through building models that are capable of capturing some patterns in data. Using historical data, models are /trained/ to /learn/ some patterns expected to exist in unseen data as well. Such machine learning models can answer questions of the following types:
@@ -207,3 +208,7 @@ As \(K\) decreases, both the number of data-sets (folds) and the size of each tr
 # ./images/bias-variance-tradeoff.png https://eissanematollahi.com/wp-content/uploads/2018/09/bias-variance-tradeoff-4.png
 # ./images/bias-variance-dart.png https://eissanematollahi.com/wp-content/uploads/2018/09/bias-variance-dart-4.png
 # ./images/cross-validation.png https://eissanematollahi.com/wp-content/uploads/2018/09/cross-validation-4.png
+
+# ./Machine-Learning-Basics.pdf https://eissanematollahi.com/wp-content/uploads/2018/09/Machine-Learning-Basics.pdf
+
+# ../adobe-pdf-icon.png https://eissanematollahi.com/wp-content/uploads/2018/09/adobe-pdf-icon.png
