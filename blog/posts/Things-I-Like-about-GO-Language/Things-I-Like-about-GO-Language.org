@@ -2,12 +2,14 @@
 #+POSTID: 108
 #+ORG2BLOG:
 #+DATE: [2018-07-20]
-#+OPTIONS: toc:t num:nil todo:nil pri:nil tags:nil ^:nil ':t
+#+OPTIONS: toc:t num:t todo:nil pri:nil tags:nil ^:nil ':t
 #+CATEGORY: Software
 #+TAGS: C++, Composition, Go, Inheritance, Interface, Java, Object-oriented design
 #+DESCRIPTION:
 #+TITLE: Things I Like about Go Language
 #+SUBTITLE: A brief comparison of Go features with those of C++ and Java
+
+[[./Things-I-Like-about-GO-Language.pdf][Click to download a PDF version of this article]]
 
 I recently had a chance to design and develop a library in Go language, also known as Golang, which has been used by some Kubernetes-based services in Huawei's cloud platform. Having developed several C++ and Java libraries in the past, I have come to admire the simplistic design of Go.
 
@@ -595,3 +597,5 @@ A high-level language, like Python, is typically used for quick prototyping and 
 
 # ./images/golang-card.png https://eissanematollahi.com/wp-content/uploads/2018/07/golang-card.png
 
+
+# ./Things-I-Like-about-GO-Language.pdf https://eissanematollahi.com/wp-content/uploads/2018/09/Things-I-Like-about-GO-Language.pdf

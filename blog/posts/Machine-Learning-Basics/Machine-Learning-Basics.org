@@ -2,12 +2,14 @@
 #+POSTID: 439
 #+ORG2BLOG:
 #+DATE: [2018-09-02]
-#+OPTIONS: toc:t num:nil todo:nil pri:nil tags:nil ^:nil ':t
+#+OPTIONS: toc:t num:t todo:nil pri:nil tags:nil ^:nil ':t
 #+CATEGORY: Machine Learning
 #+TAGS: Machine Learning, Statistics, Prediction, Classification, Regression, Optimization, Bias-Variance Tradeoff, Supervised Learning, Unsupervised Learning, Cross-Validation, Maximum Likelihood Estimation, Maximum Aposteriori 
 #+DESCRIPTION:
 #+TITLE: Machine Learning: Basic Workflow
 #+SUBTITLE: Better understanding of the basic workflow in machine learning tasks
+
+[[./Machine-Learning-Basics.pdf][Click to download a PDF version of this article]]
 
 * Introduction
 Machine learning is a statistical approach for making data-driven decisions through building models that are capable of capturing some patterns in data. Using historical data, models are /trained/ to /learn/ some patterns expected to exist in unseen data as well. Such machine learning models can answer questions of the following types:
@@ -75,7 +77,7 @@ A machine learning problem can thus be cast as an optimization problem to find m
 
 To formulate the optimization problem, we need a set of records and a parametric function to approximate the true predictor, described mathematically as follows:
 + A set of records \(\{(\boldsymbol{x}_i, y_i): i=1,2,\ldots,m\}\), in which \(\boldsymbol{x}_i=(x_{i1},\ldots,x_{in})\) is the input features and \(y_i\) is the target value; see Table [[data-table]].
-+ A parametric function \(f_\boldsymbol{w}(\boldsymbol{x})\) which maps a record \(\boldsymbol{x}\) from the input space to a value \(y\) in the target space. 
++ A parametric function \(f_{\boldsymbol{w}}(\boldsymbol{x})\) which maps a record \(\boldsymbol{x}\) from the input space to a value \(y\) in the target space. 
 
 #+caption: Data table
 #+name: data-table
@@ -104,7 +106,7 @@ Note that the objective of the MAP approach differs from that of the MLE approac
 ** <<Regression>> Regression
 The target values \(y_i\) in the regression problem are scalar, representing features such as weight, height, price, etc. Scalar target values may also be referred as the response values.
 
-The *linear regression model* is one of the well-studied and popular machine learning models. In linear regression, we use the parametric function \(f_\boldsymbol{w}(\boldsymbol{x_i})=\boldsymbol{w}^T\boldsymbol{x_i}\) as the predictor. We assume that the target (response) values \(y_i\) contain Gaussian noise \(\epsilon\), .i.e.,
+The *linear regression model* is one of the well-studied and popular machine learning models. In linear regression, we use the parametric function \(f_{\boldsymbol{w}}(\boldsymbol{x_i})=\boldsymbol{w}^T\boldsymbol{x_i}\) as the predictor. We assume that the target (response) values \(y_i\) contain Gaussian noise \(\epsilon\), .i.e.,
 \[
   y_i = \boldsymbol{w}^T\boldsymbol{x_i} + \epsilon,\qquad \epsilon \sim N(0,\sigma^2).
 \]
@@ -120,18 +122,18 @@ In the maximum-aposteriori (MAP) approach, we assume that prior probabilities ar
 \]
 whose objective function is known as the /ridge regression/ model. The second (regularization) term guarantees that the parameters of the predictor are small enough to yield a simple model and prevent over-fitting.
 
-The regression task is to first find \(\boldsymbol{w}\) that maximizes posterior probabilities. Then, use the predictor \(f_\boldsymbol{w}(\boldsymbol{x_i})=\boldsymbol{w}^T\boldsymbol{x_i}\) to estimate target (response) values of unseen data.
+The regression task is to first find \(\boldsymbol{w}\) that maximizes posterior probabilities. Then, use the predictor \(f_{\boldsymbol{w}}(\boldsymbol{x_i})=\boldsymbol{w}^T\boldsymbol{x_i}\) to estimate target (response) values of unseen data.
 
 Although there is a closed form solution for the maximization problem, it is efficient to use iterative methods such as the /gradient descent/ algorithm.
 
 ** Classification
 In classification, target values are categorical and taken from a finite (and small) set of categories. The number of categories must be at least two. Classification problems with two categories are referred to as the binary classification problems. Most classification algorithm are developed for the binary case, since multi-class classification problems can be converted to a series of binary classification problems. 
 
-The *generalized linear model (GLM)* extends the linear regression by applying a /link function/ to the response values. Thus, the predictor of the GLM is given by \(f_\boldsymbol{w}(\boldsymbol{x}_i)=g(\boldsymbol{w}^T\boldsymbol{x}_i)\), where \(g\) is a link function. Unlike the linear regression, which is not suitable for the classification problems, we can use GLM with proper link functions for classification tasks. 
+The *generalized linear model (GLM)* extends the linear regression by applying a /link function/ to the response values. Thus, the predictor of the GLM is given by \(f_{\boldsymbol{w}}(\boldsymbol{x}_i)=g(\boldsymbol{w}^T\boldsymbol{x}_i)\), where \(g\) is a link function. Unlike the linear regression, which is not suitable for the classification problems, we can use GLM with proper link functions for classification tasks. 
 
 The *logistic regression model*, which is widely used for the binary classification task, is an example of GLM, with /sigmoid/ function \(g(z)=1/(1+e^{-z})\) as its link function. Consider the binary classification problem and, without loss of generality, assume that \(y_i\in\{-1,1\}\). Thus, the predictor in the logistic regression is  
 \begin{align*}
-  f_\boldsymbol{w}(\boldsymbol{x}_i)=\frac{1}{1+e^{-\boldsymbol{w}^T\boldsymbol{x}_i}},
+  f_{\boldsymbol{w}}(\boldsymbol{x}_i)=\frac{1}{1+e^{-\boldsymbol{w}^T\boldsymbol{x}_i}},
 \end{align*}
 whose value is interpreted as the probability of having \(y_i=1\) given \(\boldsymbol{x}_i\). In other words, we have
 \begin{align*}
@@ -144,7 +146,7 @@ It is easy to verify that \(p(y_i=-1|\boldsymbol{x}_i) + p(y_i=1|\boldsymbol{x}_
 As noted previously, the gradient descent algorithm can be used to solve the latter optimization problem and obtain the unknown vector \(\boldsymbol{w},\) which defines the predictor model. The predictor can then be used to compute the posterior probabilities of unseen records. Of course, label \(y\) of an unseen record \(\boldsymbol{x}\) can be easily computed from its posterior probabilities:
 \[
   y(x)=\begin{cases}
-          1\quad f_\boldsymbol{w}(\boldsymbol{x}) \ge 0.5,\\
+          1\quad f_{\boldsymbol{w}}(\boldsymbol{x}) \ge 0.5,\\
           0\quad \text{otherwise.}
          \end{cases}
 \] 

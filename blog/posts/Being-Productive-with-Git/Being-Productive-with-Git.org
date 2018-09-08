@@ -2,12 +2,14 @@
 #+POSTID: 319
 #+ORG2BLOG:
 #+DATE: [2018-08-14]
-#+OPTIONS: toc:t num:nil todo:nil pri:nil tags:nil ^:nil ':t
+#+OPTIONS: toc:t num:t todo:nil pri:nil tags:nil ^:nil ':t
 #+CATEGORY: Software
 #+TAGS: Git, Version Control System
 #+DESCRIPTION:
 #+TITLE: Being More Productive with Git
-#+SUBTITLE: Twenty percent of Git you need to know to do eighty percent of the work efficiently
+#+SUBTITLE: 20% of Git you need to know to do 80% percent of the work efficiently
+
+[[./Being-Productive-with-Git.pdf][Click to download a PDF version of this article]]
 
 Git is the most popular /Version Control System (VCS)/ used by many software developers on projects of any scale. Most developers use Git on a daily basis, without having a deep understanding of how it actually works. You can significantly boost your productivity with a little more understanding of the Git workflow and how Git, as a distributed version control system, operates to manage repositories. My attempt, in this blog post, is to present minimal information you need to know to maximize your productivity with Git. For more detailed information, the reader may refer to Pro Git, which covers topics ranging from basic and intermediate levels, such as branching, merging, and rebasing, to advanced ones, such as rewriting history and working with submodules.
 
@@ -101,22 +103,22 @@ The diagram in Figure [[git-workflow]] shows an overview of the most common inte
 
 #+caption: Git commands of the actions in Figure [[git-workflow]]. Note that the "modify" action includes addition, deletion, or any changes to files and folders in the working directory.
 #+name: Git workflow actions
-| action   | git command (Example)                       | Description          |
-|----------+---------------------------------------------+----------------------|
-| fetch    | ~git fetch origin master~                   |                      |
-| pull     | ~git pull origin master~                    | fetch then merge     |
-|          | ~git pull --rebase origin master~           | fetch then rebase    |
-| commit   | ~git commit -m"description of this commit"~ |                      |
-| recommit | ~git commit --amend~                        | modify last commit   |
-| uncommit | ~git reset --soft HEAD~                     |                      |
-| stage    | ~git add -A~                                |                      |
-|          | ~git stage -A~                              |                      |
-| unstage  | ~git reset HEAD~                            |                      |
-| stash    | ~git stash~                                 |                      |
-| unstash  | ~git stash pop~                             | remove stash record  |
-|          | ~git stash apply~                           | keep stash record    |
-| unmodify | ~git reset --hard HEAD; git clean -df~      | changes lost         |
-|          | ~git checkout -- .; git clean -df~          | changes lost         |
+| Action   | Git command (Example)                       | Description         |
+|----------+---------------------------------------------+---------------------|
+| fetch    | ~git fetch origin master~                   |                     |
+| pull     | ~git pull origin master~                    | fetch then merge    |
+|          | ~git pull --rebase origin master~           | fetch then rebase   |
+| commit   | ~git commit -m"description of this commit"~ |                     |
+| recommit | ~git commit --amend~                        | modify last commit  |
+| uncommit | ~git reset --soft HEAD~                     |                     |
+| stage    | ~git add -A~                                |                     |
+|          | ~git stage -A~                              |                     |
+| unstage  | ~git reset HEAD~                            |                     |
+| stash    | ~git stash~                                 |                     |
+| unstash  | ~git stash pop~                             | remove stash record |
+|          | ~git stash apply~                           | keep stash record   |
+| unmodify | ~git reset --hard HEAD; git clean -df~      | changes lost        |
+|          | ~git checkout -- .; git clean -df~          | changes lost        |
 
 * <<Git Basic Commands>> Git Basic Commands
 In this section, we will review the most frequently used git commands in most common situations.
@@ -472,3 +474,5 @@ Most advanced topics, such as submodules, rewriting commits history, dealing wit
 # ./images/diff-A___B.png https://eissanematollahi.com/wp-content/uploads/2018/08/diff-A___B.png
 
 # ./images/git-log-pretty-1.png https://eissanematollahi.com/wp-content/uploads/2018/08/git-log-pretty-1.png
+
+# ./Being-Productive-with-Git.pdf https://eissanematollahi.com/wp-content/uploads/2018/09/Being-Productive-with-Git.pdf
